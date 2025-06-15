@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Stock_Maintenance_System_Domain.Product;
 using Stock_Maintenance_System_Domain.User;
 namespace Stock_Maintenance_System_Infrastructure;
 public class SmsDbContext : DbContext
@@ -11,6 +12,8 @@ public class SmsDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<User>().ToTable("User");
-        modelBuilder.Entity<Role>().ToTable("Role"); 
+        modelBuilder.Entity<Role>().ToTable("Role");
+        modelBuilder.Entity<Product>().ToTable("Product1");
+
     }
 }
