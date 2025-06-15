@@ -1,0 +1,45 @@
+﻿using FluentValidation;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Stock_Maintenance_System_Application.User.CreateCommand;
+public class UserCreateCommandValidator : AbstractValidator<UserCreateCommand>
+{
+    public UserCreateCommandValidator()
+    {
+        RuleFor(x => x.FirstName)
+            .NotEmpty().WithMessage("First name is required.")
+            .MaximumLength(50);
+
+        RuleFor(x => x.LastName)
+            .NotEmpty().WithMessage("Last name is required.")
+            .MaximumLength(50);
+
+        RuleFor(x => x.Username)
+            .NotEmpty().WithMessage("Username is required.")
+            .MaximumLength(50);
+
+        RuleFor(x => x.PasswordHash)
+            .NotEmpty().WithMessage("Password is required.")
+            .MinimumLength(6);
+
+        RuleFor(x => x.Email)
+            .NotEmpty().WithMessage("Email is required.")
+            .EmailAddress().WithMessage("Invalid email format.");
+
+        RuleFor(x => x.CreatedBy)
+            .NotEmpty().WithMessage("CreatedBy is required.");
+
+        RuleFor(x => x.ModifiedBy)
+            .NotEmpty().WithMessage("ModifiedBy is required.");
+
+        RuleFor(x => x.CreatedDate)
+            .NotEqual(default(DateTime)).WithMessage("CreatedDate is required.");
+
+        RuleFor(x => x.ModifiedDate)
+            .NotEqual(default(DateTime)).WithMessage("ModifiedDate is required.");
+    }
+}

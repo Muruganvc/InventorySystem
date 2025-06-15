@@ -1,0 +1,16 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Stock_Maintenance_System_Domain.User;
+namespace Stock_Maintenance_System_Infrastructure;
+public class SmsDbContext : DbContext
+{
+    public SmsDbContext(DbContextOptions<SmsDbContext> options) : base(options) { 
+    }
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Role> Roles => Set<Role>();
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<User>().ToTable("User");
+        modelBuilder.Entity<Role>().ToTable("Role"); 
+    }
+}
