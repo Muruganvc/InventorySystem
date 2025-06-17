@@ -6,6 +6,7 @@ namespace Stock_Maintenance_System_Domain.Common
     {
         IQueryable<T> Table { get; }
         Task<IEnumerable<T>> GetAllAsync();
+        Task<IReadOnlyList<T>> GetListByAsync(Expression<Func<T, bool>> predicate);
         Task<T?> GetByIdAsync(int id);
         Task<T?> GetByAsync(Expression<Func<T, bool>> predicate);
         Task AddAsync(T entity);

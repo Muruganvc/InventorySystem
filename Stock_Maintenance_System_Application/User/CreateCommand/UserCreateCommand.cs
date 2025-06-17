@@ -11,9 +11,9 @@ public record UserCreateCommand(
     DateTime PasswordLastChanged,
     bool IsPasswordExpired,
     DateTime? LastLogin,
-    string? CreatedBy,
+    int CreatedBy,
     DateTime CreatedDate,
-    string? ModifiedBy,
+    int? ModifiedBy,
     DateTime? ModifiedDate
 ) : IRequest<int>
 {

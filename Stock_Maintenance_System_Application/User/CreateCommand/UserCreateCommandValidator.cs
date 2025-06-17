@@ -29,17 +29,5 @@ public class UserCreateCommandValidator : AbstractValidator<UserCreateCommand>
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email is required.")
             .EmailAddress().WithMessage("Invalid email format.");
-
-        RuleFor(x => x.CreatedBy)
-            .NotEmpty().WithMessage("CreatedBy is required.");
-
-        RuleFor(x => x.ModifiedBy)
-            .NotEmpty().WithMessage("ModifiedBy is required.");
-
-        RuleFor(x => x.CreatedDate)
-            .NotEqual(default(DateTime)).WithMessage("CreatedDate is required.");
-
-        RuleFor(x => x.ModifiedDate)
-            .NotEqual(default(DateTime)).WithMessage("ModifiedDate is required.");
     }
 }

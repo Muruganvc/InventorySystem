@@ -1,6 +1,11 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Stock_Maintenance_System_Api.ApiRequest;
 using Stock_Maintenance_System_Application.User.CreateCommand;
+using Stock_Maintenance_System_Application.User.GetUsersQuery;
+using Stock_Maintenance_System_Application.User.LoginCommand;
 using Stock_Maintenance_System_Application.User.PasswordChangeCommand;
+using Stock_Maintenance_System_Application.User.UpdateCommand;
 using Stock_Maintenance_System_Domain.User;
 
 namespace Stock_Maintenance_System_Api.EndPoints
@@ -9,21 +14,47 @@ namespace Stock_Maintenance_System_Api.EndPoints
     {
         public static IEndpointRouteBuilder MapUserEndpoints(this IEndpointRouteBuilder app)
         {
-            app.MapPost("/new-user", async (User user, IMediator mediator) =>
+            app.MapPost("/user-login", async (
+                            LoginRequest loginRequest,
+                            IMediator mediator) =>
+               {
+                   var command = new LoginCommand(loginRequest.UserName, loginRequest.Password);
+                   var result = await mediator.Send(command);
+                   return Results.Ok(new
+                   {
+                       message = "Login successful",
+                       data = result
+                   });
+               }).WithMetadata(new AllowAnonymousAttribute());
+
+            app.MapPost("/new-user", async (NewUserRequest user, IMediator mediator) =>
             {
-                var command = new UserCreateCommand(user.FirstName, user.LastName, user.Username, user.PasswordHash, user.Email,
-                    user.IsActive, user.PasswordLastChanged, user.IsPasswordExpired, user.LastLogin, user.CreatedBy, user.CreatedDate, user.ModifiedBy,
-                    user.ModifiedDate);
+                var command = new UserCreateCommand(user.FirstName, user.LastName, user.UserName, user.Password, user.EmailId,
+                    user.IsActive, DateTime.Now, false, DateTime.Now, 1, DateTime.Now, null, null);
                 await mediator.Send(command);
-                return Results.Ok(new { message = "User created successfully", user });
+                return Results.Ok(new { message = "User created successfully", data = user });
             });
 
-            app.MapPut("/password-change", async (User user, IMediator mediator) =>
+            app.MapGet("/users", async (IMediator mediator) =>
             {
-                var command = new PasswordChangeCommand(user.Username, user.PasswordHash, user.PasswordLastChanged, user.ModifiedBy,
-                    user.ModifiedDate);
-                await mediator.Send(command);
-                return Results.Ok(new { message = "User created successfully", user });
+                var query = new GetUsersQuery();
+                var result = await mediator.Send(query);
+                return Results.Ok(new { message = "", data = result });
+            });
+
+            app.MapPut("/password-change/{UserId}", async (int UserId, ChangePasswordRequest user, IMediator mediator) =>
+            {
+                var command = new PasswordChangeCommand(UserId, user.UserName,user.CurrentPassword, user.PasswordHash, DateTime.Now, 1,
+                    DateTime.Now);
+                var result = await mediator.Send(command);
+                return Results.Ok(new { message = "Password Changed successfully", data = result });
+            });
+
+            app.MapPut("/update/{UserId}", async (int UserId, UpdateUserRequest user, IMediator mediator) =>
+            {
+                var command = new UpdateCommand(UserId, user.FirstName, user.LastName, user.EmailId, user.IsActive, user.IsSuperAdmin);
+               var result = await mediator.Send(command);
+                return Results.Ok(new { message = "User Updated successfully", data = result });
             });
 
             return app;
