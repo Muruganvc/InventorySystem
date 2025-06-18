@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Stock_Maintenance_System_Api.ApiRequest;
+using Stock_Maintenance_System_Application.MenuItem.Query;
+using Stock_Maintenance_System_Application.MenuItem.Query.GetAllMenuItem;
 using Stock_Maintenance_System_Application.User.CreateCommand;
 using Stock_Maintenance_System_Application.User.GetUsersQuery;
 using Stock_Maintenance_System_Application.User.LoginCommand;
@@ -55,6 +57,20 @@ namespace Stock_Maintenance_System_Api.EndPoints
                 var command = new UpdateCommand(UserId, user.FirstName, user.LastName, user.EmailId, user.IsActive, user.IsSuperAdmin);
                var result = await mediator.Send(command);
                 return Results.Ok(new { message = "User Updated successfully", data = result });
+            });
+
+
+            app.MapGet("/menus/{UserId}", async (int UserId,IMediator mediator) =>
+            {
+                var query = new GetMenuItemQuery(UserId);
+                var result = await mediator.Send(query);
+                return Results.Ok(new { message = "User Menu Lists", data = result });
+            });
+
+            app.MapGet("/menus", async (IMediator mediator) =>
+            {
+                var result = await mediator.Send(new GetAllMenuItemQuery());
+                return Results.Ok(new { message = "All Menu Lists", data = result });
             });
 
             return app;
