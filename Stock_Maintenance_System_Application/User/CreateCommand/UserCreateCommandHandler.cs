@@ -9,7 +9,7 @@ internal sealed class UserCreateCommandHandler : IRequestHandler<UserCreateComma
         _unitOfWork = unitOfWork;
     public async Task<int> Handle(UserCreateCommand request, CancellationToken cancellationToken)
     {
-        var user = new Stock_Maintenance_System_Domain.User.User
+        var user = new Stock_Maintenance_System_Domain.User
         {
             FirstName = request.FirstName,
             LastName = request.LastName,
@@ -28,7 +28,7 @@ internal sealed class UserCreateCommandHandler : IRequestHandler<UserCreateComma
 
         await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
-            await _unitOfWork.Repository<Stock_Maintenance_System_Domain.User.User>().AddAsync(user);
+            await _unitOfWork.Repository<Stock_Maintenance_System_Domain.User>().AddAsync(user);
             await _unitOfWork.SaveAsync();
         });
 

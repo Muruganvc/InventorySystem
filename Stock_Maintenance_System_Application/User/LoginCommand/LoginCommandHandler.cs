@@ -10,11 +10,11 @@ namespace Stock_Maintenance_System_Application.User.LoginCommand
 {
     internal sealed class LoginCommandHandler : IRequestHandler<LoginCommand, LoginCommandResponse>
     {
-        private readonly IRepository<Stock_Maintenance_System_Domain.User.User> _userRepository;
+        private readonly IRepository<Stock_Maintenance_System_Domain.User> _userRepository;
         private readonly IConfiguration _configuration;
 
         public LoginCommandHandler(
-            IRepository<Stock_Maintenance_System_Domain.User.User> userRepository,
+            IRepository<Stock_Maintenance_System_Domain.User> userRepository,
             IConfiguration configuration)
         {
             _userRepository = userRepository;

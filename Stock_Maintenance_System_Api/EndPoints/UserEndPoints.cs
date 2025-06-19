@@ -8,7 +8,6 @@ using Stock_Maintenance_System_Application.User.GetUsersQuery;
 using Stock_Maintenance_System_Application.User.LoginCommand;
 using Stock_Maintenance_System_Application.User.PasswordChangeCommand;
 using Stock_Maintenance_System_Application.User.UpdateCommand;
-using Stock_Maintenance_System_Domain.User;
 
 namespace Stock_Maintenance_System_Api.EndPoints
 {

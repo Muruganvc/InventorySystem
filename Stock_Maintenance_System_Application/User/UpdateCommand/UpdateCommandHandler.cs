@@ -9,7 +9,7 @@ namespace Stock_Maintenance_System_Application.User.UpdateCommand
         public UpdateCommandHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork; 
         public async Task<bool> Handle(UpdateCommand request, CancellationToken cancellationToken)
         {
-            var userRepository = _unitOfWork.Repository<Stock_Maintenance_System_Domain.User.User>();
+            var userRepository = _unitOfWork.Repository<Stock_Maintenance_System_Domain.User>();
             var user = await userRepository.GetByAsync(u => u.UserId == request.UserId);
 
             if (user == null)

@@ -1,5 +1,4 @@
 ﻿using Stock_Maintenance_System_Domain.Common;
-using Stock_Maintenance_System_Domain.User;
 
 namespace Stock_Maintenance_System_Infrastructure;
 

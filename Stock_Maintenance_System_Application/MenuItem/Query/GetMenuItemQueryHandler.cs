@@ -5,12 +5,12 @@ using Stock_Maintenance_System_Domain.Common;
 namespace Stock_Maintenance_System_Application.MenuItem.Query;
 internal sealed class GetMenuItemQueryHandler : IRequestHandler<GetMenuItemQuery, IReadOnlyList<GetMenuItemQueryResponse>>
 {
-    private readonly IRepository<Stock_Maintenance_System_Domain.MenuItem.UserMenuPermission> _userMenuPermissionRepository;
-    private readonly IRepository<Stock_Maintenance_System_Domain.MenuItem.MenuItem> _menuItemRepository;
+    private readonly IRepository<Stock_Maintenance_System_Domain.UserMenuPermission> _userMenuPermissionRepository;
+    private readonly IRepository<Stock_Maintenance_System_Domain.MenuItem> _menuItemRepository;
 
     public GetMenuItemQueryHandler(
-        IRepository<Stock_Maintenance_System_Domain.MenuItem.UserMenuPermission> userMenuPermissionRepository,
-        IRepository<Stock_Maintenance_System_Domain.MenuItem.MenuItem> menuItemRepository)
+        IRepository<Stock_Maintenance_System_Domain.UserMenuPermission> userMenuPermissionRepository,
+        IRepository<Stock_Maintenance_System_Domain.MenuItem> menuItemRepository)
     {
         _userMenuPermissionRepository = userMenuPermissionRepository;
         _menuItemRepository = menuItemRepository;
@@ -33,7 +33,7 @@ internal sealed class GetMenuItemQueryHandler : IRequestHandler<GetMenuItemQuery
     }
 
 
-    private List<GetMenuItemQueryResponse> BuildMenuTree(List<Stock_Maintenance_System_Domain.MenuItem.MenuItem> allItems, int? parentId)
+    private List<GetMenuItemQueryResponse> BuildMenuTree(List<Stock_Maintenance_System_Domain.MenuItem> allItems, int? parentId)
     {
         return allItems
             .Where(m => m.ParentId == parentId)

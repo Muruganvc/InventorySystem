@@ -8,7 +8,7 @@ internal sealed class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IRea
     public GetUsersQueryHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
     public async Task<IReadOnlyList<GetUsersQueryResponse>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
     {
-        var users = await _unitOfWork.Repository<Stock_Maintenance_System_Domain.User.User>().GetAllAsync();
+        var users = await _unitOfWork.Repository<Stock_Maintenance_System_Domain.User>().GetAllAsync();
         return users.Select(user => new GetUsersQueryResponse
         {
             UserId = user.UserId,

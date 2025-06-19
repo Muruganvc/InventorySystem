@@ -1,4 +1,4 @@
-﻿namespace Stock_Maintenance_System_Domain.User;
+﻿namespace Stock_Maintenance_System_Domain;
 public class User
 {
     public int UserId { get; set; }
@@ -16,4 +16,10 @@ public class User
     public DateTime CreatedDate { get; set; }
     public int? ModifiedBy { get; set; }
     public DateTime? ModifiedDate { get; set; }
+    // Navigation Properties
+    public ICollection<Company> CreatedCompanies { get; set; } = new List<Company>();
+    public ICollection<Category> CreatedCategories { get; set; } = new List<Category>();
+    public ICollection<Product> CreatedProduct { get; set; } = new List<Product>();
+    public ICollection<Product> UpdatedProduct { get; set; } = new List<Product>();
+    public virtual ICollection<ProductCategory> CreatedProductCategories { get; set; } = new List<ProductCategory>();
 }

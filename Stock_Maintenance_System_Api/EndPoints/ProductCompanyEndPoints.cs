@@ -1,7 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Stock_Maintenance_System_Application.Category.Query.GetCategoryQuery;
 using Stock_Maintenance_System_Application.Company.Query;
-using Stock_Maintenance_System_Application.ProductCompany.Query;
+using Stock_Maintenance_System_Application.ProductCategory.Query.GetProductCategoryQuery; 
 
 namespace Stock_Maintenance_System_Api.EndPoints;
 
@@ -9,7 +10,6 @@ public static class ProductCompanyEndPoints
 {
     public static IEndpointRouteBuilder MapProductCompanyEndpoints(this IEndpointRouteBuilder app)
     {
-
         app.MapGet("/company", async (
             [FromQuery] string? companyName,
             IMediator mediator) =>
@@ -29,27 +29,39 @@ public static class ProductCompanyEndPoints
         // .RequireAuthorization(); // Uncomment if auth is required
 
 
-        app.MapGet("/product-company", async (
-            [FromQuery] int companyId,
-            IMediator mediator) =>
+        app.MapGet("/category/{companyId}", async (int companyId, IMediator mediator) =>
         {
-            //if (string.IsNullOrWhiteSpace(companyName))
-            //    return Results.BadRequest("companyName is required.");
-
-            var query = new GetProductCompanyQuery(companyId);
+            var query = new GetCategoryQuery(companyId);
             var result = await mediator.Send(query);
             return Results.Ok(new
             {
-                message = "Company Product data",
+                message = "Category Product data",
                 data = result
             });
         })
-        .WithName("GetProductCompany")
-        .WithTags("ProductCompany")
-        .Produces<IEnumerable<GetProductCompanyQueryResponse>>(StatusCodes.Status200OK)
-        .Produces(StatusCodes.Status400BadRequest)
-        //.RequireAuthorization()
-        ;
+        .WithName("GetCategoryQuery")
+        .WithTags("Category")
+        .Produces<IReadOnlyList<KeyValuePair<string, int>>>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest);
+        // .RequireAuthorization(); // Uncomment if auth is required
+
+
+        app.MapGet("/product-category/{categoryId}", async (int categoryId, IMediator mediator) =>
+        {
+            var query = new GetProductCategoryQuery(categoryId);
+            var result = await mediator.Send(query);
+            return Results.Ok(new
+            {
+                message = "Product Category Product data",
+                data = result
+            });
+        })
+           .WithName("GetProductCategoryQuery")
+           .WithTags("ProductCategoryQuery")
+           .Produces<IReadOnlyList<KeyValuePair<string, int>>>(StatusCodes.Status200OK)
+           .Produces(StatusCodes.Status400BadRequest);
+                // .RequireAuthorization(); // Uncomment if auth is required
+        
         return app;
     }
 }

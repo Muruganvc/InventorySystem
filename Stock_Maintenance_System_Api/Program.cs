@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Stock_Maintenance_System_Api.EndPoints;
-using Stock_Maintenance_System_Application.Product.CreateCommand;
+using Stock_Maintenance_System_Api.EndPoints; 
+using Stock_Maintenance_System_Application.Product.Command.CreateProductCommand;
 using Stock_Maintenance_System_Application.User.CreateCommand;
 using Stock_Maintenance_System_Application.User.LoginCommand;
 using Stock_Maintenance_System_Application.User.PasswordChangeCommand;
@@ -22,7 +22,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(typeof(UserCreateCommand).Assembly);
 builder.Services.AddMediatR(typeof(PasswordChangeCommand).Assembly);
-builder.Services.AddMediatR(typeof(ProductCreateCommand).Assembly);
+builder.Services.AddMediatR(typeof(CreateProductCommand).Assembly);
 builder.Services.AddMediatR(typeof(LoginCommand).Assembly);
 builder.Services.AddMediatR(typeof(UpdateCommand).Assembly);
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -91,11 +91,9 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 
-
 var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
-
 
 app.UseCors("AllowLocalhost");
 
@@ -118,7 +116,7 @@ app.Use(async (context, next) =>
         await context.Response.WriteAsJsonAsync(new { Errors = errors });
     }
 });
-app.MapUserEndpoints().MapProductCompanyEndpoints();
+app.MapUserEndpoints().MapProductCompanyEndpoints().MapProductEndpoints();
 app.UseHttpsRedirection();
 
 app.Run();

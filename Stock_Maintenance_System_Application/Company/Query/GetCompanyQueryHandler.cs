@@ -4,8 +4,8 @@ using Stock_Maintenance_System_Domain.Common;
 namespace Stock_Maintenance_System_Application.Company.Query;
 internal sealed class GetCompanyQueryHandler : IRequestHandler<GetCompanyQuery, IReadOnlyList<KeyValuePair<string, int>>>
 {
-    private readonly IRepository<Stock_Maintenance_System_Domain.Company.Company> _companyRepository;
-    public GetCompanyQueryHandler(IRepository<Stock_Maintenance_System_Domain.Company.Company> companyRepository) => _companyRepository = companyRepository;
+    private readonly IRepository<Stock_Maintenance_System_Domain.Company> _companyRepository;
+    public GetCompanyQueryHandler(IRepository<Stock_Maintenance_System_Domain.Company> companyRepository) => _companyRepository = companyRepository;
     public async Task<IReadOnlyList<KeyValuePair<string, int>>> Handle(GetCompanyQuery request, CancellationToken cancellationToken)
     {
         var companies = await _companyRepository.GetListByAsync(

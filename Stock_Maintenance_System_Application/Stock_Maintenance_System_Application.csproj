@@ -21,8 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Product\Command\" />
-    <Folder Include="Product\Query\" />
+    <Folder Include="Category\Command\" />
     <Folder Include="User\AddOrRemovePermission\" />
   </ItemGroup>
 

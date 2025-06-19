@@ -1,4 +1,5 @@
-﻿namespace Stock_Maintenance_System_Domain.MenuItem;
+﻿
+namespace Stock_Maintenance_System_Domain;
 public class MenuItem
 {
     public int Id { get; set; }
