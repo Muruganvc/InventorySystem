@@ -20,22 +20,24 @@ internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProduc
             BrandName = request.BrandName,
             CategoryId = request.CategoryId,
             CompanyId = request.CompanyId,
+            ProductCategoryId = request.ProductCategoryId,
             CreatedAt = DateTime.Now,
             Description = request.Description,
             IsActive = false,
             SalesPrice = request.SalesPrice,
             MRP = request.Mrp,
             ProductName = request.ProductName,
+            Quantity = request.TotalQuantity,
             TaxType = request.TaxType,
-            TaxPercent = 18,
+            TaxPercent = request.TaxPercent,
             CreatedBy = 1
         };
 
-         await _unitOfWork.ExecuteInTransactionAsync(async () =>
-        {
-            await _unitOfWork.Repository<Stock_Maintenance_System_Domain.Product>().AddAsync(product);
-            await _unitOfWork.SaveAsync();
-         });
+        await _unitOfWork.ExecuteInTransactionAsync(async () =>
+       {
+           await _unitOfWork.Repository<Stock_Maintenance_System_Domain.Product>().AddAsync(product);
+           await _unitOfWork.SaveAsync();
+       });
         return product.ProductId;
     }
 }

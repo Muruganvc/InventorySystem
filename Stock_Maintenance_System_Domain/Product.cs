@@ -9,6 +9,7 @@ public class Product
     public string ProductName { get; set; }=string.Empty;
     public int CategoryId { get; set; }
     public int CompanyId { get; set; }
+    public int? ProductCategoryId { get; set; }  
     public string? Description { get; set; }
 
     [Column(TypeName = "decimal(10,2)")]
@@ -20,14 +21,15 @@ public class Product
     [Column(TypeName = "decimal(5,2)")]
     public decimal TaxPercent { get; set; } = 18.00m;
 
-    [MaxLength(50)]
+    [MaxLength(5)]
     public string? TaxType { get; set; }
 
     [MaxLength(50)]
     public string? Barcode { get; set; }
 
-    [MaxLength(100)]
+    [MaxLength(50)]
     public string? BrandName { get; set; }
+    public int Quantity { get; set; }
     public bool IsActive { get; set; } = true;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public int CreatedBy { get; set; }
@@ -39,4 +41,5 @@ public class Product
     public Company Company { get; set; } = null!;
     public User CreatedByUser { get; set; } = null!;
     public User? UpdatedByUser { get; set; }
+    public ProductCategory? ProductCategory { get; set; } = null!;
 }

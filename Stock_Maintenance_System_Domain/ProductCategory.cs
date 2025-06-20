@@ -13,4 +13,5 @@ public class ProductCategory
     // Navigation properties
     public virtual Category Category { get; set; } = default!;
     public virtual User CreatedByUser { get; set; } = default!;
+    public virtual ICollection<Product> Product { get; } = default!;
 }

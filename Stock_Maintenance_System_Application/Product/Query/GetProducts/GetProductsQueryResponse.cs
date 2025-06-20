@@ -1,16 +1,21 @@
 ﻿namespace Stock_Maintenance_System_Application.Product.Query.GetProducts;
 public record GetProductsQueryResponse(
-    int CompanyId,
-    string CompanyName,
-    int CategoryId,
-    string CategoryName,
     int ProductId,
     string ProductName,
+    int? ProductCategoryId,
+    string? ProductCategoryName,
+    int? CategoryId,
+    string? CategoryName,
+    int? CompanyId,
+    string? CompanyName,
     string? Description,
     decimal MRP,
     decimal SalesPrice,
+    int Quantity,
     decimal TaxPercent,
-    int TotalQuantity,
+    string? TaxType,
+    string? Barcode,
+    string? BrandName,
     bool IsActive,
-    string UserName
+    string? UserName
 );
