@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stock_Maintenance_System_Api", "Stock_Maintenance_System_Api\Stock_Maintenance_System_Api.csproj", "{FDF37F47-DE56-41BF-BB56-6BD4500B0C8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stock_Maintenance_System_Api", "Stock_Maintenance_System_Api\Stock_Maintenance_System_Api.csproj", "{FDF37F47-DE56-41BF-BB56-6BD4500B0C8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stock_Maintenance_System_Domain", "Stock_Maintenance_System_Domain\Stock_Maintenance_System_Domain.csproj", "{F0689F2D-8F6A-42D9-8726-BE98DEE8CA2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stock_Maintenance_System_Domain", "Stock_Maintenance_System_Domain\Stock_Maintenance_System_Domain.csproj", "{F0689F2D-8F6A-42D9-8726-BE98DEE8CA2C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stock_Maintenance_System_Application", "Stock_Maintenance_System_Application\Stock_Maintenance_System_Application.csproj", "{F09B35C1-5B75-43FC-B47D-061FD3A7C116}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stock_Maintenance_System_Application", "Stock_Maintenance_System_Application\Stock_Maintenance_System_Application.csproj", "{F09B35C1-5B75-43FC-B47D-061FD3A7C116}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stock_Maintenance_System_Infrastructure", "Stock_Maintenance_System_Infrastructure\Stock_Maintenance_System_Infrastructure.csproj", "{AE523433-D9FF-4C94-A198-E8B216AF27EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stock_Maintenance_System_Infrastructure", "Stock_Maintenance_System_Infrastructure\Stock_Maintenance_System_Infrastructure.csproj", "{AE523433-D9FF-4C94-A198-E8B216AF27EA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Stock_Maintenance_System_Ui", "Stock_Maintenance_System_Ui", "{A67FC380-B077-48BD-9C0B-7C9151513E7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

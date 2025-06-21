@@ -1,0 +1,75 @@
+<!-- <router-outlet></router-outlet>
+<app-spinner></app-spinner>
+<form [formGroup]="form">
+  <ng-select class="ng-select-border" [items]="cities" bindLabel="name" bindValue="id" formControlName="selectedCity"
+    [clearable]="true" [searchable]="true" [dropdownPosition]="'auto'" placeholder="Select a city">
+  </ng-select>
+</form>
+
+
+<button (click)="fetchData()">Fetch Data</button>
+
+<div *ngIf="!loader.show" class="spinner">Loading...</div>
+
+<pre>{{ data | json }}</pre>
+
+
+<router-outlet></router-outlet>
+<app-spinner></app-spinner>
+
+<form [formGroup]="form">
+  <ng-select
+    [items]="cities"
+    bindLabel="name"
+    bindValue="id"
+    formControlName="selectedCity"
+    placeholder="Select a city"
+    [searchable]="true"
+    [clearable]="true">
+  </ng-select>
+</form>
+
+<button (click)="fetchData()">Fetch Data</button>
+<pre>{{ data | json }}</pre> -->
+
+ <router-outlet></router-outlet>
+<app-spinner></app-spinner>
+
+<form [formGroup]="form">
+  <ng-select
+    class="ng-select-border"
+    [items]="cities"
+    bindLabel="name"
+    bindValue="id"
+    formControlName="selectedCity"
+    [clearable]="true"
+    [searchable]="true"
+    [dropdownPosition]="'auto'"
+    placeholder="Select a city">
+  </ng-select>
+</form>
+
+<button (click)="fetchData()">Fetch Data</button>
+
+<i class="fas fa-user"></i>
+<i class="fab fa-angular"></i>
+<i class="fas fa-check-circle text-success"></i>
+
+<pre>{{ data() | json }}</pre>
+
+ 
+
+
+<mat-toolbar>
+  <button matIconButton class="example-icon" aria-label="Example icon-button with menu icon">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>My App</span>
+  <span class="example-spacer"></span>
+  <button matIconButton class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+    <mat-icon>favorite</mat-icon>
+  </button>
+  <button matIconButton class="example-icon" aria-label="Example icon-button with share icon">
+    <mat-icon>share</mat-icon>
+  </button>
+</mat-toolbar>

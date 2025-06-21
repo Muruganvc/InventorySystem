@@ -1,0 +1,29 @@
+::ng-deep ng-select.form-control .ng-select-container {
+  border: 2px solid #ced4da;       // ✅ Bootstrap border
+  border-radius: 0.375rem;         // ✅ Rounded corners
+}
+
+::ng-deep ng-select .ng-dropdown-panel {
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  min-width: unset !important;
+  box-sizing: border-box;
+}
+
+::ng-deep ng-select .ng-dropdown-panel {
+  max-height: none; /* Allow full height for outer container */
+  overflow: visible; /* Prevent outer scroll */
+}
+
+::ng-deep ng-select .ng-dropdown-panel .ng-dropdown-panel-items {
+  max-height: 195px; /* Approx height for 5 items */
+  overflow-y: auto;  /* Enable scroll only on inner items container */
+}
+
+
+
+
+.example-spacer {
+  flex: 1 1 auto;
+}
