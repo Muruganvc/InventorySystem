@@ -16,9 +16,9 @@ public static class ProductEndpoints
         {
             var command = new CreateProductCommand(product.ProductName,
                 product.CompanyId,
-                product.CategoryId,product.ProductCategoryId, product.Description,
-                product.Mrp, product.SalesPrice,product.TotalQuantity,product.TaxType,product.BarCode,
-                product.BrandName,product.TaxPercent
+                product.CategoryId, product.ProductCategoryId, product.Description,
+                product.Mrp, product.SalesPrice, product.TotalQuantity, product.IsActive, product.TaxType, product.BarCode,
+                product.BrandName, product.TaxPercent
                 );
             var result = await mediator.Send(command);
             return Results.Ok(new

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Stock_Maintenance_System_Api.ApiRequest;
+using Stock_Maintenance_System_Application.Customer.Query.GetAllCustomers;
 using Stock_Maintenance_System_Application.MenuItem.Query;
 using Stock_Maintenance_System_Application.MenuItem.Query.GetAllMenuItem;
 using Stock_Maintenance_System_Application.User.CreateCommand;
@@ -70,6 +71,12 @@ namespace Stock_Maintenance_System_Api.EndPoints
             {
                 var result = await mediator.Send(new GetAllMenuItemQuery());
                 return Results.Ok(new { message = "All Menu Lists", data = result });
+            });
+
+            app.MapGet("/customers", async(IMediator mediator) =>
+            {
+                var result = await mediator.Send(new GetAllCustomersQuery());
+                return Results.Ok(new { message = "All customer Lists", data = result });
             });
 
             return app;

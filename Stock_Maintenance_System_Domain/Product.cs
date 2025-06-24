@@ -42,4 +42,9 @@ public class Product
     public User CreatedByUser { get; set; } = null!;
     public User? UpdatedByUser { get; set; }
     public ProductCategory? ProductCategory { get; set; } = null!;
-}
+ 
+    [NotMapped]
+    public string ComputedProductName =>
+        $"{Company?.CompanyName ?? ""} {Category?.CategoryName ?? ""} {ProductName}".Trim();
+ 
+ }

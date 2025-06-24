@@ -5,39 +5,63 @@ namespace Stock_Maintenance_System_Application.Product.Command.CreateProductComm
 internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, int>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IRepository<Stock_Maintenance_System_Domain.Product> _productRepository;
+    private readonly IRepository<Stock_Maintenance_System_Domain.ProductCategory> _productRepository;
     public CreateProductCommandHandler(IUnitOfWork unitOfWork,
-        IRepository<Stock_Maintenance_System_Domain.Product> productRepository)
+        IRepository<Stock_Maintenance_System_Domain.ProductCategory> productRepository)
     {
         _unitOfWork = unitOfWork;
         _productRepository = productRepository;
     }
     public async Task<int> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
+        // Determine product category ID (create new if needed)
+        int? productCategoryId = request.ProductCategoryId;
+
+        if (productCategoryId is null or 0)
+        {
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
+            {
+                var newProductCategory = new Stock_Maintenance_System_Domain.ProductCategory
+                {
+                    CategoryId = request.CategoryId,
+                    ProductCategoryName = request.ProductName,
+                    CreatedBy = 1
+                };
+
+                await _unitOfWork.Repository<Stock_Maintenance_System_Domain.ProductCategory>().AddAsync(newProductCategory);
+                await _unitOfWork.SaveAsync();
+
+                productCategoryId = newProductCategory.ProductCategoryId;
+            });
+        }
+
+        // Create the new product
         var product = new Stock_Maintenance_System_Domain.Product
         {
-            Barcode = request.BarCode,
-            BrandName = request.BrandName,
-            CategoryId = request.CategoryId,
-            CompanyId = request.CompanyId,
-            ProductCategoryId = request.ProductCategoryId,
-            CreatedAt = DateTime.Now,
-            Description = request.Description,
-            IsActive = false,
-            SalesPrice = request.SalesPrice,
-            MRP = request.Mrp,
             ProductName = request.ProductName,
+            BrandName = request.BrandName,
+            Barcode = request.BarCode,
+            Description = request.Description,
+            CompanyId = request.CompanyId,
+            CategoryId = request.CategoryId,
+            ProductCategoryId = productCategoryId,
+            MRP = request.Mrp,
+            SalesPrice = request.SalesPrice,
             Quantity = request.TotalQuantity,
             TaxType = request.TaxType,
             TaxPercent = request.TaxPercent,
+            IsActive = request.IsActive,
+            CreatedAt = DateTime.Now,
             CreatedBy = 1
         };
 
+        // Save the product
         await _unitOfWork.ExecuteInTransactionAsync(async () =>
-       {
-           await _unitOfWork.Repository<Stock_Maintenance_System_Domain.Product>().AddAsync(product);
-           await _unitOfWork.SaveAsync();
-       });
+        {
+            await _unitOfWork.Repository<Stock_Maintenance_System_Domain.Product>().AddAsync(product);
+            await _unitOfWork.SaveAsync();
+        });
+
         return product.ProductId;
     }
 }

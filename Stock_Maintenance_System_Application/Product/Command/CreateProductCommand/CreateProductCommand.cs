@@ -9,6 +9,7 @@ public record CreateProductCommand(
     decimal Mrp,
     decimal SalesPrice,
     int TotalQuantity,
+    bool IsActive = false,
     string? TaxType = "GST",
     string? BarCode = null,
     string? BrandName = null,

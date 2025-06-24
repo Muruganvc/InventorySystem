@@ -8,6 +8,7 @@ public record ProductRequest(
     decimal Mrp,
     decimal SalesPrice,
     int TotalQuantity,
+    bool IsActive = false,
     string? TaxType = "GST",
     string? BarCode = null,
     string? BrandName = null,
