@@ -30,7 +30,7 @@ internal sealed class PasswordChangeCommandHandler : IRequestHandler<PasswordCha
         await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
             isSuccess = await _unitOfWork.SaveAsync() > 0;
-        });
+        }, cancellationToken);
         return isSuccess;
     }
 }

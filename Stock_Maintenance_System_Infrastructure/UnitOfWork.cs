@@ -11,9 +11,9 @@ public class UnitOfWork : IUnitOfWork, IDisposable
     }
     public IRepository<T> Repository<T>() where T : class
       => new Repository<T>(_context);
-    public async Task ExecuteInTransactionAsync(Func<Task> action)
+    public async Task ExecuteInTransactionAsync(Func<Task> action, CancellationToken cancellationToken)
     {
-        await using var transaction = await _context.Database.BeginTransactionAsync();
+        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
         await action();
         await transaction.CommitAsync();
     }

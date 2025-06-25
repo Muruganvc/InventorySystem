@@ -22,7 +22,7 @@ namespace Stock_Maintenance_System_Application.User.UpdateCommand
             await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
                 isSuccess = await _unitOfWork.SaveAsync() > 0;
-            });
+            }, cancellationToken);
             return isSuccess;
         }
     }

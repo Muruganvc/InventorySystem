@@ -30,7 +30,7 @@ internal sealed class UserCreateCommandHandler : IRequestHandler<UserCreateComma
         {
             await _unitOfWork.Repository<Stock_Maintenance_System_Domain.User>().AddAsync(user);
             await _unitOfWork.SaveAsync();
-        });
+        }, cancellationToken);
 
         return user.UserId;
     }

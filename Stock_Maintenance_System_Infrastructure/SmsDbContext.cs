@@ -13,6 +13,9 @@ public class SmsDbContext : DbContext
     public DbSet<Company> Companies => Set<Company>(); 
     public DbSet<ProductCategory> ProductCategories => Set<ProductCategory>();
     public DbSet<Product> Product => Set<Product>();
+    public DbSet<Customer> Customer => Set<Customer>();
+    public DbSet<Order> Order => Set<Order>();
+    public DbSet<OrderItem> OrderItem => Set<OrderItem>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -22,6 +25,9 @@ public class SmsDbContext : DbContext
         modelBuilder.Entity<Company>().ToTable("Company"); 
         modelBuilder.Entity<ProductCategory>().ToTable("ProductCategory");
         modelBuilder.Entity<Product>().ToTable("Product");
+        modelBuilder.Entity<Customer>().ToTable("Customers");
+        modelBuilder.Entity<Order>().ToTable("Orders");
+        modelBuilder.Entity<OrderItem>().ToTable("OrderItems");
 
         modelBuilder.Entity<MenuItem>()
             .HasOne(m => m.Parent)
@@ -83,5 +89,53 @@ public class SmsDbContext : DbContext
             .WithMany(u => u.CreatedProductCategories)
             .HasForeignKey(pc => pc.CreatedBy)
             .OnDelete(DeleteBehavior.Restrict);
+
+        // Customer ↔ Orders
+        modelBuilder.Entity<Order>()
+            .HasOne(o => o.Customer)
+            .WithMany(c => c.Orders)
+            .HasForeignKey(o => o.CustomerId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Order ↔ OrderItems
+        modelBuilder.Entity<OrderItem>()
+            .HasOne(oi => oi.Order)
+            .WithMany(o => o.OrderItems)
+            .HasForeignKey(oi => oi.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // OrderItem ↔ Product
+        modelBuilder.Entity<OrderItem>()
+            .HasOne(oi => oi.Product)
+            .WithMany()
+            .HasForeignKey(oi => oi.ProductId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // OrderItem ↔ CreatedBy User
+        modelBuilder.Entity<OrderItem>()
+            .HasOne(oi => oi.CreatedByUser)
+            .WithMany()
+            .HasForeignKey(oi => oi.CreatedBy)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // OrderItem ↔ UpdatedBy User
+        modelBuilder.Entity<OrderItem>()
+            .HasOne(oi => oi.UpdatedByUser)
+            .WithMany()
+            .HasForeignKey(oi => oi.UpdatedBy)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Optional: Configure default values, precision, etc.
+        modelBuilder.Entity<Order>()
+            .Property(o => o.OrderDate)
+            .HasDefaultValueSql("GETDATE()");
+
+        modelBuilder.Entity<Customer>()
+            .Property(c => c.CreatedAt)
+            .HasDefaultValueSql("GETDATE()");
+
+        modelBuilder.Entity<OrderItem>()
+            .Property(oi => oi.CreatedAt)
+            .HasDefaultValueSql("GETDATE()");
     }
 }

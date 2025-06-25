@@ -7,7 +7,6 @@ internal sealed class GetMenuItemQueryHandler : IRequestHandler<GetMenuItemQuery
 {
     private readonly IRepository<Stock_Maintenance_System_Domain.UserMenuPermission> _userMenuPermissionRepository;
     private readonly IRepository<Stock_Maintenance_System_Domain.MenuItem> _menuItemRepository;
-
     public GetMenuItemQueryHandler(
         IRepository<Stock_Maintenance_System_Domain.UserMenuPermission> userMenuPermissionRepository,
         IRepository<Stock_Maintenance_System_Domain.MenuItem> menuItemRepository)

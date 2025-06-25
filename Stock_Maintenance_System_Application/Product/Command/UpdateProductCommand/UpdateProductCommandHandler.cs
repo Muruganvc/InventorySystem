@@ -36,7 +36,7 @@ internal sealed class UpdateProductCommandHandler : IRequestHandler<UpdateProduc
         await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
             isSuccess = await _unitOfWork.SaveAsync() > 0;
-        });
+        }, cancellationToken);
         return isSuccess;
     }
 }

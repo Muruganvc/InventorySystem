@@ -32,7 +32,7 @@ internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProduc
                 await _unitOfWork.SaveAsync();
 
                 productCategoryId = newProductCategory.ProductCategoryId;
-            });
+            }, cancellationToken);
         }
 
         // Create the new product
@@ -60,7 +60,7 @@ internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProduc
         {
             await _unitOfWork.Repository<Stock_Maintenance_System_Domain.Product>().AddAsync(product);
             await _unitOfWork.SaveAsync();
-        });
+        }, cancellationToken);
 
         return product.ProductId;
     }

@@ -10,6 +10,7 @@ namespace Stock_Maintenance_System_Domain.Common
         Task<T?> GetByIdAsync(int id);
         Task<T?> GetByAsync(Expression<Func<T, bool>> predicate);
         Task AddAsync(T entity);
+        Task AddRangeAsync(IEnumerable<T> entities);
         void Update(T entity);
         void Delete(T entity);
     }

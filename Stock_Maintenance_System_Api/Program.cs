@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Stock_Maintenance_System_Api.EndPoints;
+using Stock_Maintenance_System_Application.Order.Command.OrderCreateCommand;
 using Stock_Maintenance_System_Application.Product.Command.ActivateProductCommand;
 using Stock_Maintenance_System_Application.Product.Command.CreateProductCommand;
 using Stock_Maintenance_System_Application.Product.Command.UpdateProductCommand;
@@ -29,6 +30,7 @@ builder.Services.AddMediatR(typeof(LoginCommand).Assembly);
 builder.Services.AddMediatR(typeof(UpdateCommand).Assembly);
 builder.Services.AddMediatR(typeof(UpdateProductCommand).Assembly);
 builder.Services.AddMediatR(typeof(ActivateProductCommand).Assembly);
+builder.Services.AddMediatR(typeof(OrderCreateCommand).Assembly);
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddValidatorsFromAssemblyContaining<UserCreateCommandValidator>();
@@ -120,8 +122,7 @@ app.Use(async (context, next) =>
         await context.Response.WriteAsJsonAsync(new { Errors = errors });
     }
 });
-app.MapUserEndpoints().MapProductCompanyEndpoints().MapProductEndpoints();
+app.MapUserEndpoints().MapProductCompanyEndpoints().MapProductEndpoints().MapOrderEndpoints();
 app.UseHttpsRedirection();
 
 app.Run();
- 

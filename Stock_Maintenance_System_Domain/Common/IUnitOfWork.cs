@@ -4,10 +4,10 @@
     {
         //IGenericRepository<Product> Products { get; }
         //IGenericRepository<Category> Categories { get; }
-       
+
         Task<int> SaveAsync();
         IRepository<T> Repository<T>() where T : class;
 
-        Task ExecuteInTransactionAsync(Func<Task> action);
+        Task ExecuteInTransactionAsync(Func<Task> action, CancellationToken cancellationToken);
     }
 }

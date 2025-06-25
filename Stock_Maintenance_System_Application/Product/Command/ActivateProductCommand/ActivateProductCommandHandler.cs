@@ -22,7 +22,7 @@ internal sealed class ActivateProductCommandHandler : IRequestHandler<ActivatePr
         await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
             isSuccess = await _unitOfWork.SaveAsync() > 0;
-        });
+        }, cancellationToken);
         return isSuccess;
     }
 }
