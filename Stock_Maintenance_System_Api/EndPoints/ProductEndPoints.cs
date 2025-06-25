@@ -47,8 +47,8 @@ public static class ProductEndpoints
         .WithName("GetProductsQuery")
         .WithTags("Products")
         .Produces<IReadOnlyList<GetProductsQueryResponse>>(StatusCodes.Status200OK)
-        .Produces(StatusCodes.Status400BadRequest);
-        // .RequireAuthorization(); // Uncomment if auth is required
+        .Produces(StatusCodes.Status400BadRequest)
+        .RequireAuthorization(); // Uncomment if auth is required
 
         app.MapPut("/product/{productId}", async (int productId,
             UpdateProductRequest product,

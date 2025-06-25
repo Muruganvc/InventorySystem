@@ -7,10 +7,12 @@ namespace Stock_Maintenance_System_Application.Order.Command.OrderCreateCommand;
 internal sealed class OrderCreateCommandHandler : IRequestHandler<OrderCreateCommand, int>
 {
     private readonly IUnitOfWork _unitOfWork;
-
-    public OrderCreateCommandHandler(IUnitOfWork unitOfWork)
+    private readonly IRepository<Stock_Maintenance_System_Domain.Product> _productRepository;
+    public OrderCreateCommandHandler(IUnitOfWork unitOfWork,
+        IRepository<Stock_Maintenance_System_Domain.Product> productRepository)
     {
         _unitOfWork = unitOfWork;
+        _productRepository = productRepository;
     }
     public async Task<int> Handle(OrderCreateCommand request, CancellationToken cancellationToken)
     {
@@ -58,11 +60,23 @@ internal sealed class OrderCreateCommandHandler : IRequestHandler<OrderCreateCom
                 CreatedBy = 1 // You can later replace this with actual user ID
             }).ToList();
 
-            orderItems.ForEach(async a =>
-            {
-                await _unitOfWork.Repository<OrderItem>().AddAsync(a);
-            });
+            await _unitOfWork.Repository<OrderItem>().AddRangeAsync(orderItems);
             await _unitOfWork.SaveAsync();
+            foreach (var item in orderItems)
+            {
+                var product = await _productRepository.GetByAsync(p => p.ProductId == item.ProductId);
+                if (product == null) continue;
+                if (product.Quantity >= item.Quantity)
+                {
+                    product.Quantity -= item.Quantity;
+                }
+                else
+                {
+                    Console.WriteLine($"Insufficient stock for ProductId: {item.ProductId}"); //Log
+                }
+            }
+            await _unitOfWork.SaveAsync();
+
             // 4. Calculate totals
             var totalAmount = orderItems.Sum(i => i.Quantity * i.UnitPrice);
             var finalAmount = orderItems.Sum(i => i.Quantity * i.UnitPrice * (1 - i.DiscountPercent / 100.0m));
