@@ -1,19 +1,25 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Stock_Maintenance_System_Domain.Common;
+using System.Security.Claims;
 
 namespace Stock_Maintenance_System_Application.Product.Command.CreateProductCommand;
 internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, int>
 {
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRepository<Stock_Maintenance_System_Domain.ProductCategory> _productRepository;
     public CreateProductCommandHandler(IUnitOfWork unitOfWork,
-        IRepository<Stock_Maintenance_System_Domain.ProductCategory> productRepository)
+        IRepository<Stock_Maintenance_System_Domain.ProductCategory> productRepository,
+        IHttpContextAccessor httpContextAccessor)
     {
         _unitOfWork = unitOfWork;
         _productRepository = productRepository;
+        _httpContextAccessor = httpContextAccessor;
     }
     public async Task<int> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
+        int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
         // Determine product category ID (create new if needed)
         int? productCategoryId = request.ProductCategoryId;
 
@@ -25,7 +31,7 @@ internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProduc
                 {
                     CategoryId = request.CategoryId,
                     ProductCategoryName = request.ProductName,
-                    CreatedBy = 1
+                    CreatedBy = userId
                 };
 
                 await _unitOfWork.Repository<Stock_Maintenance_System_Domain.ProductCategory>().AddAsync(newProductCategory);
@@ -52,7 +58,7 @@ internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProduc
             TaxPercent = request.TaxPercent,
             IsActive = request.IsActive,
             CreatedAt = DateTime.Now,
-            CreatedBy = 1
+            CreatedBy = userId
         };
 
         // Save the product

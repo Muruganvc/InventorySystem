@@ -49,8 +49,8 @@ public static class OrderEndPoints
         .WithName("CreateOrder")
         .WithTags("Order")
         .Produces<int>(StatusCodes.Status200OK)
-        .Produces(StatusCodes.Status400BadRequest);
-        // .RequireAuthorization(); // Uncomment if needed
+        .Produces(StatusCodes.Status400BadRequest)
+        .RequireAuthorization();
 
         app.MapGet("/order-summary", async (
             IMediator mediator) =>
@@ -66,8 +66,8 @@ public static class OrderEndPoints
         .WithName("GetOrdersummaryQuery")
         .WithTags("OrderList")
         .Produces<IReadOnlyList<GetOrderSummaryResponse>>(StatusCodes.Status200OK)
-        .Produces(StatusCodes.Status400BadRequest);
-        // .RequireAuthorization(); // Uncomment if needed
+        .Produces(StatusCodes.Status400BadRequest)
+        .RequireAuthorization();
 
         app.MapGet("/customer-orders", async (
             IMediator mediator) =>
@@ -83,8 +83,8 @@ public static class OrderEndPoints
         .WithName("GetCustomerOrderSummaryQuery")
         .WithTags("OrderList")
         .Produces<IReadOnlyList<GetCustomerOrderSummaryResponse>>(StatusCodes.Status200OK)
-        .Produces(StatusCodes.Status400BadRequest);
-        // .RequireAuthorization(); // Uncomment if needed
+        .Produces(StatusCodes.Status400BadRequest)
+        .RequireAuthorization();
 
         return app;
     }

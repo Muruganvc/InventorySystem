@@ -31,8 +31,8 @@ public static class ProductEndpoints
         .WithTags("CreateProduct")
         .Produces<int>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-        //.RequireAuthorization()
-        ;
+       .RequireAuthorization();
+       
 
         app.MapGet("/products", async (IMediator mediator) =>
         {
@@ -48,7 +48,7 @@ public static class ProductEndpoints
         .WithTags("Products")
         .Produces<IReadOnlyList<GetProductsQueryResponse>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization(); // Uncomment if auth is required
+       .RequireAuthorization();
 
         app.MapPut("/product/{productId}", async (int productId,
             UpdateProductRequest product,
@@ -68,8 +68,8 @@ public static class ProductEndpoints
         .WithName("UpdateProductCommand")
         .WithTags("UpdateProduct")
         .Produces<int>(StatusCodes.Status200OK)
-        .Produces(StatusCodes.Status400BadRequest);
-        //.RequireAuthorization()
+        .Produces(StatusCodes.Status400BadRequest)
+        .RequireAuthorization();
 
         app.MapPut("/product/activate/{productId}", async (int productId,
             IMediator mediator) =>
@@ -85,8 +85,8 @@ public static class ProductEndpoints
         .WithName("ActivateProductCommand")
         .WithTags("UpdateProduct")
         .Produces<int>(StatusCodes.Status200OK)
-        .Produces(StatusCodes.Status400BadRequest);
-        //.RequireAuthorization()
+        .Produces(StatusCodes.Status400BadRequest)
+        .RequireAuthorization();
 
         return app;
     }

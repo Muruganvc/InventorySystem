@@ -16,6 +16,8 @@ using Stock_Maintenance_System_Application.User.PasswordChangeCommand;
 using Stock_Maintenance_System_Application.User.UpdateCommand;
 using Stock_Maintenance_System_Domain.Common;
 using Stock_Maintenance_System_Infrastructure;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,8 +45,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         var config = builder.Configuration;
+        //JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         options.TokenValidationParameters = new TokenValidationParameters
         {
+            RoleClaimType = ClaimTypes.Role,
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,

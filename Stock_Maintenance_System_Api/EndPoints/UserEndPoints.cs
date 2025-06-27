@@ -33,16 +33,26 @@ namespace Stock_Maintenance_System_Api.EndPoints
             {
                 var command = new UserCreateCommand(user.FirstName, user.LastName, user.UserName, user.Password, user.EmailId,
                     user.IsActive, DateTime.Now, false, DateTime.Now, 1, DateTime.Now, null, null);
-                await mediator.Send(command);
-                return Results.Ok(new { message = "User created successfully", data = user });
-            });
+               var result = await mediator.Send(command);
+                return Results.Ok(new { message = "User created successfully", data = result });
+            })
+            .WithName("UserCreateCommand")
+            .WithTags("NewUserCreate")
+            .Produces<int>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status400BadRequest)
+            .RequireAuthorization();
 
             app.MapGet("/users", async (IMediator mediator) =>
             {
                 var query = new GetUsersQuery();
                 var result = await mediator.Send(query);
-                return Results.Ok(new { message = "", data = result });
-            });
+                return Results.Ok(new { message = "ALl Users", data = result });
+            })
+            .WithName("GetUsersQuery")
+            .WithTags("GetAllUsers")
+            .Produces<IReadOnlyList<GetUsersQueryResponse>>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status400BadRequest)
+            .RequireAuthorization();
 
             app.MapPut("/password-change/{UserId}", async (int UserId, ChangePasswordRequest user, IMediator mediator) =>
             {
@@ -50,14 +60,14 @@ namespace Stock_Maintenance_System_Api.EndPoints
                     DateTime.Now);
                 var result = await mediator.Send(command);
                 return Results.Ok(new { message = "Password Changed successfully", data = result });
-            });
+            }).RequireAuthorization();
 
             app.MapPut("/update/{UserId}", async (int UserId, UpdateUserRequest user, IMediator mediator) =>
             {
                 var command = new UpdateCommand(UserId, user.FirstName, user.LastName, user.EmailId, user.IsActive, user.IsSuperAdmin);
                var result = await mediator.Send(command);
                 return Results.Ok(new { message = "User Updated successfully", data = result });
-            });
+            }).RequireAuthorization();
 
 
             app.MapGet("/menus/{UserId}", async (int UserId,IMediator mediator) =>
@@ -65,19 +75,19 @@ namespace Stock_Maintenance_System_Api.EndPoints
                 var query = new GetMenuItemQuery(UserId);
                 var result = await mediator.Send(query);
                 return Results.Ok(new { message = "User Menu Lists", data = result });
-            });
+            }).RequireAuthorization();
 
             app.MapGet("/menus", async (IMediator mediator) =>
             {
                 var result = await mediator.Send(new GetAllMenuItemQuery());
                 return Results.Ok(new { message = "All Menu Lists", data = result });
-            });
+            }).RequireAuthorization();
 
             app.MapGet("/customers", async(IMediator mediator) =>
             {
                 var result = await mediator.Send(new GetAllCustomersQuery());
                 return Results.Ok(new { message = "All customer Lists", data = result });
-            });
+            }).RequireAuthorization();
 
             return app;
         }

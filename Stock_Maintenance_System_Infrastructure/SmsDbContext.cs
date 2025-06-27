@@ -8,6 +8,7 @@ public class SmsDbContext : DbContext
     {
     }
     public DbSet<User> Users => Set<User>();
+    public DbSet<UserRole> userRoles=> Set<UserRole>();
     public DbSet<MenuItem> MenuItems { get; set; }
     public DbSet<UserMenuPermission> UserMenuPermissions { get; set; }
     public DbSet<Company> Companies => Set<Company>(); 
@@ -28,6 +29,7 @@ public class SmsDbContext : DbContext
         modelBuilder.Entity<Customer>().ToTable("Customers");
         modelBuilder.Entity<Order>().ToTable("Orders");
         modelBuilder.Entity<OrderItem>().ToTable("OrderItems");
+        modelBuilder.Entity<UserRole>().ToTable("UserRole");
 
         modelBuilder.Entity<MenuItem>()
             .HasOne(m => m.Parent)
