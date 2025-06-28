@@ -34,9 +34,9 @@ public static class ProductEndpoints
        .RequireAuthorization();
        
 
-        app.MapGet("/products", async (IMediator mediator) =>
+        app.MapGet("/products/{type}", async (string type, IMediator mediator) =>
         {
-            var query = new GetProductsQuery();
+            var query = new GetProductsQuery(type);
             var result = await mediator.Send(query);
             return Results.Ok(new
             {

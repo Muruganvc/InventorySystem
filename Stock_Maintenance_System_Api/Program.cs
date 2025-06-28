@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Stock_Maintenance_System_Api.Common;
 using Stock_Maintenance_System_Api.EndPoints;
 using Stock_Maintenance_System_Application.Order.Command.OrderCreateCommand;
 using Stock_Maintenance_System_Application.Product.Command.ActivateProductCommand;
@@ -38,6 +39,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddValidatorsFromAssemblyContaining<UserCreateCommandValidator>();
 builder.Services.AddValidatorsFromAssembly(typeof(UserCreateCommandValidator).Assembly);
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+builder.Services.AddScoped<IDatabaseScriptService, DatabaseScriptService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthorization();
 

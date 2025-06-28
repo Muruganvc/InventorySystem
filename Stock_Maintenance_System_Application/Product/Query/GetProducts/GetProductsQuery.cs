@@ -1,5 +1,6 @@
 ﻿using MediatR;
 
 namespace Stock_Maintenance_System_Application.Product.Query.GetProducts;
-public record GetProductsQuery() 
+//type like sales or product
+public record GetProductsQuery(string type)  
      : IRequest<IReadOnlyList<GetProductsQueryResponse>>;

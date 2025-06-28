@@ -27,7 +27,10 @@ internal sealed class GetProductsQueryHandler
         var roles = _httpContextAccessor.HttpContext?.User? .Claims.Where(c => c.Type == ClaimTypes.Role)
         .Select(c => c.Value) .ToList();
         var query = _productRepository.Table.AsQueryable();
-        if (!(roles?.Any(r => r == "Admin" || r == "Manager") ?? false))
+        bool isAdmin = roles?.Contains("Admin") ?? false;
+        bool isManager = roles?.Contains("Manager") ?? false;
+        bool isSalesScreen = request.type == "sales";
+        if ((!isAdmin && !isManager) || isSalesScreen)
         {
             query = query.Where(p => p.IsActive);
         }

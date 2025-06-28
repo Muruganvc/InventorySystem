@@ -8,9 +8,9 @@ internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProduc
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IRepository<Stock_Maintenance_System_Domain.ProductCategory> _productRepository;
+    private readonly IRepository<Stock_Maintenance_System_Domain.Product> _productRepository;
     public CreateProductCommandHandler(IUnitOfWork unitOfWork,
-        IRepository<Stock_Maintenance_System_Domain.ProductCategory> productRepository,
+        IRepository<Stock_Maintenance_System_Domain.Product> productRepository,
         IHttpContextAccessor httpContextAccessor)
     {
         _unitOfWork = unitOfWork;
@@ -22,6 +22,9 @@ internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProduc
         int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
         // Determine product category ID (create new if needed)
         int? productCategoryId = request.ProductCategoryId;
+
+        var isExistProduct = _productRepository.GetByAsync(a => a.ProductCategoryId == request.ProductCategoryId && a.CategoryId == request.CategoryId && a.CompanyId == request.CompanyId);
+        if (isExistProduct is not null) return 0;
 
         if (productCategoryId is null or 0)
         {

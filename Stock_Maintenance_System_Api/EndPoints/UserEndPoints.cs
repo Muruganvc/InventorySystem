@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Stock_Maintenance_System_Api.ApiRequest;
+using Stock_Maintenance_System_Api.Common;
 using Stock_Maintenance_System_Application.Customer.Query.GetAllCustomers;
 using Stock_Maintenance_System_Application.MenuItem.Query;
 using Stock_Maintenance_System_Application.MenuItem.Query.GetAllMenuItem;
@@ -87,6 +88,12 @@ namespace Stock_Maintenance_System_Api.EndPoints
             {
                 var result = await mediator.Send(new GetAllCustomersQuery());
                 return Results.Ok(new { message = "All customer Lists", data = result });
+            }).RequireAuthorization();
+
+            app.MapPost("/database-backup", async (IDatabaseScriptService DatabaseScriptService) =>
+            {
+                DatabaseScriptService.GenerateScript("", "");
+
             }).RequireAuthorization();
 
             return app;
