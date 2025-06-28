@@ -92,7 +92,7 @@ internal sealed class OrderCreateCommandHandler : IRequestHandler<OrderCreateCom
             // 5. Update order totals
             newOrder.TotalAmount = totalAmount;
             newOrder.FinalAmount = finalAmount;
-            newOrder.BalanceAmount = finalAmount;
+            newOrder.BalanceAmount = finalAmount - request.BalanceAmount;
 
             // No need to call Update() explicitly if tracked by EF Core
             await _unitOfWork.SaveAsync(); // Single save for all changes

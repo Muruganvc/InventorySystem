@@ -17,7 +17,6 @@ public record OrderItemCommand(
     string? Remarks
 );
 
-
-public record OrderCreateCommand(CustomerCommand Customer, List<OrderItemCommand> OrderItemRequests) : IRequest<int>;
+public record OrderCreateCommand(CustomerCommand Customer, List<OrderItemCommand> OrderItemRequests,decimal BalanceAmount) : IRequest<int>;
 
 

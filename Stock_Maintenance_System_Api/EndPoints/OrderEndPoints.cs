@@ -5,6 +5,7 @@ using Stock_Maintenance_System_Api.ApiRequest;
 using Stock_Maintenance_System_Application.Order.Command.OrderCreateCommand;
 using Stock_Maintenance_System_Application.Order.Query;
 using Stock_Maintenance_System_Application.Order.Query.GetCustomerOrderSummary;
+using Stock_Maintenance_System_Domain;
 
 namespace Stock_Maintenance_System_Api.EndPoints;
 
@@ -36,7 +37,7 @@ public static class OrderEndPoints
                 item.Remarks
             )).ToList();
 
-            var command = new OrderCreateCommand(customerCommand, orderItemCommands);
+            var command = new OrderCreateCommand(customerCommand, orderItemCommands,order.BalanceAmount);
 
             var result = await mediator.Send(command);
 
@@ -52,10 +53,10 @@ public static class OrderEndPoints
         .Produces(StatusCodes.Status400BadRequest)
         .RequireAuthorization();
 
-        app.MapGet("/order-summary", async (
+        app.MapGet("/order-summary", async ([FromQuery] int OrderId,
             IMediator mediator) =>
         {
-            var query = new GetOrdersummaryQuery();
+            var query = new GetOrdersummaryQuery(OrderId);
             var result = await mediator.Send(query);
             return Results.Ok(new
             {

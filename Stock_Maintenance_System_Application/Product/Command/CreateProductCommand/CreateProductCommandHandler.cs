@@ -23,7 +23,7 @@ internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProduc
         // Determine product category ID (create new if needed)
         int? productCategoryId = request.ProductCategoryId;
 
-        var isExistProduct = _productRepository.GetByAsync(a => a.ProductCategoryId == request.ProductCategoryId && a.CategoryId == request.CategoryId && a.CompanyId == request.CompanyId);
+        var isExistProduct = await _productRepository.GetByAsync(a => a.ProductCategoryId == request.ProductCategoryId && a.CategoryId == request.CategoryId && a.CompanyId == request.CompanyId);
         if (isExistProduct is not null) return 0;
 
         if (productCategoryId is null or 0)

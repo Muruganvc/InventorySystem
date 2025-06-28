@@ -1,29 +1,40 @@
-﻿using Microsoft.SqlServer.Management.Common;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using System.Data.SqlClient;
-using System.Xml.Linq;
-using SMO = Microsoft.SqlServer.Management.Smo;
-
 namespace Database_Utility;
 
 public class DatabaseScriptService : IDatabaseScriptService
 {
-    public string GenerateFullDatabaseScript(string connectionString, string outputDirectory)
+    private readonly IConfiguration _configuration;
+    public DatabaseScriptService(IConfiguration configuration) => _configuration = configuration;
+    public List<DatabaseBackupResponse> GenerateFullDatabaseScript(string userName)
     {
-        var success = BackUp(connectionString, outputDirectory);
-        return success ? "Backup completed successfully." : "Backup failed.";
+        string? connectionString = _configuration["ConnectionStrings:DefaultConnection"];
+        string? outputDirectory = _configuration["appSetting:backUpPath"];
+
+        if (string.IsNullOrWhiteSpace(connectionString))
+            throw new Exception("❌ Error: Connection string is missing in configuration.");
+
+        if (string.IsNullOrWhiteSpace(outputDirectory))
+            throw new Exception("❌ Error: Backup path is missing in configuration.");
+
+        var builder = new SqlConnectionStringBuilder(connectionString);
+        string dbName = builder.InitialCatalog;
+
+        var status = BackUp(connectionString, dbName, outputDirectory);
+
+        var fileName = LogAction(userName, DateTime.Now, status.fileName, status.message);
+        var response = ReadCsv(fileName);
+        return response;
     }
-    public bool BackUp(string connectionString, string outputDirectory)
+
+    private (string message, string fileName, bool status) BackUp(string connectionString, string dbName, string outputDirectory)
     {
-       
+        string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+        string fileName = Path.Combine(outputDirectory, $"Backup_{dbName}_{timestamp}.sql");
         try
         {
-            var builder = new SqlConnectionStringBuilder(connectionString);
-            string dbName = builder.InitialCatalog;
-
-            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            string fileName = Path.Combine(outputDirectory, $"Backup_{dbName}_{timestamp}.sql");
-
             if (File.Exists(fileName))
                 File.Delete(fileName);
 
@@ -105,12 +116,108 @@ public class DatabaseScriptService : IDatabaseScriptService
                     }
                 }
             }
-            return true;
+            return (message: "success", fileName, true);
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"❌ Error during backup: {ex.Message}");
-            return false;
+            return (message: ex.Message, fileName, false);
         }
     }
+
+    private string LogAction(string name, DateTime date, string FileName, string Status)
+    {
+        string? fileName =$"{_configuration["appSetting:backUpHistory"]}" ;
+
+        bool fileExists = File.Exists(fileName);
+
+        string? directory = Path.GetDirectoryName(fileName);
+        if (!string.IsNullOrWhiteSpace(directory) && !Directory.Exists(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+
+        using (StreamWriter writer = new(fileName, append: true))
+        {
+            if (!fileExists)
+            {
+                writer.WriteLine("Creator,Date,FileName,Status");
+            }
+            string formattedDate = date.ToString("yyyy-MM-dd HH:mm:ss");
+            string line = $"{Escape(name)},{formattedDate},{Escape(FileName)},{Status}";
+            writer.WriteLine(line);
+        }
+        return fileName;
+    }
+    private string Escape(string input)
+    {
+        if (input.Contains(",") || input.Contains("\"") || input.Contains("\n"))
+        {
+            return $"\"{input.Replace("\"", "\"\"")}\"";
+        }
+        return input;
+    }
+
+    public List<DatabaseBackupResponse> ReadCsv(string filePath)
+    {
+        var actions = new List<DatabaseBackupResponse>();
+        using (var reader = new StreamReader(filePath))
+        {
+            bool isFirstLine = true;
+            int i = 0;
+            while (!reader.EndOfStream)
+            {
+                var line = reader.ReadLine();
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+                
+                // Skip the header
+                if (isFirstLine)
+                {
+                    isFirstLine = false;
+                    continue;
+                }
+                var parts = ParseCsvLine(line);
+                i++;
+                actions.Add(new DatabaseBackupResponse
+                {
+                    BackupNo = i,
+                    Creator = parts[0],
+                    BackUpDate = Convert.ToDateTime(parts[1]),
+                    FileName = parts[2],
+                    Status = parts[3]
+                });
+            }
+        }
+        return actions;
+    }
+
+    private static string[] ParseCsvLine(string line)
+    {
+        var result = new List<string>();
+        bool inQuotes = false;
+        string current = "";
+
+        foreach (char c in line)
+        {
+            if (c == '\"')
+            {
+                inQuotes = !inQuotes;
+                continue;
+            }
+
+            if (c == ',' && !inQuotes)
+            {
+                result.Add(current);
+                current = "";
+            }
+            else
+            {
+                current += c;
+            }
+        }
+        result.Add(current);
+        return result.ToArray();
+    }
+
+     
 }

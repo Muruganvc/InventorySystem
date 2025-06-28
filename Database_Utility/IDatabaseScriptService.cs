@@ -1,7 +1,8 @@
 ﻿namespace Database_Utility;
 public interface IDatabaseScriptService
 {
-    string GenerateFullDatabaseScript(string connectionString, string dbName, string outputDirectory);
+    List<DatabaseBackupResponse> GenerateFullDatabaseScript(string UserName);
+    List<DatabaseBackupResponse> ReadCsv(string filePath);
 }
 
 

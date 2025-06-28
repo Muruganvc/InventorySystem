@@ -91,9 +91,17 @@ namespace Stock_Maintenance_System_Api.EndPoints
                 return Results.Ok(new { message = "All customer Lists", data = result });
             }).RequireAuthorization();
 
-            app.MapPost("/database-backup/{userName}", async (string userName,IDatabaseScriptService DatabaseScriptService) =>
+            app.MapPost("/database-backup", async (string userName, IDatabaseScriptService DatabaseScriptService) =>
             {
-                DatabaseScriptService.GenerateFullDatabaseScript("Data Source=MURUGANVC;Initial Catalog=SMS_DB_TEST;Persist Security Info=True;User ID=vcm;Password=murug@Nvc27;Pooling=False;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False", "SMS_DB_TEST", @"D:\\Database\\BackUp\\");
+                var result = DatabaseScriptService.GenerateFullDatabaseScript(userName);
+                return Results.Ok(new { message = "Database backup details", data = result });
+            }).RequireAuthorization();
+
+            app.MapGet("/backup", async (IConfiguration configuration, IDatabaseScriptService DatabaseScriptService) =>
+            {
+                string? fileName = $"{configuration["appSetting:backUpHistory"]}";
+                var result = DatabaseScriptService.ReadCsv(fileName);
+                return Results.Ok(new { message = "All customer Lists", data = result });
             }).RequireAuthorization();
 
             return app;
