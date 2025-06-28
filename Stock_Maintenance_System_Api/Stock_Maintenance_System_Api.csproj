@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Database_Utility\Database_Utility.csproj" />
     <ProjectReference Include="..\Stock_Maintenance_System_Application\Stock_Maintenance_System_Application.csproj" />
     <ProjectReference Include="..\Stock_Maintenance_System_Domain\Stock_Maintenance_System_Domain.csproj" />
     <ProjectReference Include="..\Stock_Maintenance_System_Infrastructure\Stock_Maintenance_System_Infrastructure.csproj" />

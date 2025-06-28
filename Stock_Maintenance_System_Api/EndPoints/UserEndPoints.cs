@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Database_Utility;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Stock_Maintenance_System_Api.ApiRequest;
 using Stock_Maintenance_System_Api.Common;
@@ -90,10 +91,9 @@ namespace Stock_Maintenance_System_Api.EndPoints
                 return Results.Ok(new { message = "All customer Lists", data = result });
             }).RequireAuthorization();
 
-            app.MapPost("/database-backup", async (IDatabaseScriptService DatabaseScriptService) =>
+            app.MapPost("/database-backup/{userName}", async (string userName,IDatabaseScriptService DatabaseScriptService) =>
             {
-                DatabaseScriptService.GenerateScript("", "");
-
+                DatabaseScriptService.GenerateFullDatabaseScript("Data Source=MURUGANVC;Initial Catalog=SMS_DB_TEST;Persist Security Info=True;User ID=vcm;Password=murug@Nvc27;Pooling=False;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False", "SMS_DB_TEST", @"D:\\Database\\BackUp\\");
             }).RequireAuthorization();
 
             return app;
