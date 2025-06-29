@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Category\Command\" />
     <Folder Include="User\AddOrRemovePermission\" />
   </ItemGroup>
 
