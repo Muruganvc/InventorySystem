@@ -6,7 +6,10 @@ using Stock_Maintenance_System_Api.Common;
 using Stock_Maintenance_System_Application.Customer.Query.GetAllCustomers;
 using Stock_Maintenance_System_Application.MenuItem.Query;
 using Stock_Maintenance_System_Application.MenuItem.Query.GetAllMenuItem;
+using Stock_Maintenance_System_Application.Product.Command.ActivateProductCommand;
+using Stock_Maintenance_System_Application.User.ActiveUserCommand;
 using Stock_Maintenance_System_Application.User.CreateCommand;
+using Stock_Maintenance_System_Application.User.GetUserQuery;
 using Stock_Maintenance_System_Application.User.GetUsersQuery;
 using Stock_Maintenance_System_Application.User.LoginCommand;
 using Stock_Maintenance_System_Application.User.PasswordChangeCommand;
@@ -33,9 +36,9 @@ namespace Stock_Maintenance_System_Api.EndPoints
 
             app.MapPost("/new-user", async (NewUserRequest user, IMediator mediator) =>
             {
-                var command = new UserCreateCommand(user.FirstName, user.LastName, user.UserName, user.Password, user.EmailId,
-                    user.IsActive, DateTime.Now, false, DateTime.Now, 1, DateTime.Now, null, null);
-               var result = await mediator.Send(command);
+                var command = new UserCreateCommand(user.FirstName, user.LastName, user.UserName, user.EmailId, user.IsActive, DateTime.Now,
+                    false, user.Role, DateTime.Now);
+                var result = await mediator.Send(command);
                 return Results.Ok(new { message = "User created successfully", data = result });
             })
             .WithName("UserCreateCommand")
@@ -49,12 +52,8 @@ namespace Stock_Maintenance_System_Api.EndPoints
                 var query = new GetUsersQuery();
                 var result = await mediator.Send(query);
                 return Results.Ok(new { message = "ALl Users", data = result });
-            })
-            .WithName("GetUsersQuery")
-            .WithTags("GetAllUsers")
-            .Produces<IReadOnlyList<GetUsersQueryResponse>>(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status400BadRequest)
-            .RequireAuthorization();
+            }) 
+           .RequireAuthorization("AdminOnly");
 
             app.MapPut("/password-change/{UserId}", async (int UserId, ChangePasswordRequest user, IMediator mediator) =>
             {
@@ -64,12 +63,31 @@ namespace Stock_Maintenance_System_Api.EndPoints
                 return Results.Ok(new { message = "Password Changed successfully", data = result });
             }).RequireAuthorization();
 
+            app.MapGet("/user/{userName}", async (string userName, IMediator mediator) =>
+            {
+                var query = new GetUserQuery(userName);
+                var result = await mediator.Send(query);
+                return Results.Ok(new { message = "Current User", data = result });
+            }).RequireAuthorization();
+
             app.MapPut("/update/{UserId}", async (int UserId, UpdateUserRequest user, IMediator mediator) =>
             {
-                var command = new UpdateCommand(UserId, user.FirstName, user.LastName, user.EmailId, user.IsActive, user.IsSuperAdmin);
+                var command = new UpdateCommand(UserId, user.FirstName, user.LastName, user.Email, user.IsActive, user.IsSuperAdmin);
                var result = await mediator.Send(command);
                 return Results.Ok(new { message = "User Updated successfully", data = result });
             }).RequireAuthorization();
+
+            app.MapPut("/user/activate/{userId}", async (int userId,
+          IMediator mediator) =>
+            {
+                var command = new ActiveUserCommand(userId);
+                var result = await mediator.Send(command);
+                return Results.Ok(new
+                {
+                    message = "Product Update successfully",
+                    data = result
+                });
+            }).RequireAuthorization("AdminOnly");
 
 
             app.MapGet("/menus/{UserId}", async (int UserId,IMediator mediator) =>

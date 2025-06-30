@@ -22,10 +22,6 @@ public class UserCreateCommandValidator : AbstractValidator<UserCreateCommand>
             .NotEmpty().WithMessage("Username is required.")
             .MaximumLength(50);
 
-        RuleFor(x => x.PasswordHash)
-            .NotEmpty().WithMessage("Password is required.")
-            .MinimumLength(6);
-
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email is required.")
             .EmailAddress().WithMessage("Invalid email format.");

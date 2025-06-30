@@ -5,16 +5,12 @@ public record UserCreateCommand(
     string FirstName,
     string? LastName,
     string Username,
-    string PasswordHash,
     string? Email,
     bool IsActive,
     DateTime PasswordLastChanged,
     bool IsPasswordExpired,
-    DateTime? LastLogin,
-    int CreatedBy,
-    DateTime CreatedDate,
-    int? ModifiedBy,
-    DateTime? ModifiedDate
+    int RoleId,
+    DateTime? LastLogin
 ) : IRequest<int>
 {
     public DateTime PasswordExpiresAt => PasswordLastChanged.AddDays(30);
