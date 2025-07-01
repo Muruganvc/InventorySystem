@@ -1,5 +1,5 @@
 ﻿using MediatR;
-namespace Stock_Maintenance_System_Application.Product.Command.CreateProductCommand;
+namespace InventorySystem_Application.Product.Command.CreateProductCommand;
 public record CreateProductCommand(
     string ProductName,
     int CompanyId,

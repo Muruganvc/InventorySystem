@@ -1,18 +1,18 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
-using Stock_Maintenance_System_Domain;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain;
+using InventorySystem_Domain.Common;
 using System.Security.Claims;
 
-namespace Stock_Maintenance_System_Application.Order.Command.OrderCreateCommand;
+namespace InventorySystem_Application.Order.Command.OrderCreateCommand;
 
 internal sealed class OrderCreateCommandHandler : IRequestHandler<OrderCreateCommand, int>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IRepository<Stock_Maintenance_System_Domain.Product> _productRepository;
+    private readonly IRepository<InventorySystem_Domain.Product> _productRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
     public OrderCreateCommandHandler(IUnitOfWork unitOfWork,
-        IRepository<Stock_Maintenance_System_Domain.Product> productRepository,
+        IRepository<InventorySystem_Domain.Product> productRepository,
         IHttpContextAccessor httpContextAccessor)
     {
         _unitOfWork = unitOfWork;
@@ -29,7 +29,7 @@ internal sealed class OrderCreateCommandHandler : IRequestHandler<OrderCreateCom
             int customerId = request.Customer.CustomerId;
             if (customerId == 0)
             {
-                var newCustomer = new Stock_Maintenance_System_Domain.Customer
+                var newCustomer = new InventorySystem_Domain.Customer
                 {
                     CustomerName = request.Customer.CustomerName,
                     Address = request.Customer.Address,
@@ -37,13 +37,13 @@ internal sealed class OrderCreateCommandHandler : IRequestHandler<OrderCreateCom
                     CreatedAt = DateTime.UtcNow
                 };
 
-                await _unitOfWork.Repository<Stock_Maintenance_System_Domain.Customer>().AddAsync(newCustomer);
+                await _unitOfWork.Repository<InventorySystem_Domain.Customer>().AddAsync(newCustomer);
                 await _unitOfWork.SaveAsync();
                 customerId = newCustomer.CustomerId;
             }
 
             // 2. Create initial order
-            var newOrder = new Stock_Maintenance_System_Domain.Order
+            var newOrder = new InventorySystem_Domain.Order
             {
                 CustomerId = customerId,
                 OrderDate = DateTime.UtcNow,
@@ -52,7 +52,7 @@ internal sealed class OrderCreateCommandHandler : IRequestHandler<OrderCreateCom
                 TotalAmount = 0
             };
 
-            await _unitOfWork.Repository<Stock_Maintenance_System_Domain.Order>().AddAsync(newOrder);
+            await _unitOfWork.Repository<InventorySystem_Domain.Order>().AddAsync(newOrder);
             await _unitOfWork.SaveAsync();
             // 3. Add Order Items
             var orderItems = request.OrderItemRequests.Select(item => new OrderItem

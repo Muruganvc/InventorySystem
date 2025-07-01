@@ -1,15 +1,15 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Stock_Maintenance_System_Domain.Common;
-namespace Stock_Maintenance_System_Application.Order.Query.GetCustomerOrderSummary;
+using InventorySystem_Domain.Common;
+namespace InventorySystem_Application.Order.Query.GetCustomerOrderSummary;
 internal sealed class GetCustomerOrderSummaryQueryHandler
     : IRequestHandler<GetCustomerOrderSummaryQuery, IReadOnlyList<GetCustomerOrderSummaryResponse>>
 {
-    private readonly IRepository<Stock_Maintenance_System_Domain.Order> _orderRepository;
-    private readonly IRepository<Stock_Maintenance_System_Domain.Customer> _customerRepository;
+    private readonly IRepository<InventorySystem_Domain.Order> _orderRepository;
+    private readonly IRepository<InventorySystem_Domain.Customer> _customerRepository;
     public GetCustomerOrderSummaryQueryHandler(
-        IRepository<Stock_Maintenance_System_Domain.Order> orderRepository,
-        IRepository<Stock_Maintenance_System_Domain.Customer> customerRepository)
+        IRepository<InventorySystem_Domain.Order> orderRepository,
+        IRepository<InventorySystem_Domain.Customer> customerRepository)
     {
         _orderRepository = orderRepository;
         _customerRepository = customerRepository;

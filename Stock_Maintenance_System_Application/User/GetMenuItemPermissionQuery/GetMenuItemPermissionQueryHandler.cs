@@ -1,15 +1,15 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Stock_Maintenance_System_Domain;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain;
+using InventorySystem_Domain.Common;
 
-namespace Stock_Maintenance_System_Application.User.GetMenuItemPermissionQuery
+namespace InventorySystem_Application.User.GetMenuItemPermissionQuery
 {
     internal sealed class GetMenuItemPermissionQueryHandler : IRequestHandler<GetMenuItemPermissionQuery, IReadOnlyList<GetMenuItemPermissionQueryResponse>>
     {
-        private readonly IRepository<Stock_Maintenance_System_Domain.MenuItem> _menuItemRepository;
+        private readonly IRepository<InventorySystem_Domain.MenuItem> _menuItemRepository;
         private readonly IRepository<UserMenuPermission> _userMenuRepository;
-        public GetMenuItemPermissionQueryHandler(IRepository<Stock_Maintenance_System_Domain.MenuItem> menuItemRepository,
+        public GetMenuItemPermissionQueryHandler(IRepository<InventorySystem_Domain.MenuItem> menuItemRepository,
             IRepository<UserMenuPermission> userMenuRepository)
         {
             _menuItemRepository = menuItemRepository;

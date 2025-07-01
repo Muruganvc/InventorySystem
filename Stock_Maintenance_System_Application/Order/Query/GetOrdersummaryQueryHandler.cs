@@ -1,26 +1,26 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain.Common;
 
-namespace Stock_Maintenance_System_Application.Order.Query;
+namespace InventorySystem_Application.Order.Query;
 
 internal class GetOrdersummaryQueryHandler
     : IRequestHandler<GetOrdersummaryQuery, IReadOnlyList<GetOrderSummaryResponse>>
 {
-    private readonly IRepository<Stock_Maintenance_System_Domain.Category> _categoryRepository;
-    private readonly IRepository<Stock_Maintenance_System_Domain.Product> _productRepository;
-    private readonly IRepository<Stock_Maintenance_System_Domain.OrderItem> _orderItemRepository;
-    private readonly IRepository<Stock_Maintenance_System_Domain.Order> _orderRepository;
-    private readonly IRepository<Stock_Maintenance_System_Domain.Customer> _customerRepository;
-    private readonly IRepository<Stock_Maintenance_System_Domain.Company> _companyRepository;
+    private readonly IRepository<InventorySystem_Domain.Category> _categoryRepository;
+    private readonly IRepository<InventorySystem_Domain.Product> _productRepository;
+    private readonly IRepository<InventorySystem_Domain.OrderItem> _orderItemRepository;
+    private readonly IRepository<InventorySystem_Domain.Order> _orderRepository;
+    private readonly IRepository<InventorySystem_Domain.Customer> _customerRepository;
+    private readonly IRepository<InventorySystem_Domain.Company> _companyRepository;
 
     public GetOrdersummaryQueryHandler(
-        IRepository<Stock_Maintenance_System_Domain.Company> companyRepository,
-        IRepository<Stock_Maintenance_System_Domain.Category> categoryRepository,
-        IRepository<Stock_Maintenance_System_Domain.Product> productRepository,
-        IRepository<Stock_Maintenance_System_Domain.OrderItem> orderItemRepository,
-        IRepository<Stock_Maintenance_System_Domain.Order> orderRepository,
-        IRepository<Stock_Maintenance_System_Domain.Customer> customerRepository
+        IRepository<InventorySystem_Domain.Company> companyRepository,
+        IRepository<InventorySystem_Domain.Category> categoryRepository,
+        IRepository<InventorySystem_Domain.Product> productRepository,
+        IRepository<InventorySystem_Domain.OrderItem> orderItemRepository,
+        IRepository<InventorySystem_Domain.Order> orderRepository,
+        IRepository<InventorySystem_Domain.Customer> customerRepository
     )
     {
         _companyRepository = companyRepository;

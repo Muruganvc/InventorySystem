@@ -1,13 +1,13 @@
 ﻿using MediatR;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain.Common;
 
-namespace Stock_Maintenance_System_Application.Company.Command.UpdateCommand;
+namespace InventorySystem_Application.Company.Command.UpdateCommand;
 
 public sealed class CompanyUpdateCommandHandler : IRequestHandler<CompanyUpdateCommand, bool>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IRepository<Stock_Maintenance_System_Domain.Company> _companyRepository;
-    public CompanyUpdateCommandHandler(IUnitOfWork unitOfWork, IRepository<Stock_Maintenance_System_Domain.Company> companyRepository)
+    private readonly IRepository<InventorySystem_Domain.Company> _companyRepository;
+    public CompanyUpdateCommandHandler(IUnitOfWork unitOfWork, IRepository<InventorySystem_Domain.Company> companyRepository)
     {
         _unitOfWork = unitOfWork;
         _companyRepository = companyRepository;

@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Stock_Maintenance_System_Application.ProductCategory.Query.GetProductCategoriesQuery;
+namespace InventorySystem_Application.ProductCategory.Query.GetProductCategoriesQuery;
 public record GetProductCategoriesQuery() : IRequest<IReadOnlyList<GetProductCategoryQueryResponse>>;
 
 

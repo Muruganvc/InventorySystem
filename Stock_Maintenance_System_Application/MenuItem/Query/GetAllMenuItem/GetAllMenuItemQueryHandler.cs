@@ -1,13 +1,13 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Stock_Maintenance_System_Domain.Common;
-namespace Stock_Maintenance_System_Application.MenuItem.Query.GetAllMenuItem;
+using InventorySystem_Domain.Common;
+namespace InventorySystem_Application.MenuItem.Query.GetAllMenuItem;
 internal sealed class GetAllMenuItemQueryHandler : IRequestHandler<GetAllMenuItemQuery, IReadOnlyList<GetMenuItemQueryResponse>>
 {
-    private readonly IRepository<Stock_Maintenance_System_Domain.MenuItem> _menuItemRepository;
+    private readonly IRepository<InventorySystem_Domain.MenuItem> _menuItemRepository;
 
     public GetAllMenuItemQueryHandler(
-        IRepository<Stock_Maintenance_System_Domain.MenuItem> menuItemRepository) => _menuItemRepository = menuItemRepository;
+        IRepository<InventorySystem_Domain.MenuItem> menuItemRepository) => _menuItemRepository = menuItemRepository;
 
     public async Task<IReadOnlyList<GetMenuItemQueryResponse>> Handle(GetAllMenuItemQuery request, CancellationToken cancellationToken)
     {
@@ -15,7 +15,7 @@ internal sealed class GetAllMenuItemQueryHandler : IRequestHandler<GetAllMenuIte
         var response = BuildMenuTree(allMenuItems, null);
         return response;
     }
-    private List<GetMenuItemQueryResponse> BuildMenuTree(List<Stock_Maintenance_System_Domain.MenuItem> allItems, int? parentId)
+    private List<GetMenuItemQueryResponse> BuildMenuTree(List<InventorySystem_Domain.MenuItem> allItems, int? parentId)
     {
         return allItems
             .Where(m => m.ParentId == parentId)

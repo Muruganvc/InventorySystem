@@ -1,14 +1,14 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain.Common;
 
-namespace Stock_Maintenance_System_Application.Customer.Query.GetAllCustomers;
+namespace InventorySystem_Application.Customer.Query.GetAllCustomers;
 internal sealed class GetAllCustomersQueryHandler : IRequestHandler<GetAllCustomersQuery, IReadOnlyList<GetAllCustomersQueryResponse>>
 {
-    private readonly IRepository<Stock_Maintenance_System_Domain.Customer> _customerItemRepository;
+    private readonly IRepository<InventorySystem_Domain.Customer> _customerItemRepository;
 
     public GetAllCustomersQueryHandler(
-        IRepository<Stock_Maintenance_System_Domain.Customer> customerRespository) => _customerItemRepository = customerRespository;
+        IRepository<InventorySystem_Domain.Customer> customerRespository) => _customerItemRepository = customerRespository;
 
     public async Task<IReadOnlyList<GetAllCustomersQueryResponse>> Handle(GetAllCustomersQuery request, CancellationToken cancellationToken)
     {

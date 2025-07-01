@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain.Common;
 using System.Security.Claims;
 
-namespace Stock_Maintenance_System_Application.User.CreateCommand;
+namespace InventorySystem_Application.User.CreateCommand;
 internal sealed class UserCreateCommandHandler : IRequestHandler<UserCreateCommand, int>
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -21,7 +21,7 @@ internal sealed class UserCreateCommandHandler : IRequestHandler<UserCreateComma
         int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
         //string pwd = _configuration["_configuration:defaultPwd"]!;
         //if (string.IsNullOrEmpty(pwd)) { return 0; }
-        var user = new Stock_Maintenance_System_Domain.User
+        var user = new InventorySystem_Domain.User
         {
             FirstName = request.FirstName,
             LastName = request.LastName,
@@ -38,9 +38,9 @@ internal sealed class UserCreateCommandHandler : IRequestHandler<UserCreateComma
 
         await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
-            await _unitOfWork.Repository<Stock_Maintenance_System_Domain.User>().AddAsync(user);
+            await _unitOfWork.Repository<InventorySystem_Domain.User>().AddAsync(user);
             await _unitOfWork.SaveAsync();
-            await _unitOfWork.Repository<Stock_Maintenance_System_Domain.UserRole>().AddAsync(new Stock_Maintenance_System_Domain.UserRole
+            await _unitOfWork.Repository<InventorySystem_Domain.UserRole>().AddAsync(new InventorySystem_Domain.UserRole
             {
                 RoleId = request.RoleId,
                 UserId = user.UserId,

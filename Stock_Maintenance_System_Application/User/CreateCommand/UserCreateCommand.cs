@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Stock_Maintenance_System_Application.User.CreateCommand;
+namespace InventorySystem_Application.User.CreateCommand;
 public record UserCreateCommand(
     string FirstName,
     string? LastName,

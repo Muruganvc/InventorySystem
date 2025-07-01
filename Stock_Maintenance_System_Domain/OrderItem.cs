@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Stock_Maintenance_System_Domain;
+namespace InventorySystem_Domain;
 
 public class OrderItem
 {

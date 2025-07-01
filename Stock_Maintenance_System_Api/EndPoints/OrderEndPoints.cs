@@ -1,13 +1,11 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Http;
+﻿using InventorySystem_Api.ApiRequest;
+using InventorySystem_Application.Order.Command.OrderCreateCommand;
+using InventorySystem_Application.Order.Query;
+using InventorySystem_Application.Order.Query.GetCustomerOrderSummary;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Stock_Maintenance_System_Api.ApiRequest;
-using Stock_Maintenance_System_Application.Order.Command.OrderCreateCommand;
-using Stock_Maintenance_System_Application.Order.Query;
-using Stock_Maintenance_System_Application.Order.Query.GetCustomerOrderSummary;
-using Stock_Maintenance_System_Domain;
 
-namespace Stock_Maintenance_System_Api.EndPoints;
+namespace InventorySystem_Api.EndPoints;
 
 public static class OrderEndPoints
 {

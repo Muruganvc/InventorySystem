@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Stock_Maintenance_System_Domain\Stock_Maintenance_System_Domain.csproj" />
+    <ProjectReference Include="..\Stock_Maintenance_System_Domain\InventorySystem_Domain.csproj" />
   </ItemGroup>
 
 </Project>

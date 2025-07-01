@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain.Common;
 using System.Security.Claims;
 
-namespace Stock_Maintenance_System_Application.User.GetUsersQuery;
+namespace InventorySystem_Application.User.GetUsersQuery;
 internal sealed class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IReadOnlyList<GetUsersQueryResponse>>
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -18,7 +18,7 @@ internal sealed class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IRea
     public async Task<IReadOnlyList<GetUsersQueryResponse>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
     {
         int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
-        var users = await _unitOfWork.Repository<Stock_Maintenance_System_Domain.User>().GetListByAsync(a => a.UserId != userId);
+        var users = await _unitOfWork.Repository<InventorySystem_Domain.User>().GetListByAsync(a => a.UserId != userId);
         return users.Select(user => new GetUsersQueryResponse
         {
             UserId = user.UserId,

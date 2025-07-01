@@ -1,21 +1,21 @@
 ﻿using MediatR;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain.Common;
 
-namespace Stock_Maintenance_System_Application.User.PasswordChangeCommand;
+namespace InventorySystem_Application.User.PasswordChangeCommand;
 internal sealed class PasswordChangeCommandHandler : IRequestHandler<PasswordChangeCommand, bool>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IRepository<Stock_Maintenance_System_Domain.User> _userRepository;
+    private readonly IRepository<InventorySystem_Domain.User> _userRepository;
     public PasswordChangeCommandHandler(IUnitOfWork unitOfWork,
-        IRepository<Stock_Maintenance_System_Domain.User> userRepository)
+        IRepository<InventorySystem_Domain.User> userRepository)
     {
         _unitOfWork = unitOfWork;
         _userRepository = userRepository;
     }
     public async Task<bool> Handle(PasswordChangeCommand request, CancellationToken cancellationToken)
     {
-        //var user1 = _unitOfWork.Repository<Stock_Maintenance_System_Domain.User.User>().Table;
-        //var userRole = _unitOfWork.Repository<Stock_Maintenance_System_Domain.User.Role>().Table;
+        //var user1 = _unitOfWork.Repository<InventorySystem_Domain.User.User>().Table;
+        //var userRole = _unitOfWork.Repository<InventorySystem_Domain.User.Role>().Table;
         var user = await _userRepository.GetByAsync(u => u.UserId == request.UserId);
         if (user == null)
             return false;

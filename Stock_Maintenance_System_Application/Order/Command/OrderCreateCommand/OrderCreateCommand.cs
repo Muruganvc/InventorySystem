@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Stock_Maintenance_System_Application.Order.Command.OrderCreateCommand;
+namespace InventorySystem_Application.Order.Command.OrderCreateCommand;
 
 public record CustomerCommand(
     int CustomerId,

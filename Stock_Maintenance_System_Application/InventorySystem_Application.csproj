@@ -18,11 +18,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Stock_Maintenance_System_Domain\Stock_Maintenance_System_Domain.csproj" />
+    <Folder Include="User\AddOrRemovePermission\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="User\AddOrRemovePermission\" />
+    <ProjectReference Include="..\Stock_Maintenance_System_Domain\InventorySystem_Domain.csproj" />
   </ItemGroup>
 
 </Project>

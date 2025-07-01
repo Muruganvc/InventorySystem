@@ -1,5 +1,5 @@
 ﻿using MediatR;
-namespace Stock_Maintenance_System_Application.User.PasswordChangeCommand;
+namespace InventorySystem_Application.User.PasswordChangeCommand;
 public record PasswordChangeCommand(
     int UserId,
     string Username,

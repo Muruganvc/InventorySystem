@@ -1,4 +1,4 @@
-﻿namespace Stock_Maintenance_System_Application.User.GetUsersQuery;
+﻿namespace InventorySystem_Application.User.GetUsersQuery;
 public class GetUsersQueryResponse
 {
     public int UserId { get; set; }

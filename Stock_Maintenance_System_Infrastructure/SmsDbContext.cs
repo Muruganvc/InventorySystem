@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Stock_Maintenance_System_Domain; 
+using InventorySystem_Domain; 
 
-namespace Stock_Maintenance_System_Infrastructure;
+namespace InventorySystem_Infrastructure;
 public class SmsDbContext : DbContext
 {
     public SmsDbContext(DbContextOptions<SmsDbContext> options) : base(options)

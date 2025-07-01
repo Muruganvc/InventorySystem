@@ -1,19 +1,19 @@
-﻿using MediatR;
+﻿using InventorySystem_Api.ApiRequest;
+using InventorySystem_Application.Category.Command.CreateCommand;
+using InventorySystem_Application.Category.Command.UpdateCommand;
+using InventorySystem_Application.Category.Query.GetCategoriesQuery;
+using InventorySystem_Application.Category.Query.GetCategoryQuery;
+using InventorySystem_Application.Company.Command.CreateCommand;
+using InventorySystem_Application.Company.Command.UpdateCommand;
+using InventorySystem_Application.Company.Query;
+using InventorySystem_Application.ProductCategory.Command.CreateCommand;
+using InventorySystem_Application.ProductCategory.Command.UpdateCommand;
+using InventorySystem_Application.ProductCategory.Query.GetProductCategoriesQuery;
+using InventorySystem_Application.ProductCategory.Query.GetProductCategoryQuery;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Stock_Maintenance_System_Api.ApiRequest;
-using Stock_Maintenance_System_Application.Category.Command.CreateCommand;
-using Stock_Maintenance_System_Application.Category.Command.UpdateCommand;
-using Stock_Maintenance_System_Application.Category.Query.GetCategoriesQuery;
-using Stock_Maintenance_System_Application.Category.Query.GetCategoryQuery;
-using Stock_Maintenance_System_Application.Company.Command.CreateCommand;
-using Stock_Maintenance_System_Application.Company.Command.UpdateCommand;
-using Stock_Maintenance_System_Application.Company.Query;
-using Stock_Maintenance_System_Application.ProductCategory.Command.CreateCommand;
-using Stock_Maintenance_System_Application.ProductCategory.Command.UpdateCommand;
-using Stock_Maintenance_System_Application.ProductCategory.Query.GetProductCategoriesQuery;
-using Stock_Maintenance_System_Application.ProductCategory.Query.GetProductCategoryQuery;
 
-namespace Stock_Maintenance_System_Api.EndPoints;
+namespace InventorySystem_Api.EndPoints;
 
 public static class CompanyEndPoints
 {

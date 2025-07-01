@@ -1,4 +1,4 @@
-﻿namespace Stock_Maintenance_System_Application.Product.Query.GetProducts;
+﻿namespace InventorySystem_Application.Product.Query.GetProducts;
 public record GetProductsQueryResponse(
     int ProductId,
     string ProductName,

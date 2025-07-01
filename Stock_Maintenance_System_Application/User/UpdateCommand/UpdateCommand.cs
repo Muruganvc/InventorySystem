@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Stock_Maintenance_System_Application.User.UpdateCommand;
+namespace InventorySystem_Application.User.UpdateCommand;
 public record UpdateCommand(
     int UserId,
     string FirstName,

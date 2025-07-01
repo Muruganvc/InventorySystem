@@ -1,19 +1,19 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain.Common;
 
-namespace Stock_Maintenance_System_Application.ProductCategory.Query.GetProductCategoriesQuery;
+namespace InventorySystem_Application.ProductCategory.Query.GetProductCategoriesQuery;
 
 internal sealed class GetProductCategoriesQueryHandler : IRequestHandler<GetProductCategoriesQuery, IReadOnlyList<GetProductCategoryQueryResponse>>
 {
-    private readonly IRepository<Stock_Maintenance_System_Domain.Company> _companyRepository;
-    private readonly IRepository<Stock_Maintenance_System_Domain.Category> _categoryRepository;
-    private readonly IRepository<Stock_Maintenance_System_Domain.ProductCategory> _productCategoryRepository;
-    private readonly IRepository<Stock_Maintenance_System_Domain.User> _userRepository;
-    public GetProductCategoriesQueryHandler(IRepository<Stock_Maintenance_System_Domain.Company> companyRepository,
-        IRepository<Stock_Maintenance_System_Domain.Category> categoryRepository,
-        IRepository<Stock_Maintenance_System_Domain.ProductCategory> productCategoryRepository,
-        IRepository<Stock_Maintenance_System_Domain.User> userRepository)
+    private readonly IRepository<InventorySystem_Domain.Company> _companyRepository;
+    private readonly IRepository<InventorySystem_Domain.Category> _categoryRepository;
+    private readonly IRepository<InventorySystem_Domain.ProductCategory> _productCategoryRepository;
+    private readonly IRepository<InventorySystem_Domain.User> _userRepository;
+    public GetProductCategoriesQueryHandler(IRepository<InventorySystem_Domain.Company> companyRepository,
+        IRepository<InventorySystem_Domain.Category> categoryRepository,
+        IRepository<InventorySystem_Domain.ProductCategory> productCategoryRepository,
+        IRepository<InventorySystem_Domain.User> userRepository)
     {
         _companyRepository = companyRepository;
         _categoryRepository = categoryRepository;

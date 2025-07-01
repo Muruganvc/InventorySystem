@@ -1,4 +1,4 @@
-﻿namespace Stock_Maintenance_System_Api.Common
+﻿namespace InventorySystem_Api.Common
 {
     public class ValidationBehavior
     {

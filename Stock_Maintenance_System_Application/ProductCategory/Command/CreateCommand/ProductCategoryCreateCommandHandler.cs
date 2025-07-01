@@ -1,17 +1,17 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain.Common;
 using System.Security.Claims;
 
-namespace Stock_Maintenance_System_Application.ProductCategory.Command.CreateCommand
+namespace InventorySystem_Application.ProductCategory.Command.CreateCommand
 {
     internal sealed class ProductCategoryCreateCommandHandler : IRequestHandler<ProductCategoryCreateCommand, int>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IRepository<Stock_Maintenance_System_Domain.Category> _categoryRepository;
+        private readonly IRepository<InventorySystem_Domain.Category> _categoryRepository;
         public ProductCategoryCreateCommandHandler(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor, 
-            IRepository<Stock_Maintenance_System_Domain.Category> categoryRepository)
+            IRepository<InventorySystem_Domain.Category> categoryRepository)
         {
             _unitOfWork = unitOfWork;
             _httpContextAccessor = httpContextAccessor;
@@ -24,7 +24,7 @@ namespace Stock_Maintenance_System_Application.ProductCategory.Command.CreateCom
             var category = await _categoryRepository.GetByAsync(a => a.CategoryId == request.CategoryId);
             if (category == null) return 0;
 
-            var productCategory = new Stock_Maintenance_System_Domain.ProductCategory
+            var productCategory = new InventorySystem_Domain.ProductCategory
             {
                 CategoryId = request.CategoryId,
                 Description = request.Description,
@@ -35,7 +35,7 @@ namespace Stock_Maintenance_System_Application.ProductCategory.Command.CreateCom
             };
             await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
-                await _unitOfWork.Repository<Stock_Maintenance_System_Domain.ProductCategory>().AddAsync(productCategory);
+                await _unitOfWork.Repository<InventorySystem_Domain.ProductCategory>().AddAsync(productCategory);
                 await _unitOfWork.SaveAsync();
             }, cancellationToken);
             return productCategory.ProductCategoryId;
