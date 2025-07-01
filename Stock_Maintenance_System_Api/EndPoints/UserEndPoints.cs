@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Authorization;
 using Stock_Maintenance_System_Api.ApiRequest;
 using Stock_Maintenance_System_Api.Common;
 using Stock_Maintenance_System_Application.Customer.Query.GetAllCustomers;
+using Stock_Maintenance_System_Application.MenuItem.AddOrRemoveUserMenuItemCommand;
 using Stock_Maintenance_System_Application.MenuItem.Query;
 using Stock_Maintenance_System_Application.MenuItem.Query.GetAllMenuItem;
 using Stock_Maintenance_System_Application.Product.Command.ActivateProductCommand;
 using Stock_Maintenance_System_Application.User.ActiveUserCommand;
 using Stock_Maintenance_System_Application.User.CreateCommand;
+using Stock_Maintenance_System_Application.User.GetMenuItemPermissionQuery;
 using Stock_Maintenance_System_Application.User.GetUserQuery;
 using Stock_Maintenance_System_Application.User.GetUsersQuery;
 using Stock_Maintenance_System_Application.User.LoginCommand;
@@ -68,6 +70,20 @@ namespace Stock_Maintenance_System_Api.EndPoints
                 var query = new GetUserQuery(userName);
                 var result = await mediator.Send(query);
                 return Results.Ok(new { message = "Current User", data = result });
+            }).RequireAuthorization();
+
+            app.MapGet("/menu/{UserId}", async (int UserId, IMediator mediator) =>
+            {
+                var query = new GetMenuItemPermissionQuery(UserId);
+                var result = await mediator.Send(query);
+                return Results.Ok(new { message = "User Menu", data = result });
+            }).RequireAuthorization();
+
+            app.MapPost("/menu/{UserId}/{MenuId}", async (int UserId, int MenuId, IMediator mediator) =>
+            {
+                var query = new AddOrRemoveUserMenuItemCommand(UserId, MenuId);
+                var result = await mediator.Send(query);
+                return Results.Ok(new { message = "Add or Remove User menu List", data = result });
             }).RequireAuthorization();
 
             app.MapPut("/update/{UserId}", async (int UserId, UpdateUserRequest user, IMediator mediator) =>

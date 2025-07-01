@@ -25,7 +25,7 @@ namespace Stock_Maintenance_System_Application.ProductCategory.Command.UpdateCom
             
             productCategory.Description = request.Description;
             productCategory.CategoryId = request.CategoryId;
-            productCategory.ProductCategoryName = request.CategoryName;
+            productCategory.ProductCategoryName = request.ProductCategoryName;
             productCategory.IsActive = request.IsActive;
             bool isSuccess = false;
             await _unitOfWork.ExecuteInTransactionAsync(async () =>

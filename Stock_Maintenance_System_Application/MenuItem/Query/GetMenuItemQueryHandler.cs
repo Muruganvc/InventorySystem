@@ -31,18 +31,19 @@ internal sealed class GetMenuItemQueryHandler : IRequestHandler<GetMenuItemQuery
         return response;
     }
 
-
     private List<GetMenuItemQueryResponse> BuildMenuTree(List<Stock_Maintenance_System_Domain.MenuItem> allItems, int? parentId)
     {
         return allItems
             .Where(m => m.ParentId == parentId)
             .Select(m => new GetMenuItemQueryResponse
             {
+                Id = m.Id,
+                ParentId = m.ParentId ?? 0,
                 Label = m.Label,
                 Icon = m.Icon,
                 Route = m.Route,
                 SubMenuItem = BuildMenuTree(allItems, m.Id)
-            })
+            }).OrderBy(x => x.OrderBy)
             .ToList();
     }
 }

@@ -70,7 +70,8 @@ internal class GetOrdersummaryQueryHandler
             BalanceAmount = temp.odr.BalanceAmount ?? 0,
             CustomerName = cus.CustomerName,
             Address = cus.Address,
-            Phone = cus.Phone
+            Phone = cus.Phone,
+            User = temp.pro.CreatedByUser.Username
         })
     .ToListAsync(cancellationToken);
 

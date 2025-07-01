@@ -15,4 +15,5 @@ public class GetOrderSummaryResponse
     public string CustomerName { get; set; } = string.Empty;
     public string? Address { get; set; }
     public string Phone { get; set; } = string.Empty;
+    public string User { get; set; } = string.Empty;
 }

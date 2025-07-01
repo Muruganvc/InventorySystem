@@ -21,13 +21,14 @@ namespace Stock_Maintenance_System_Application.ProductCategory.Command.CreateCom
         public async Task<int> Handle(ProductCategoryCreateCommand request, CancellationToken cancellationToken)
         {
             int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
-            var company = await _categoryRepository.GetByAsync(a => a.CategoryId == request.CategoryId);
-            if (company == null) return 0;
+            var category = await _categoryRepository.GetByAsync(a => a.CategoryId == request.CategoryId);
+            if (category == null) return 0;
 
             var productCategory = new Stock_Maintenance_System_Domain.ProductCategory
             {
                 CategoryId = request.CategoryId,
                 Description = request.Description,
+                ProductCategoryName = request.CategoryProductName,
                 IsActive = request.IsActive,
                 CreatedBy = userId,
                 CreatedAt = DateTime.Now

@@ -1,0 +1,45 @@
+﻿using MediatR;
+using Stock_Maintenance_System_Domain;
+using Stock_Maintenance_System_Domain.Common;
+
+namespace Stock_Maintenance_System_Application.MenuItem.AddOrRemoveUserMenuItemCommand;
+internal sealed class AddOrRemoveUserMenuItemCommandHandler
+    : IRequestHandler<AddOrRemoveUserMenuItemCommand, bool>
+{
+    private readonly IUnitOfWork _unitOfWork;
+
+    public AddOrRemoveUserMenuItemCommandHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
+    public async Task<bool> Handle(AddOrRemoveUserMenuItemCommand request, CancellationToken cancellationToken)
+    {
+        var userMenuRepo = _unitOfWork.Repository<UserMenuPermission>();
+        var existingPermission = await userMenuRepo.GetByAsync(
+            u => u.UserId == request.UserId && u.MenuItemId == request.MenuId);
+
+        var userMenuItemRepo = _unitOfWork.Repository<Stock_Maintenance_System_Domain.MenuItem>();
+        var menuItem = await userMenuItemRepo.GetByAsync(a => a.Id == request.MenuId);
+        int orderBy = 0;
+        if (menuItem is not null)
+            orderBy = menuItem.OrderBy ?? 0;
+
+        await _unitOfWork.ExecuteInTransactionAsync(async () =>
+            {
+                if (existingPermission is null)
+                {
+                    var newPermission = new UserMenuPermission
+                    {
+                        UserId = request.UserId,
+                        MenuItemId = request.MenuId,
+                        OrderBy = orderBy
+                    };
+                    await userMenuRepo.AddAsync(newPermission);
+                }
+                else
+                {
+                    userMenuRepo.Delete(existingPermission);
+                }
+                await _unitOfWork.SaveAsync();
+            }, cancellationToken);
+
+        return true;
+    }
+}

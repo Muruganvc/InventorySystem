@@ -8,5 +8,6 @@ public class MenuItem
     public string Route { get; set; } = string.Empty;
     public int? ParentId { get; set; }
     public MenuItem? Parent { get; set; }
+    public int? OrderBy { get; set; }
     public ICollection<MenuItem>? Children { get; set; }
 }

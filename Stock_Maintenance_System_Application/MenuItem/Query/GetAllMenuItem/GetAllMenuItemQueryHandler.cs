@@ -21,6 +21,7 @@ internal sealed class GetAllMenuItemQueryHandler : IRequestHandler<GetAllMenuIte
             .Where(m => m.ParentId == parentId)
             .Select(m => new GetMenuItemQueryResponse
             {
+                Id = m.Id,
                 Label = m.Label,
                 Icon = m.Icon,
                 Route = m.Route,
