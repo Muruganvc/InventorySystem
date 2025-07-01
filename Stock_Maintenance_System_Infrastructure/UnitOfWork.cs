@@ -1,6 +1,6 @@
-﻿using Stock_Maintenance_System_Domain.Common;
+﻿using InventorySystem_Domain.Common;
 
-namespace Stock_Maintenance_System_Infrastructure;
+namespace InventorySystem_Infrastructure;
 
 public class UnitOfWork : IUnitOfWork, IDisposable
 {

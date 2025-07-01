@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain.Common;
 using System.Linq.Expressions;
 
-namespace Stock_Maintenance_System_Infrastructure;
+namespace InventorySystem_Infrastructure;
 
 public class Repository<T> : IRepository<T> where T : class
 {

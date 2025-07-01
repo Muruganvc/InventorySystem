@@ -1,4 +1,4 @@
-﻿namespace Stock_Maintenance_System_Application.ProductCategory.Query.GetProductCategoriesQuery;
+﻿namespace InventorySystem_Application.ProductCategory.Query.GetProductCategoriesQuery;
 public record GetProductCategoryQueryResponse(
     int CompanyId,
     string CompanyName,

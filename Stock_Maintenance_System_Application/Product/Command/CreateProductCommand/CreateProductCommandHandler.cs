@@ -1,16 +1,16 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain.Common;
 using System.Security.Claims;
 
-namespace Stock_Maintenance_System_Application.Product.Command.CreateProductCommand;
+namespace InventorySystem_Application.Product.Command.CreateProductCommand;
 internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, int>
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IRepository<Stock_Maintenance_System_Domain.Product> _productRepository;
+    private readonly IRepository<InventorySystem_Domain.Product> _productRepository;
     public CreateProductCommandHandler(IUnitOfWork unitOfWork,
-        IRepository<Stock_Maintenance_System_Domain.Product> productRepository,
+        IRepository<InventorySystem_Domain.Product> productRepository,
         IHttpContextAccessor httpContextAccessor)
     {
         _unitOfWork = unitOfWork;
@@ -30,14 +30,14 @@ internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProduc
         {
             await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
-                var newProductCategory = new Stock_Maintenance_System_Domain.ProductCategory
+                var newProductCategory = new InventorySystem_Domain.ProductCategory
                 {
                     CategoryId = request.CategoryId,
                     ProductCategoryName = request.ProductName,
                     CreatedBy = userId
                 };
 
-                await _unitOfWork.Repository<Stock_Maintenance_System_Domain.ProductCategory>().AddAsync(newProductCategory);
+                await _unitOfWork.Repository<InventorySystem_Domain.ProductCategory>().AddAsync(newProductCategory);
                 await _unitOfWork.SaveAsync();
 
                 productCategoryId = newProductCategory.ProductCategoryId;
@@ -45,7 +45,7 @@ internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProduc
         }
 
         // Create the new product
-        var product = new Stock_Maintenance_System_Domain.Product
+        var product = new InventorySystem_Domain.Product
         {
             ProductName = request.ProductName,
             BrandName = request.BrandName,
@@ -67,7 +67,7 @@ internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProduc
         // Save the product
         await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
-            await _unitOfWork.Repository<Stock_Maintenance_System_Domain.Product>().AddAsync(product);
+            await _unitOfWork.Repository<InventorySystem_Domain.Product>().AddAsync(product);
             await _unitOfWork.SaveAsync();
         }, cancellationToken);
 

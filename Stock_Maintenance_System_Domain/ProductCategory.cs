@@ -1,4 +1,4 @@
-﻿namespace Stock_Maintenance_System_Domain;
+﻿namespace InventorySystem_Domain;
 
 public class ProductCategory
 {

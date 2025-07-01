@@ -1,17 +1,17 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain.Common;
 using System.Security.Claims;
 
-namespace Stock_Maintenance_System_Application.User.ActiveUserCommand;
+namespace InventorySystem_Application.User.ActiveUserCommand;
 
 internal sealed class ActiveUserCommandHandler : IRequestHandler<ActiveUserCommand, bool>
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IRepository<Stock_Maintenance_System_Domain.User> _userRepository;
+    private readonly IRepository<InventorySystem_Domain.User> _userRepository;
     public ActiveUserCommandHandler(IUnitOfWork unitOfWork,
-        IRepository<Stock_Maintenance_System_Domain.User> userRepository, IHttpContextAccessor httpContextAccessor)
+        IRepository<InventorySystem_Domain.User> userRepository, IHttpContextAccessor httpContextAccessor)
     {
         _unitOfWork = unitOfWork;
         _userRepository = userRepository;

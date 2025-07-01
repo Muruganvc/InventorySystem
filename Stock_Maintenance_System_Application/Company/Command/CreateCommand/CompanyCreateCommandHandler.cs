@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
-using Stock_Maintenance_System_Domain;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain;
+using InventorySystem_Domain.Common;
 using System.Security.Claims;
 
-namespace Stock_Maintenance_System_Application.Company.Command.CreateCommand
+namespace InventorySystem_Application.Company.Command.CreateCommand
 {
     internal sealed class CompanyCreateCommandHandler : IRequestHandler<CompanyCreateCommand, int>
     {
@@ -18,7 +18,7 @@ namespace Stock_Maintenance_System_Application.Company.Command.CreateCommand
         public async Task<int> Handle(CompanyCreateCommand request, CancellationToken cancellationToken)
         {
             int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
-            var company = new Stock_Maintenance_System_Domain.Company
+            var company = new InventorySystem_Domain.Company
             {
                 CompanyName = request.CompanyName,
                 Description = request.Description,
@@ -28,7 +28,7 @@ namespace Stock_Maintenance_System_Application.Company.Command.CreateCommand
             };
             await _unitOfWork.ExecuteInTransactionAsync(async () =>
             {
-                await _unitOfWork.Repository<Stock_Maintenance_System_Domain.Company>().AddAsync(company);
+                await _unitOfWork.Repository<InventorySystem_Domain.Company>().AddAsync(company);
                 await _unitOfWork.SaveAsync();
             }, cancellationToken);
             return company.CompanyId;

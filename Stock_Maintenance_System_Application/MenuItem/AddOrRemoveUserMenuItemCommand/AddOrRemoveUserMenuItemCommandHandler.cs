@@ -1,8 +1,8 @@
 ﻿using MediatR;
-using Stock_Maintenance_System_Domain;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain;
+using InventorySystem_Domain.Common;
 
-namespace Stock_Maintenance_System_Application.MenuItem.AddOrRemoveUserMenuItemCommand;
+namespace InventorySystem_Application.MenuItem.AddOrRemoveUserMenuItemCommand;
 internal sealed class AddOrRemoveUserMenuItemCommandHandler
     : IRequestHandler<AddOrRemoveUserMenuItemCommand, bool>
 {
@@ -15,7 +15,7 @@ internal sealed class AddOrRemoveUserMenuItemCommandHandler
         var existingPermission = await userMenuRepo.GetByAsync(
             u => u.UserId == request.UserId && u.MenuItemId == request.MenuId);
 
-        var userMenuItemRepo = _unitOfWork.Repository<Stock_Maintenance_System_Domain.MenuItem>();
+        var userMenuItemRepo = _unitOfWork.Repository<InventorySystem_Domain.MenuItem>();
         var menuItem = await userMenuItemRepo.GetByAsync(a => a.Id == request.MenuId);
         int orderBy = 0;
         if (menuItem is not null)

@@ -1,16 +1,16 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain.Common;
 using System.Security.Claims;
 
-namespace Stock_Maintenance_System_Application.Product.Command.UpdateProductCommand;
+namespace InventorySystem_Application.Product.Command.UpdateProductCommand;
 internal sealed class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, bool>
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IRepository<Stock_Maintenance_System_Domain.Product> _productRepository;
+    private readonly IRepository<InventorySystem_Domain.Product> _productRepository;
     public UpdateProductCommandHandler(IUnitOfWork unitOfWork,
-        IRepository<Stock_Maintenance_System_Domain.Product> productRepository, IHttpContextAccessor httpContextAccessor)
+        IRepository<InventorySystem_Domain.Product> productRepository, IHttpContextAccessor httpContextAccessor)
     {
         _unitOfWork = unitOfWork;
         _productRepository = productRepository;

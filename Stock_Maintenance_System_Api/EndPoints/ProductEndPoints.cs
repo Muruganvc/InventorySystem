@@ -1,11 +1,11 @@
 ﻿using MediatR;
-using Stock_Maintenance_System_Api.ApiRequest;
-using Stock_Maintenance_System_Application.Product.Command.ActivateProductCommand;
-using Stock_Maintenance_System_Application.Product.Command.CreateProductCommand;
-using Stock_Maintenance_System_Application.Product.Command.UpdateProductCommand;
-using Stock_Maintenance_System_Application.Product.Query.GetProducts;
+using InventorySystem_Api.ApiRequest;
+using InventorySystem_Application.Product.Command.ActivateProductCommand;
+using InventorySystem_Application.Product.Command.CreateProductCommand;
+using InventorySystem_Application.Product.Command.UpdateProductCommand;
+using InventorySystem_Application.Product.Query.GetProducts;
 
-namespace Stock_Maintenance_System_Api.EndPoints;
+namespace InventorySystem_Api.EndPoints;
 public static class ProductEndpoints
 {
     public static IEndpointRouteBuilder MapProductEndpoints(this IEndpointRouteBuilder app)

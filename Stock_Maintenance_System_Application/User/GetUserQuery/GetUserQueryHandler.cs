@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain.Common;
 
-namespace Stock_Maintenance_System_Application.User.GetUserQuery;
+namespace InventorySystem_Application.User.GetUserQuery;
 
 internal sealed class GetUserQueryHandler : IRequestHandler<GetUserQuery, GetUserQueryResponse>
 {
@@ -13,7 +13,7 @@ internal sealed class GetUserQueryHandler : IRequestHandler<GetUserQuery, GetUse
     public async Task<GetUserQueryResponse> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
         var user = await _unitOfWork
-            .Repository<Stock_Maintenance_System_Domain.User>()
+            .Repository<InventorySystem_Domain.User>()
             .GetByAsync(u => u.Username == request.userName);
 
         if (user == null)

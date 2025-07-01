@@ -1,4 +1,4 @@
-﻿namespace Stock_Maintenance_System_Application.User.GetMenuItemPermissionQuery;
+﻿namespace InventorySystem_Application.User.GetMenuItemPermissionQuery;
 public class GetMenuItemPermissionQueryResponse
 {
     public int Id { get; set; }

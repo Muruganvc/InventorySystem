@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain.Common;
 
-namespace Stock_Maintenance_System_Application.User.UpdateCommand
+namespace InventorySystem_Application.User.UpdateCommand
 {
     internal sealed class UpdateCommandHandler : IRequestHandler<UpdateCommand, bool>
     {
@@ -9,7 +9,7 @@ namespace Stock_Maintenance_System_Application.User.UpdateCommand
         public UpdateCommandHandler(IUnitOfWork unitOfWork ) => _unitOfWork = unitOfWork; 
         public async Task<bool> Handle(UpdateCommand request, CancellationToken cancellationToken)
         {
-            var userRepository = _unitOfWork.Repository<Stock_Maintenance_System_Domain.User>();
+            var userRepository = _unitOfWork.Repository<InventorySystem_Domain.User>();
             var user = await userRepository.GetByAsync(u => u.UserId == request.UserId);
             if (user == null)
                 return false;

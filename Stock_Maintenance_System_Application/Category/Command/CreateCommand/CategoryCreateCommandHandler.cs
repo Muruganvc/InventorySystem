@@ -1,15 +1,15 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain.Common;
 using System.Security.Claims;
 
-namespace Stock_Maintenance_System_Application.Category.Command.CreateCommand;
+namespace InventorySystem_Application.Category.Command.CreateCommand;
 internal sealed class CategoryCreateCommandHandler : IRequestHandler<CategoryCreateCommand, int>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IRepository<Stock_Maintenance_System_Domain.Company> _companyRepository;
-    public CategoryCreateCommandHandler(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor, IRepository<Stock_Maintenance_System_Domain.Company> companyRepository)
+    private readonly IRepository<InventorySystem_Domain.Company> _companyRepository;
+    public CategoryCreateCommandHandler(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor, IRepository<InventorySystem_Domain.Company> companyRepository)
     {
         _httpContextAccessor = httpContextAccessor;
         _unitOfWork = unitOfWork;
@@ -21,7 +21,7 @@ internal sealed class CategoryCreateCommandHandler : IRequestHandler<CategoryCre
         var company = await _companyRepository.GetByAsync(a => a.CompanyId == request.CompanyId);
         if (company == null) return 0;
 
-        var category = new Stock_Maintenance_System_Domain.Category
+        var category = new InventorySystem_Domain.Category
         {
             CategoryName = request.CategoryName,
             CompanyId = request.CompanyId,
@@ -32,7 +32,7 @@ internal sealed class CategoryCreateCommandHandler : IRequestHandler<CategoryCre
         };
         await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
-            await _unitOfWork.Repository<Stock_Maintenance_System_Domain.Category>().AddAsync(category);
+            await _unitOfWork.Repository<InventorySystem_Domain.Category>().AddAsync(category);
             await _unitOfWork.SaveAsync();
         }, cancellationToken);
         return company.CompanyId;

@@ -1,11 +1,11 @@
 ﻿using MediatR;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain.Common;
 
-namespace Stock_Maintenance_System_Application.ProductCategory.Query.GetProductCategoryQuery;
+namespace InventorySystem_Application.ProductCategory.Query.GetProductCategoryQuery;
 internal sealed class GetProductCategoryQueryHandler : IRequestHandler<GetProductCategoryQuery, IReadOnlyList<KeyValuePair<string, int>>>
 {
-    private readonly IRepository<Stock_Maintenance_System_Domain.ProductCategory> _productCategoryRepository;
-    public GetProductCategoryQueryHandler(IRepository<Stock_Maintenance_System_Domain.ProductCategory> productCategoryRepository) =>
+    private readonly IRepository<InventorySystem_Domain.ProductCategory> _productCategoryRepository;
+    public GetProductCategoryQueryHandler(IRepository<InventorySystem_Domain.ProductCategory> productCategoryRepository) =>
         _productCategoryRepository = productCategoryRepository;
     public async Task<IReadOnlyList<KeyValuePair<string, int>>> Handle(GetProductCategoryQuery request, CancellationToken cancellationToken)
     {

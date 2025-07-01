@@ -1,4 +1,4 @@
-﻿namespace Stock_Maintenance_System_Application.MenuItem.Query;
+﻿namespace InventorySystem_Application.MenuItem.Query;
 internal class GetMenuItemQueryResponse
 {
     public int Id { get; set; }

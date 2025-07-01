@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Stock_Maintenance_System_Application.Product.Command.UpdateProductCommand;
+namespace InventorySystem_Application.Product.Command.UpdateProductCommand;
 public record UpdateProductCommand(
    int ProductId,
    string ProductName,

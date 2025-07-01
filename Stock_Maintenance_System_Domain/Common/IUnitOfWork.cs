@@ -1,4 +1,4 @@
-﻿namespace Stock_Maintenance_System_Domain.Common
+﻿namespace InventorySystem_Domain.Common
 {
     public interface IUnitOfWork : IDisposable
     {

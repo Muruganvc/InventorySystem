@@ -1,14 +1,14 @@
 ﻿using MediatR;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain.Common;
 
-namespace Stock_Maintenance_System_Application.ProductCategory.Command.UpdateCommand
+namespace InventorySystem_Application.ProductCategory.Command.UpdateCommand
 {
     internal sealed class ProductCategoryUpdateCommandHandler : IRequestHandler<ProductCategoryUpdateCommand, bool>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IRepository<Stock_Maintenance_System_Domain.ProductCategory> _productCategoryRepository;
-        private readonly IRepository<Stock_Maintenance_System_Domain.Category> _categoryRepository;
-        public ProductCategoryUpdateCommandHandler(IUnitOfWork unitOfWork, IRepository<Stock_Maintenance_System_Domain.ProductCategory> productCategoryRepository, IRepository<Stock_Maintenance_System_Domain.Category> categoryRepository)
+        private readonly IRepository<InventorySystem_Domain.ProductCategory> _productCategoryRepository;
+        private readonly IRepository<InventorySystem_Domain.Category> _categoryRepository;
+        public ProductCategoryUpdateCommandHandler(IUnitOfWork unitOfWork, IRepository<InventorySystem_Domain.ProductCategory> productCategoryRepository, IRepository<InventorySystem_Domain.Category> categoryRepository)
         {
             _unitOfWork = unitOfWork;
             _productCategoryRepository = productCategoryRepository;

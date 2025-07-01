@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Stock_Maintenance_System_Application.User.CreateCommand;
+namespace InventorySystem_Application.User.CreateCommand;
 public class UserCreateCommandValidator : AbstractValidator<UserCreateCommand>
 {
     public UserCreateCommandValidator()

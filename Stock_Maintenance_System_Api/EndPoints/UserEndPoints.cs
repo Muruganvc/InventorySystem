@@ -1,23 +1,21 @@
 ﻿using Database_Utility;
+using InventorySystem_Api.ApiRequest;
+using InventorySystem_Application.Customer.Query.GetAllCustomers;
+using InventorySystem_Application.MenuItem.AddOrRemoveUserMenuItemCommand;
+using InventorySystem_Application.MenuItem.Query;
+using InventorySystem_Application.MenuItem.Query.GetAllMenuItem;
+using InventorySystem_Application.User.ActiveUserCommand;
+using InventorySystem_Application.User.CreateCommand;
+using InventorySystem_Application.User.GetMenuItemPermissionQuery;
+using InventorySystem_Application.User.GetUserQuery;
+using InventorySystem_Application.User.GetUsersQuery;
+using InventorySystem_Application.User.LoginCommand;
+using InventorySystem_Application.User.PasswordChangeCommand;
+using InventorySystem_Application.User.UpdateCommand;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Stock_Maintenance_System_Api.ApiRequest;
-using Stock_Maintenance_System_Api.Common;
-using Stock_Maintenance_System_Application.Customer.Query.GetAllCustomers;
-using Stock_Maintenance_System_Application.MenuItem.AddOrRemoveUserMenuItemCommand;
-using Stock_Maintenance_System_Application.MenuItem.Query;
-using Stock_Maintenance_System_Application.MenuItem.Query.GetAllMenuItem;
-using Stock_Maintenance_System_Application.Product.Command.ActivateProductCommand;
-using Stock_Maintenance_System_Application.User.ActiveUserCommand;
-using Stock_Maintenance_System_Application.User.CreateCommand;
-using Stock_Maintenance_System_Application.User.GetMenuItemPermissionQuery;
-using Stock_Maintenance_System_Application.User.GetUserQuery;
-using Stock_Maintenance_System_Application.User.GetUsersQuery;
-using Stock_Maintenance_System_Application.User.LoginCommand;
-using Stock_Maintenance_System_Application.User.PasswordChangeCommand;
-using Stock_Maintenance_System_Application.User.UpdateCommand;
 
-namespace Stock_Maintenance_System_Api.EndPoints
+namespace InventorySystem_Api.EndPoints
 {
     public static class UserEndPoints
     {

@@ -1,4 +1,4 @@
-﻿namespace Stock_Maintenance_System_Application.Order.Query;
+﻿namespace InventorySystem_Application.Order.Query;
 public class GetOrderSummaryResponse
 {
     public string FullProductName { get; set; } = string.Empty;

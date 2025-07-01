@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace Stock_Maintenance_System_Application.Common
+namespace InventorySystem_Application.Common
 {
     public static class StringExtensions
     {

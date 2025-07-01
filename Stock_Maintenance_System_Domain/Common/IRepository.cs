@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Stock_Maintenance_System_Domain.Common
+namespace InventorySystem_Domain.Common
 {
     public interface IRepository<T> where T : class
     {

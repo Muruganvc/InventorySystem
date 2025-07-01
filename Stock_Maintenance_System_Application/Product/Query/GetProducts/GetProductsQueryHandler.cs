@@ -1,17 +1,17 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain.Common;
 using System.Security.Claims;
 
-namespace Stock_Maintenance_System_Application.Product.Query.GetProducts;
+namespace InventorySystem_Application.Product.Query.GetProducts;
 
 internal sealed class GetProductsQueryHandler
     : IRequestHandler<GetProductsQuery, IReadOnlyList<GetProductsQueryResponse>>
 {
-    private readonly IRepository<Stock_Maintenance_System_Domain.Product> _productRepository;
+    private readonly IRepository<InventorySystem_Domain.Product> _productRepository;
    private readonly IHttpContextAccessor _httpContextAccessor;
-    public GetProductsQueryHandler(IRepository<Stock_Maintenance_System_Domain.Product> productRepository,
+    public GetProductsQueryHandler(IRepository<InventorySystem_Domain.Product> productRepository,
         IHttpContextAccessor httpContextAccessor)
     {
         _productRepository = productRepository;

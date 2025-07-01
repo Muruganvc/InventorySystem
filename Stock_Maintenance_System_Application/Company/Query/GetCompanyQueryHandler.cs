@@ -1,18 +1,18 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain.Common;
 
-namespace Stock_Maintenance_System_Application.Company.Query;
+namespace InventorySystem_Application.Company.Query;
 
 internal sealed class GetCompanyQueryHandler
     : IRequestHandler<GetCompanyQuery, IReadOnlyList<GetCompanyQueryResponse>>
 {
-    private readonly IRepository<Stock_Maintenance_System_Domain.Company> _companyRepository;
-    private readonly IRepository<Stock_Maintenance_System_Domain.User> _userRepository;
+    private readonly IRepository<InventorySystem_Domain.Company> _companyRepository;
+    private readonly IRepository<InventorySystem_Domain.User> _userRepository;
 
     public GetCompanyQueryHandler(
-        IRepository<Stock_Maintenance_System_Domain.Company> companyRepository,
-        IRepository<Stock_Maintenance_System_Domain.User> userRepository)
+        IRepository<InventorySystem_Domain.Company> companyRepository,
+        IRepository<InventorySystem_Domain.User> userRepository)
     {
         _companyRepository = companyRepository;
         _userRepository = userRepository;

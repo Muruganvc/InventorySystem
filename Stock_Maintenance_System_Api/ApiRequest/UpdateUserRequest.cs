@@ -1,4 +1,4 @@
-﻿namespace Stock_Maintenance_System_Api.ApiRequest;
+﻿namespace InventorySystem_Api.ApiRequest;
 internal record UpdateUserRequest(
     string FirstName, string LastName, string Email, string MobileNumber,
     bool IsActive, bool IsSuperAdmin);

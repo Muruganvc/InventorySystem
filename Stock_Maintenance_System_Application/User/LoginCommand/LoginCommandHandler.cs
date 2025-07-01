@@ -1,22 +1,22 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Stock_Maintenance_System_Domain.Common;
+using InventorySystem_Domain.Common;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Stock_Maintenance_System_Application.User.LoginCommand
+namespace InventorySystem_Application.User.LoginCommand
 {
     internal sealed class LoginCommandHandler : IRequestHandler<LoginCommand, LoginCommandResponse>
     {
-        private readonly IRepository<Stock_Maintenance_System_Domain.User> _userRepository;
-        private readonly IRepository<Stock_Maintenance_System_Domain.UserRole> _userRoleRepository;
+        private readonly IRepository<InventorySystem_Domain.User> _userRepository;
+        private readonly IRepository<InventorySystem_Domain.UserRole> _userRoleRepository;
         private readonly IConfiguration _configuration;
 
         public LoginCommandHandler(
-            IRepository<Stock_Maintenance_System_Domain.User> userRepository,
-            IRepository<Stock_Maintenance_System_Domain.UserRole> userRoleRepository,
+            IRepository<InventorySystem_Domain.User> userRepository,
+            IRepository<InventorySystem_Domain.UserRole> userRoleRepository,
             IConfiguration configuration)
         {
             _userRepository = userRepository;
