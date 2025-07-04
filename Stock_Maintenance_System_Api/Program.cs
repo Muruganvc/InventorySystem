@@ -49,11 +49,11 @@ builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBeh
 builder.Services.AddScoped<IDatabaseScriptService, DatabaseScriptService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthorization();
-
+var config = builder.Configuration;
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        var config = builder.Configuration;
+        
         //JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -77,9 +77,9 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowLocalhost", policy =>
+    options.AddPolicy("AllowCors", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        policy.WithOrigins(config["appSetting:cors"]!)
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -117,10 +117,11 @@ builder.Services.AddSwaggerGen(options =>
 
 
 var app = builder.Build();
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseCors("AllowLocalhost");
+app.UseCors("AllowCors");
 
 if (app.Environment.IsDevelopment())
 {

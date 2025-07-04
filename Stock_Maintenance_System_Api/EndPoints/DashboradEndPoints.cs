@@ -1,4 +1,5 @@
 ﻿using InventorySystem_Application.Dashboard.Query.CompanyWiseIncomeQuery;
+using InventorySystem_Application.Dashboard.Query.ProductQuantityQuery;
 using InventorySystem_Application.Dashboard.Query.TotalProductQuery;
 using MediatR;
 
@@ -23,6 +24,14 @@ namespace InventorySystem_Api.EndPoints
                 return Results.Ok(new { message = "Total Product", data = result });
             })
            .RequireAuthorization();
+
+            app.MapGet("/product-quantity", async (IMediator mediator) =>
+            {
+                var query = new ProductQuantityQuery();
+                var result = await mediator.Send(query);
+                return Results.Ok(new { message = "Total Product", data = result });
+            })
+            .RequireAuthorization();
 
             return app;
         }
