@@ -16,5 +16,5 @@ public class OrderItemRequest
     public string? Remarks { get; set; }
 }
 
-public record OrderCreateRequest(CustomerRequest Customer, List<OrderItemRequest> OrderItemRequests, decimal BalanceAmount);
+public record OrderCreateRequest(CustomerRequest Customer, List<OrderItemRequest> OrderItemRequests, decimal GivenAmount);
     

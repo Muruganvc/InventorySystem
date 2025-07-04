@@ -11,11 +11,8 @@ public record GetProductsQueryResponse(
     string? Description,
     decimal MRP,
     decimal SalesPrice,
+    decimal LandingPrice,
     int Quantity,
-    decimal TaxPercent,
-    string? TaxType,
-    string? Barcode,
-    string? BrandName,
     bool IsActive,
     string? UserName
 );

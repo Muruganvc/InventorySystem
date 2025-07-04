@@ -37,6 +37,6 @@ internal sealed class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQ
             user.Username
         ))
     .ToListAsync(cancellationToken);
-        return result;
+        return result.OrderBy(a => a.CategoryName).ToList();
     }
 }

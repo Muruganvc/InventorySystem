@@ -7,10 +7,7 @@ public record ProductRequest(
     string? Description,
     decimal Mrp,
     decimal SalesPrice,
+    decimal LandingPrice,
     int TotalQuantity,
-    bool IsActive = false,
-    string? TaxType = "GST",
-    string? BarCode = null,
-    string? BrandName = null,
-    int TaxPercent = 18
+    bool IsActive = false
 );

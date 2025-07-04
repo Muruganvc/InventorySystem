@@ -12,8 +12,5 @@ public record UpdateProductCommand(
    decimal SalesPrice,
    int TotalQuantity,
    bool IsActive,
-   string? TaxType = "GST",
-   string? BarCode = null,
-   string? BrandName = null,
-   int TaxPercent = 18
+   decimal LandingPrice
 ) : IRequest<bool>;

@@ -35,7 +35,7 @@ public static class OrderEndPoints
                 item.Remarks
             )).ToList();
 
-            var command = new OrderCreateCommand(customerCommand, orderItemCommands,order.BalanceAmount);
+            var command = new OrderCreateCommand(customerCommand, orderItemCommands,order.GivenAmount);
 
             var result = await mediator.Send(command);
 

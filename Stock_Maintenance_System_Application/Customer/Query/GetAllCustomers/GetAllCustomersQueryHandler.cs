@@ -12,7 +12,7 @@ internal sealed class GetAllCustomersQueryHandler : IRequestHandler<GetAllCustom
 
     public async Task<IReadOnlyList<GetAllCustomersQueryResponse>> Handle(GetAllCustomersQuery request, CancellationToken cancellationToken)
     {
-        return await _customerItemRepository.Table
+        var result = await _customerItemRepository.Table
             .Select(x => new GetAllCustomersQueryResponse(
                 x.CustomerId,
                 x.CustomerName,
@@ -20,5 +20,6 @@ internal sealed class GetAllCustomersQueryHandler : IRequestHandler<GetAllCustom
                 x.Phone
             ))
             .ToListAsync(cancellationToken);
+        return result.OrderBy(a => a.CustomerName).ToList();
     }
 }

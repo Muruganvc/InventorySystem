@@ -57,6 +57,7 @@ internal class GetOrdersummaryQueryHandler
         cus => cus.CustomerId,
         (temp, cus) => new GetOrderSummaryResponse
         {
+            ProductId = temp.odIm.ProductId,
             FullProductName = $"{temp.com.CompanyName} {temp.cat.CategoryName} {temp.pro.ProductName}",
             Quantity = temp.odIm.Quantity,
             UnitPrice = temp.odIm.UnitPrice,
@@ -74,7 +75,6 @@ internal class GetOrdersummaryQueryHandler
             User = temp.pro.CreatedByUser.Username
         })
     .ToListAsync(cancellationToken);
-
-        return resultList;
+        return resultList.OrderBy(a => a.FullProductName).ToList();
     }
 }

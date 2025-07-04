@@ -11,7 +11,7 @@ internal sealed class GetProductCategoryQueryHandler : IRequestHandler<GetProduc
     {
         var productCategories = await _productCategoryRepository.GetListByAsync(a => a.CategoryId == request.CategoryId);
         return productCategories
-            .Select(c => new KeyValuePair<string, int>(c.ProductCategoryName, c.ProductCategoryId))
+            .Select(c => new KeyValuePair<string, int>(c.ProductCategoryName, c.ProductCategoryId)).OrderBy(a => a.Key)
             .ToList();
     }
 }

@@ -48,17 +48,14 @@ internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProduc
         var product = new InventorySystem_Domain.Product
         {
             ProductName = request.ProductName,
-            BrandName = request.BrandName,
-            Barcode = request.BarCode,
             Description = request.Description,
             CompanyId = request.CompanyId,
             CategoryId = request.CategoryId,
             ProductCategoryId = productCategoryId,
             MRP = request.Mrp,
+            LandingPrice = request.LandingPrice,
             SalesPrice = request.SalesPrice,
             Quantity = request.TotalQuantity,
-            TaxType = request.TaxType,
-            TaxPercent = request.TaxPercent,
             IsActive = request.IsActive,
             CreatedAt = DateTime.Now,
             CreatedBy = userId

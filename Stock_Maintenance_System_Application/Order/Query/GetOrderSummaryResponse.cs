@@ -1,6 +1,7 @@
 ﻿namespace InventorySystem_Application.Order.Query;
 public class GetOrderSummaryResponse
 {
+    public int ProductId { get; set; }
     public string FullProductName { get; set; } = string.Empty;
     public int Quantity { get; set; }
     public decimal UnitPrice { get; set; }

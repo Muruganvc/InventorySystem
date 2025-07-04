@@ -10,7 +10,7 @@ internal sealed class GetCategoryQueryHandler : IRequestHandler<GetCategoryQuery
     {
         var categories = await _categoryRepository.GetListByAsync(a => a.CompanyId == request.CompanyId);
         return categories
-            .Select(c => new KeyValuePair<string, int>(c.CategoryName, c.CategoryId))
+            .Select(c => new KeyValuePair<string, int>(c.CategoryName, c.CategoryId)).OrderBy(a => a.Key)
             .ToList();
     }
 }

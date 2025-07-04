@@ -47,8 +47,7 @@ internal sealed class GetProductCategoriesQueryHandler : IRequestHandler<GetProd
                     user.Username
                 ))
             .ToListAsync(cancellationToken);
-
-        return result;
+        return result.OrderBy(a => a.ProductCategoryName).ToList();
     }
 
 }

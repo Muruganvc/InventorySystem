@@ -64,7 +64,7 @@ internal sealed class OrderCreateCommandHandler : IRequestHandler<OrderCreateCom
                 DiscountPercent = item.DiscountPercent,
                 Remarks = item.Remarks,
                 CreatedAt = DateTime.UtcNow,
-                CreatedBy = userId // You can later replace this with actual user ID
+                CreatedBy = userId  
             }).ToList();
 
             await _unitOfWork.Repository<OrderItem>().AddRangeAsync(orderItems);
@@ -92,7 +92,7 @@ internal sealed class OrderCreateCommandHandler : IRequestHandler<OrderCreateCom
             // 5. Update order totals
             newOrder.TotalAmount = totalAmount;
             newOrder.FinalAmount = finalAmount;
-            newOrder.BalanceAmount = finalAmount - request.BalanceAmount;
+            newOrder.BalanceAmount = finalAmount - request.GivenAmount;
 
             // No need to call Update() explicitly if tracked by EF Core
             await _unitOfWork.SaveAsync(); // Single save for all changes

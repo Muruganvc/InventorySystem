@@ -18,17 +18,8 @@ public class Product
     [Column(TypeName = "decimal(10,2)")]
     public decimal SalesPrice { get; set; }
 
-    [Column(TypeName = "decimal(5,2)")]
-    public decimal TaxPercent { get; set; } = 18.00m;
-
-    [MaxLength(5)]
-    public string? TaxType { get; set; }
-
-    [MaxLength(50)]
-    public string? Barcode { get; set; }
-
-    [MaxLength(50)]
-    public string? BrandName { get; set; }
+    [Column(TypeName = "decimal(10,2)")]
+    public decimal LandingPrice { get; set; }
     public int Quantity { get; set; }
     public bool IsActive { get; set; } = true;
     public DateTime CreatedAt { get; set; } = DateTime.Now;

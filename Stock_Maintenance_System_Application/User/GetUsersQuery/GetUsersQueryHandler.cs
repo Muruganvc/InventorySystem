@@ -11,7 +11,7 @@ internal sealed class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IRea
     public GetUsersQueryHandler(IUnitOfWork unitOfWork,
         IHttpContextAccessor httpContextAccessor)
     {
-        _unitOfWork = unitOfWork; 
+        _unitOfWork = unitOfWork;
         _httpContextAccessor = httpContextAccessor;
     }
 
@@ -29,6 +29,6 @@ internal sealed class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IRea
             IsActive = user.IsActive,
             LastLogin = user.LastLogin ?? default,
             SuperAdmin = false // Consider mapping this from domain if available
-        }).ToList();
+        }).OrderBy(a => a.UserName).ToList();
     }
 }

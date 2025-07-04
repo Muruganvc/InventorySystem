@@ -35,6 +35,6 @@ internal sealed class GetCustomerOrderSummaryQueryHandler
                 )
             )
             .ToListAsync(cancellationToken);
-        return result;
+        return result.OrderBy(a => a.CustomerName).ToList();
     }
 }

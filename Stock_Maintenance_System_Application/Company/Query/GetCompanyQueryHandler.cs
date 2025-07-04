@@ -37,6 +37,6 @@ internal sealed class GetCompanyQueryHandler
                 )
             )
             .ToListAsync(cancellationToken);
-        return companies;
+        return companies.OrderBy(a => a.CompanyName).ToList();
     }
 }

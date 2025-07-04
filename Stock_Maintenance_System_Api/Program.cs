@@ -141,7 +141,7 @@ app.Use(async (context, next) =>
         await context.Response.WriteAsJsonAsync(new { Errors = errors });
     }
 });
-app.MapUserEndpoints().MapProductCompanyEndpoints().MapProductEndpoints().MapOrderEndpoints();
+app.MapUserEndpoints().MapProductCompanyEndpoints().MapProductEndpoints().MapOrderEndpoints().MapDashboardEndpoints();
 app.UseHttpsRedirection();
 
 app.Run();

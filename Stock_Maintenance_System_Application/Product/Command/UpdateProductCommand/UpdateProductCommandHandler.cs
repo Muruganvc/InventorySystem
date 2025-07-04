@@ -20,23 +20,20 @@ internal sealed class UpdateProductCommandHandler : IRequestHandler<UpdateProduc
     {
         int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
         var product = await _productRepository.GetByAsync(a => a.ProductId == request.ProductId);
-        if(product == null) return false;
+        if (product == null) return false;
         product.Description = request.Description;
-        product.CategoryId= request.CategoryId;
+        product.CategoryId = request.CategoryId;
         product.ProductCategoryId = request.ProductCategoryId;
         product.ProductName = request.ProductName;
         product.MRP = request.Mrp;
-        product.Barcode = request.BarCode;
-        product.TaxPercent= request.TaxPercent;
-        product.SalesPrice= request.SalesPrice;
-        product.TaxType= request.TaxType;
-        product.Quantity = request.TotalQuantity;
-        product.BrandName = request.BrandName;
+        product.SalesPrice = request.SalesPrice;
+        product.Quantity = product.Quantity + request.TotalQuantity;
+        product.LandingPrice= request.LandingPrice;
         product.CompanyId = request.CompanyId;
         product.UpdatedBy = userId;
-        product.UpdatedAt= DateTime.Now;
-        product.Description= request.Description;
-        product.IsActive= request.IsActive;
+        product.UpdatedAt = DateTime.Now;
+        product.Description = request.Description;
+        product.IsActive = request.IsActive;
         bool isSuccess = false;
         await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {

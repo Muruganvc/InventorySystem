@@ -10,22 +10,22 @@ internal sealed class GetProductsQueryHandler
     : IRequestHandler<GetProductsQuery, IReadOnlyList<GetProductsQueryResponse>>
 {
     private readonly IRepository<InventorySystem_Domain.Product> _productRepository;
-   private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     public GetProductsQueryHandler(IRepository<InventorySystem_Domain.Product> productRepository,
         IHttpContextAccessor httpContextAccessor)
     {
         _productRepository = productRepository;
         _httpContextAccessor = httpContextAccessor;
     }
-     
+
     public async Task<IReadOnlyList<GetProductsQueryResponse>> Handle(
         GetProductsQuery request,
         CancellationToken cancellationToken)
     {
         var username = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Name)?.Value;
         var email = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Email)?.Value;
-        var roles = _httpContextAccessor.HttpContext?.User? .Claims.Where(c => c.Type == ClaimTypes.Role)
-        .Select(c => c.Value) .ToList();
+        var roles = _httpContextAccessor.HttpContext?.User?.Claims.Where(c => c.Type == ClaimTypes.Role)
+        .Select(c => c.Value).ToList();
         var query = _productRepository.Table.AsQueryable();
         bool isAdmin = roles?.Contains("Admin") ?? false;
         bool isManager = roles?.Contains("Manager") ?? false;
@@ -35,33 +35,29 @@ internal sealed class GetProductsQueryHandler
             query = query.Where(p => p.IsActive);
         }
         var result = await query.Select(pro => new
-            {
-                pro.ProductId,
-                pro.ProductName,
-                pro.ProductCategoryId,
-                ProductCategoryName = pro.ProductCategory != null ? pro.ProductCategory.ProductCategoryName : null,
-                pro.CategoryId,
-                CategoryName = pro.Category != null ? pro.Category.CategoryName : null,
-                pro.CompanyId,
-                CompanyName = pro.Company != null ? pro.Company.CompanyName : null,
-                pro.Description,
-                pro.MRP,
-                pro.SalesPrice,
-                pro.Quantity,
-                pro.TaxPercent,
-                pro.TaxType,
-                pro.Barcode,
-                pro.BrandName,
-                pro.IsActive,
-                CreatedByUser = pro.CreatedByUser != null ? pro.CreatedByUser.Username : null
-            })
+        {
+            pro.ProductId,
+            pro.ProductName,
+            pro.ProductCategoryId,
+            ProductCategoryName = pro.ProductCategory != null ? pro.ProductCategory.ProductCategoryName : null,
+            pro.CategoryId,
+            CategoryName = pro.Category != null ? pro.Category.CategoryName : null,
+            pro.CompanyId,
+            CompanyName = pro.Company != null ? pro.Company.CompanyName : null,
+            pro.Description,
+            pro.MRP,
+            pro.SalesPrice,
+            pro.LandingPrice,
+            pro.Quantity,
+            pro.IsActive,
+            CreatedByUser = pro.CreatedByUser != null ? pro.CreatedByUser.Username : null
+        })
             .ToListAsync(cancellationToken);
 
         // Post-process with custom logic for ProductName
         var mappedResult = result.Select(pro => new GetProductsQueryResponse(
             pro.ProductId,
-            $"{pro.CompanyName ?? ""} {pro.CategoryName ?? ""}" +
-            (string.IsNullOrWhiteSpace(pro.ProductName) ? "" : $" {pro.ProductName}"),
+            pro.ProductName,
             pro.ProductCategoryId,
             pro.ProductCategoryName,
             pro.CategoryId,
@@ -71,15 +67,11 @@ internal sealed class GetProductsQueryHandler
             pro.Description,
             pro.MRP,
             pro.SalesPrice,
+            pro.LandingPrice,
             pro.Quantity,
-            pro.TaxPercent,
-            pro.TaxType,
-            pro.Barcode,
-            pro.BrandName,
             pro.IsActive,
             pro.CreatedByUser
-        )).ToList();
-
+        )).OrderBy(a => a.ProductName).ToList();
         return mappedResult;
     }
 }
