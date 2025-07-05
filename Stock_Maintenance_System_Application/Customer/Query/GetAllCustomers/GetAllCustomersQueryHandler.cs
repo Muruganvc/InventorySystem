@@ -16,8 +16,8 @@ internal sealed class GetAllCustomersQueryHandler : IRequestHandler<GetAllCustom
             .Select(x => new GetAllCustomersQueryResponse(
                 x.CustomerId,
                 x.CustomerName,
-                x.Address!,
-                x.Phone
+                 x.Phone,
+                x.Address!
             ))
             .ToListAsync(cancellationToken);
         return result.OrderBy(a => a.CustomerName).ToList();

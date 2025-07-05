@@ -123,11 +123,13 @@ app.UseAuthorization();
 
 app.UseCors("AllowCors");
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+app.UseSwagger();
+app.UseSwaggerUI();
 app.Use(async (context, next) =>
 {
     try

@@ -10,5 +10,6 @@ public record UpdateProductRequest(
    decimal SalesPrice,
    int TotalQuantity,
    bool IsActive,
-   decimal LandingPrice
+   decimal LandingPrice,
+   string? SerialNo
 );

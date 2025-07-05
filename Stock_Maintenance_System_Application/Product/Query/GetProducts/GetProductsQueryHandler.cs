@@ -50,7 +50,8 @@ internal sealed class GetProductsQueryHandler
             pro.LandingPrice,
             pro.Quantity,
             pro.IsActive,
-            CreatedByUser = pro.CreatedByUser != null ? pro.CreatedByUser.Username : null
+            CreatedByUser = pro.CreatedByUser != null ? pro.CreatedByUser.Username : null,
+            pro.SerialNo
         })
             .ToListAsync(cancellationToken);
 
@@ -70,7 +71,8 @@ internal sealed class GetProductsQueryHandler
             pro.LandingPrice,
             pro.Quantity,
             pro.IsActive,
-            pro.CreatedByUser
+            pro.CreatedByUser,
+            pro.SerialNo
         )).OrderBy(a => a.ProductName).ToList();
         return mappedResult;
     }

@@ -49,7 +49,9 @@ internal sealed class OrderCreateCommandHandler : IRequestHandler<OrderCreateCom
                 OrderDate = DateTime.UtcNow,
                 BalanceAmount = 0,
                 FinalAmount = 0,
-                TotalAmount = 0
+                TotalAmount = 0,
+                IsGst = request.IsGst,
+                GstNumber = request.GstNumber
             };
 
             await _unitOfWork.Repository<InventorySystem_Domain.Order>().AddAsync(newOrder);

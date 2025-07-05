@@ -14,5 +14,6 @@ public record GetProductsQueryResponse(
     decimal LandingPrice,
     int Quantity,
     bool IsActive,
-    string? UserName
+    string? UserName,
+    string? SerialNo
 );

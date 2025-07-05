@@ -10,5 +10,6 @@ public record CreateProductCommand(
     decimal SalesPrice,
     int TotalQuantity,
     decimal LandingPrice,
+    string? SerialNo,
     bool IsActive = false
 ) : IRequest<int>;
