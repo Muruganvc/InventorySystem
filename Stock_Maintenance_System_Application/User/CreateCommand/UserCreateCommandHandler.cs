@@ -3,30 +3,26 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using InventorySystem_Domain.Common;
 using System.Security.Claims;
-
+using BCrypt.Net;
 namespace InventorySystem_Application.User.CreateCommand;
 internal sealed class UserCreateCommandHandler : IRequestHandler<UserCreateCommand, int>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IConfiguration _configuration;
+    private readonly IUnitOfWork _unitOfWork; 
     private readonly IHttpContextAccessor _httpContextAccessor;
-    public UserCreateCommandHandler(IUnitOfWork unitOfWork, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+    public UserCreateCommandHandler(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
     {
-        _unitOfWork = unitOfWork;
-        _configuration = configuration;
+        _unitOfWork = unitOfWork; 
         _httpContextAccessor = httpContextAccessor;
     }
     public async Task<int> Handle(UserCreateCommand request, CancellationToken cancellationToken)
     {
         int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
-        //string pwd = _configuration["_configuration:defaultPwd"]!;
-        //if (string.IsNullOrEmpty(pwd)) { return 0; }
         var user = new InventorySystem_Domain.User
         {
             FirstName = request.FirstName,
             LastName = request.LastName,
             Username = request.Username,
-            PasswordHash = "Welcome2627",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("Welcome2627"),
             Email = request.Email,
             IsActive = request.IsActive,
             PasswordLastChanged = request.PasswordLastChanged,

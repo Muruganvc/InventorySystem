@@ -123,18 +123,32 @@ namespace InventorySystem_Api.EndPoints
                 return Results.Ok(new { message = "All customer Lists", data = result });
             }).RequireAuthorization();
 
-            app.MapPost("/database-backup", async (string userName, IDatabaseScriptService DatabaseScriptService) =>
+            app.MapPost("/database-backup", (string userName, IDatabaseScriptService DatabaseScriptService) =>
             {
                 var result = DatabaseScriptService.GenerateFullDatabaseScript(userName);
                 return Results.Ok(new { message = "Database backup details", data = result });
             }).RequireAuthorization();
 
-            app.MapGet("/backup", async (IConfiguration configuration, IDatabaseScriptService DatabaseScriptService) =>
+            app.MapGet("/backup", (IConfiguration config, IDatabaseScriptService databaseScriptService) =>
             {
-                string? fileName = $"{configuration["appSetting:backUpHistory"]}";
-                var result = DatabaseScriptService.ReadCsv(fileName);
-                return Results.Ok(new { message = "All customer Lists", data = result });
+                // Read settings
+                var backupPath = config["appSetting:backUpPath"];
+                var fileName = config["appSetting:backUpHistory"];
+
+                if (string.IsNullOrWhiteSpace(backupPath) || string.IsNullOrWhiteSpace(fileName))
+                {
+                    return Results.BadRequest(new { message = "Backup path or filename is not configured properly." });
+                }
+                var fullFileName = Path.Combine(backupPath, fileName);
+                // Ensure file exists before proceeding
+                if (!File.Exists(fullFileName))
+                {
+                    return Results.NotFound(new { message = "Backup file not found." });
+                }
+                var data = databaseScriptService.ReadCsv(fullFileName);
+                return Results.Ok(new { message = "Customer list retrieved successfully.", data });
             }).RequireAuthorization();
+
 
             return app;
         }

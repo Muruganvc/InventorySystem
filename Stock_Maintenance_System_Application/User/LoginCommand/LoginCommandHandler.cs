@@ -30,10 +30,14 @@ namespace InventorySystem_Application.User.LoginCommand
 
             if (user is null)
                 throw new UnauthorizedAccessException("Invalid username.");
-            if (user.PasswordHash != request.Password)
+
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, hashedPassword);
+
+            if (!isPasswordValid)
                 throw new UnauthorizedAccessException("Invalid password.");
 
-                var roleIds = (await _userRoleRepository.GetListByAsync(a => a.UserId == user.UserId))
+            var roleIds = (await _userRoleRepository.GetListByAsync(a => a.UserId == user.UserId))
                 .Select(s => s.RoleId)
                 .ToArray();
 

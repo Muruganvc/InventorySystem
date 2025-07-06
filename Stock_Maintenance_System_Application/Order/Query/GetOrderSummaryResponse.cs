@@ -17,4 +17,6 @@ public class GetOrderSummaryResponse
     public string? Address { get; set; }
     public string Phone { get; set; } = string.Empty;
     public string User { get; set; } = string.Empty;
+    public string? SerialNo { get; set; }
+    public bool IsGst { get; set; }
 }

@@ -35,8 +35,10 @@ public class DatabaseScriptService : IDatabaseScriptService
         string fileName = Path.Combine(outputDirectory, $"Backup_{dbName}_{timestamp}.sql");
         try
         {
-            if (File.Exists(fileName))
-                File.Delete(fileName);
+
+            if(!Directory.Exists(outputDirectory)) {
+                Directory.CreateDirectory(outputDirectory);
+            }
 
             var server = new Server(new ServerConnection(new SqlConnection(connectionString)));
             var database = server.Databases[dbName];
