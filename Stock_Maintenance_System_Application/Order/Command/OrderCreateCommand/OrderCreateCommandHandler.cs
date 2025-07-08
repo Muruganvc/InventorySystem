@@ -22,7 +22,7 @@ internal sealed class OrderCreateCommandHandler : IRequestHandler<OrderCreateCom
     public async Task<int> Handle(OrderCreateCommand request, CancellationToken cancellationToken)
     {
         int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
-
+        int newOrderId = 0;
         await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
             // 1. Handle customer
@@ -98,8 +98,9 @@ internal sealed class OrderCreateCommandHandler : IRequestHandler<OrderCreateCom
 
             // No need to call Update() explicitly if tracked by EF Core
             await _unitOfWork.SaveAsync(); // Single save for all changes
+            newOrderId = newOrder.OrderId;
         }, cancellationToken);
 
-        return 1; // Or return newOrder.OrderId if needed
+        return newOrderId;
     }
 }

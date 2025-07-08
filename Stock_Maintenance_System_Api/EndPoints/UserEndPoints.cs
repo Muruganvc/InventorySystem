@@ -123,9 +123,10 @@ namespace InventorySystem_Api.EndPoints
                 return Results.Ok(new { message = "All customer Lists", data = result });
             }).RequireAuthorization();
 
-            app.MapPost("/database-backup", (string userName, IDatabaseScriptService DatabaseScriptService) =>
+            app.MapPost("/database-backup", (IConfiguration config, string userName, IDatabaseScriptService DatabaseScriptService) =>
             {
-                var result = DatabaseScriptService.GenerateFullDatabaseScript(userName);
+                var backUpHistory = config["appSetting:backUpHistory"];
+                var result = DatabaseScriptService.GenerateFullDatabaseScript(userName, backUpHistory);
                 return Results.Ok(new { message = "Database backup details", data = result });
             }).RequireAuthorization();
 
@@ -133,7 +134,7 @@ namespace InventorySystem_Api.EndPoints
             {
                 // Read settings
                 var backupPath = config["appSetting:backUpPath"];
-                var fileName = config["appSetting:backUpHistory"];
+                var fileName = config["appSetting:backUpHistory"]; 
 
                 if (string.IsNullOrWhiteSpace(backupPath) || string.IsNullOrWhiteSpace(fileName))
                 {
@@ -148,7 +149,6 @@ namespace InventorySystem_Api.EndPoints
                 var data = databaseScriptService.ReadCsv(fullFileName);
                 return Results.Ok(new { message = "Customer list retrieved successfully.", data });
             }).RequireAuthorization();
-
 
             return app;
         }

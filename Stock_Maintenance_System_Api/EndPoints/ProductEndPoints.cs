@@ -4,6 +4,7 @@ using InventorySystem_Application.Product.Command.ActivateProductCommand;
 using InventorySystem_Application.Product.Command.CreateProductCommand;
 using InventorySystem_Application.Product.Command.UpdateProductCommand;
 using InventorySystem_Application.Product.Query.GetProducts;
+using InventorySystem_Application.Product.Command.QuantityUpdateCommand;
 
 namespace InventorySystem_Api.EndPoints;
 public static class ProductEndpoints
@@ -84,6 +85,26 @@ public static class ProductEndpoints
         .Produces<int>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .RequireAuthorization();
+
+        app.MapPut("/product/{productId:int}/{quantity:int}", async (
+        int productId,
+        int quantity,
+        IMediator mediator) =>
+        {
+                var command = new QuantityUpdateCommand(productId, quantity);
+                var result = await mediator.Send(command);
+                return Results.Ok(new
+                {
+                    message = "Product updated successfully",
+                    data = result
+                });
+         })
+        .WithName("UpdateProductQuantity")
+        .WithTags("Products")
+        .Produces(StatusCodes.Status200OK, typeof(object))
+        .Produces(StatusCodes.Status400BadRequest)
+        .RequireAuthorization();
+
 
         return app;
     }

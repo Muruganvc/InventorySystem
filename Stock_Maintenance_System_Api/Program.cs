@@ -24,6 +24,7 @@ using InventorySystem_Infrastructure;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using InventorySystem_Application.Product.Command.QuantityUpdateCommand;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<SmsDbContext>(options =>
@@ -41,6 +42,7 @@ builder.Services.AddMediatR(typeof(OrderCreateCommand).Assembly);
 builder.Services.AddMediatR(typeof(CompanyCreateCommand).Assembly);
 builder.Services.AddMediatR(typeof(CompanyUpdateCommand).Assembly);
 builder.Services.AddMediatR(typeof(AddOrRemoveUserMenuItemCommand).Assembly);
+builder.Services.AddMediatR(typeof(QuantityUpdateCommand).Assembly);
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddValidatorsFromAssemblyContaining<UserCreateCommandValidator>();

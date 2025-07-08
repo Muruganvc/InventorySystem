@@ -2,13 +2,19 @@
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using System.Data.SqlClient;
+using System;
+using System.Net;
+using System.Net.Mail;
+using System.Net.Mime;
+using System.Xml.Linq;
+
 namespace Database_Utility;
 
 public class DatabaseScriptService : IDatabaseScriptService
 {
     private readonly IConfiguration _configuration;
     public DatabaseScriptService(IConfiguration configuration) => _configuration = configuration;
-    public List<DatabaseBackupResponse> GenerateFullDatabaseScript(string userName)
+    public List<DatabaseBackupResponse> GenerateFullDatabaseScript(string userName, string historyFileName)
     {
         string? connectionString = _configuration["ConnectionStrings:DefaultConnection"];
         string? outputDirectory = _configuration["appSetting:backUpPath"];
@@ -24,8 +30,11 @@ public class DatabaseScriptService : IDatabaseScriptService
 
         var status = BackUp(connectionString, dbName, outputDirectory);
 
-        var fileName = LogAction(userName, DateTime.Now, status.fileName, status.message);
+        var fileName = LogAction(userName, DateTime.Now, outputDirectory, historyFileName, status.message);
         var response = ReadCsv(fileName);
+
+        //SendEmail("electricalsvennila@gmail.com", new List<string> { "vcmuruganmca@gmail.com" }, "Qwerty@2627$", new List<string> { status.fileName });
+
         return response;
     }
 
@@ -36,7 +45,8 @@ public class DatabaseScriptService : IDatabaseScriptService
         try
         {
 
-            if(!Directory.Exists(outputDirectory)) {
+            if (!Directory.Exists(outputDirectory))
+            {
                 Directory.CreateDirectory(outputDirectory);
             }
 
@@ -126,29 +136,26 @@ public class DatabaseScriptService : IDatabaseScriptService
         }
     }
 
-    private string LogAction(string name, DateTime date, string FileName, string Status)
+    private string LogAction(string name, DateTime date,string outputDirectory, string FileName, string Status)
     {
-        string? fileName =$"{_configuration["appSetting:backUpHistory"]}" ;
-
-        bool fileExists = File.Exists(fileName);
-
-        string? directory = Path.GetDirectoryName(fileName);
-        if (!string.IsNullOrWhiteSpace(directory) && !Directory.Exists(directory))
+        string fullFileName = Path.Combine(outputDirectory, FileName);
+        bool fileExists = File.Exists(fullFileName); 
+        if (!string.IsNullOrWhiteSpace(outputDirectory) && !Directory.Exists(outputDirectory))
         {
-            Directory.CreateDirectory(directory);
+            Directory.CreateDirectory(outputDirectory);
         }
 
-        using (StreamWriter writer = new(fileName, append: true))
+        using (StreamWriter writer = new(fullFileName, append: true))
         {
             if (!fileExists)
             {
                 writer.WriteLine("Creator,Date,FileName,Status");
             }
             string formattedDate = date.ToString("yyyy-MM-dd HH:mm:ss");
-            string line = $"{Escape(name)},{formattedDate},{Escape(FileName)},{Status}";
+            string line = $"{Escape(name)},{formattedDate},{Escape(fullFileName)},{Status}";
             writer.WriteLine(line);
         }
-        return fileName;
+        return fullFileName;
     }
     private string Escape(string input)
     {
@@ -171,7 +178,7 @@ public class DatabaseScriptService : IDatabaseScriptService
                 var line = reader.ReadLine();
                 if (string.IsNullOrWhiteSpace(line))
                     continue;
-                
+
                 // Skip the header
                 if (isFirstLine)
                 {
@@ -221,5 +228,63 @@ public class DatabaseScriptService : IDatabaseScriptService
         return result.ToArray();
     }
 
-     
+    private void SendEmail(string fromEmail, List<string> recipients, string password, List<string> attachmentPaths)
+    {
+        if (recipients == null || recipients.Count == 0)
+            throw new ArgumentException("At least one recipient is required.", nameof(recipients));
+
+        var fromAddress = new MailAddress(fromEmail, "VENNILA ELECTRICALS");
+        var smtp = new SmtpClient
+        {
+            Host = "smtp.gmail.com",
+            Port = 587,
+            EnableSsl = true,
+            DeliveryMethod = SmtpDeliveryMethod.Network,
+            UseDefaultCredentials = false,
+            Credentials = new NetworkCredential(fromAddress.Address, password)
+        };
+
+        var mailMessage = new MailMessage
+        {
+            From = fromAddress,
+            Subject = "Daily Database BACKUP",
+            IsBodyHtml = true,
+            Body = @"
+            <html>
+              <body>
+                <h2 style='color: #2e6c80;'>Hi All,</h2>
+                <p>This is a system-generated email containing the <strong>daily database backup</strong> as an attachment.</p>
+                <p>Thanks,<br/><strong>Vennila Electricals</strong></p>
+              </body>
+            </html>"
+        };
+         
+        mailMessage.To.Add(new MailAddress(recipients[0]));
+        for (int i = 1; i < recipients.Count; i++)
+        {
+            mailMessage.CC.Add(new MailAddress(recipients[i]));
+        }
+         
+        foreach (var path in attachmentPaths)
+        {
+            if (File.Exists(path))
+            {
+                mailMessage.Attachments.Add(new Attachment(path, MediaTypeNames.Application.Octet));
+            }
+        }
+
+        try
+        {
+            smtp.Send(mailMessage);
+            Console.WriteLine("Email sent successfully.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to send email: {ex.Message}");
+        }
+        finally
+        {
+            mailMessage.Dispose();  
+        }
+    }
 }

@@ -31,8 +31,8 @@ namespace InventorySystem_Application.User.LoginCommand
             if (user is null)
                 throw new UnauthorizedAccessException("Invalid username.");
 
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
-            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, hashedPassword);
+            // Compare the input password with the hashed password stored in the database
+            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
 
             if (!isPasswordValid)
                 throw new UnauthorizedAccessException("Invalid password.");
