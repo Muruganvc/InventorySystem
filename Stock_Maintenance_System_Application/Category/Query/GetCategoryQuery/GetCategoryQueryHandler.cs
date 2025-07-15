@@ -8,7 +8,7 @@ internal sealed class GetCategoryQueryHandler : IRequestHandler<GetCategoryQuery
     public GetCategoryQueryHandler(IRepository<InventorySystem_Domain.Category> categoryRepository) => _categoryRepository = categoryRepository;
     public async Task<IReadOnlyList<KeyValuePair<string, int>>> Handle(GetCategoryQuery request, CancellationToken cancellationToken)
     {
-        var categories = await _categoryRepository.GetListByAsync(a => a.CompanyId == request.CompanyId);
+        var categories = await _categoryRepository.GetListByAsync(a => a.CompanyId == request.CompanyId && a.IsActive);
         return categories
             .Select(c => new KeyValuePair<string, int>(c.CategoryName, c.CategoryId)).OrderBy(a => a.Key)
             .ToList();

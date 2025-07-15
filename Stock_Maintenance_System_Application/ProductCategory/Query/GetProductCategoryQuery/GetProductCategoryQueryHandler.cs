@@ -9,7 +9,7 @@ internal sealed class GetProductCategoryQueryHandler : IRequestHandler<GetProduc
         _productCategoryRepository = productCategoryRepository;
     public async Task<IReadOnlyList<KeyValuePair<string, int>>> Handle(GetProductCategoryQuery request, CancellationToken cancellationToken)
     {
-        var productCategories = await _productCategoryRepository.GetListByAsync(a => a.CategoryId == request.CategoryId);
+        var productCategories = await _productCategoryRepository.GetListByAsync(a => a.CategoryId == request.CategoryId && a.IsActive);
         return productCategories
             .Select(c => new KeyValuePair<string, int>(c.ProductCategoryName, c.ProductCategoryId)).OrderBy(a => a.Key)
             .ToList();

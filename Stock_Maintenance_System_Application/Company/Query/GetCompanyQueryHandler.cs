@@ -23,6 +23,7 @@ internal sealed class GetCompanyQueryHandler
         CancellationToken cancellationToken)
     {
         var companies = await _companyRepository.Table
+            .Where(a=>a.IsActive)
             .Join(
                 _userRepository.Table,
                 company => company.CreatedBy,

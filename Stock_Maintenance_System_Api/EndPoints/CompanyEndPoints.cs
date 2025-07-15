@@ -3,13 +3,16 @@ using InventorySystem_Application.Category.Command.CreateCommand;
 using InventorySystem_Application.Category.Command.UpdateCommand;
 using InventorySystem_Application.Category.Query.GetCategoriesQuery;
 using InventorySystem_Application.Category.Query.GetCategoryQuery;
+using InventorySystem_Application.Company.Command.BulkCompanyCommand;
 using InventorySystem_Application.Company.Command.CreateCommand;
 using InventorySystem_Application.Company.Command.UpdateCommand;
 using InventorySystem_Application.Company.Query;
+using InventorySystem_Application.Product.Command.QuantityUpdateCommand;
 using InventorySystem_Application.ProductCategory.Command.CreateCommand;
 using InventorySystem_Application.ProductCategory.Command.UpdateCommand;
 using InventorySystem_Application.ProductCategory.Query.GetProductCategoriesQuery;
 using InventorySystem_Application.ProductCategory.Query.GetProductCategoryQuery;
+using InventorySystem_Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -171,6 +174,37 @@ public static class CompanyEndPoints
         .RequireAuthorization();
 
         #endregion
+
+        app.MapPost("/bulk-company", async (
+        List<BulkComapanyRequest> request,
+        IMediator mediator) =>
+                { 
+                    var bulkCompanyEntries = new List<BulkCompanyEntry>();
+                    request.ForEach(a =>
+                    {
+                        bulkCompanyEntries.Add(new BulkCompanyEntry(
+                            a.CompanyName,
+                            a.CategoryName,
+                            a.ProductCategoryName
+                        ));
+                    });
+                    var command = new BulkCompanyCommand(bulkCompanyEntries);
+                    var result = await mediator.Send(command);
+
+                    return Results.Ok(new
+                    {
+                        message = "Product updated successfully",
+                        data = result
+                    });
+                })
+        .WithName("BulkCompanyCommand")
+        .WithTags("Products")
+        .Produces(StatusCodes.Status200OK, typeof(object))
+        .Produces(StatusCodes.Status400BadRequest)
+        .RequireAuthorization();
+
+
+
 
         return app;
     }

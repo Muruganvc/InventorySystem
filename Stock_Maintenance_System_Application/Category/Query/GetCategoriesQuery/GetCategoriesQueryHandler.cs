@@ -23,6 +23,7 @@ internal sealed class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQ
         company => company.CompanyId,
         category => category.CompanyId,
         (company, category) => new { company, category })
+    .Where(a => a.category.IsActive && a.company.IsActive)
     .Join(_userRepository.Table,
         combined => combined.category.CreatedBy,
         user => user.UserId,

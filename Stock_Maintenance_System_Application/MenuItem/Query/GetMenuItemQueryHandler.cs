@@ -28,7 +28,7 @@ internal sealed class GetMenuItemQueryHandler : IRequestHandler<GetMenuItemQuery
             .ToListAsync(cancellationToken);
 
         var response = BuildMenuTree(menuItems, null);
-        return response;
+        return response.OrderBy(a => a.Id).ToList();
     }
 
     private List<GetMenuItemQueryResponse> BuildMenuTree(List<InventorySystem_Domain.MenuItem> allItems, int? parentId)

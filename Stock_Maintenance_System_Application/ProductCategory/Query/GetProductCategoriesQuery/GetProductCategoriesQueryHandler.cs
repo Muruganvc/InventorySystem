@@ -23,6 +23,7 @@ internal sealed class GetProductCategoriesQueryHandler : IRequestHandler<GetProd
     public async Task<IReadOnlyList<GetProductCategoryQueryResponse>> Handle(GetProductCategoriesQuery request, CancellationToken cancellationToken)
     {
         var result = await _productCategoryRepository.Table
+            .Where(a=>a.IsActive)
             .Join(_categoryRepository.Table,
                 pc => pc.CategoryId,
                 c => c.CategoryId,

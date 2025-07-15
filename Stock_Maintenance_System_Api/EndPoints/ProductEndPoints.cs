@@ -5,6 +5,7 @@ using InventorySystem_Application.Product.Command.CreateProductCommand;
 using InventorySystem_Application.Product.Command.UpdateProductCommand;
 using InventorySystem_Application.Product.Query.GetProducts;
 using InventorySystem_Application.Product.Command.QuantityUpdateCommand;
+using InventorySystem_Application.Company.Command.BulkCompanyCommand;
 
 namespace InventorySystem_Api.EndPoints;
 public static class ProductEndpoints
@@ -104,6 +105,11 @@ public static class ProductEndpoints
         .Produces(StatusCodes.Status200OK, typeof(object))
         .Produces(StatusCodes.Status400BadRequest)
         .RequireAuthorization();
+
+     
+
+
+        
 
 
         return app;
