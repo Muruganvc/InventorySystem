@@ -27,7 +27,7 @@ internal sealed class UpdateProductCommandHandler : IRequestHandler<UpdateProduc
         product.ProductName = request.ProductName;
         product.MRP = request.Mrp;
         product.SalesPrice = request.SalesPrice;
-        product.Quantity = product.Quantity + request.TotalQuantity;
+        product.Quantity += request.TotalQuantity;
         product.LandingPrice= request.LandingPrice;
         product.CompanyId = request.CompanyId;
         product.UpdatedBy = userId;
