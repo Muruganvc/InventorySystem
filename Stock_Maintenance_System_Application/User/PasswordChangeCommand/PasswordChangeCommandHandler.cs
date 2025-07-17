@@ -20,10 +20,12 @@ internal sealed class PasswordChangeCommandHandler : IRequestHandler<PasswordCha
         if (user == null)
             return false;
 
-        if (user.PasswordHash != request.CurrentPassword)
+        bool isPasswordValid = BCrypt.Net.BCrypt.Verify(request.CurrentPassword, user.PasswordHash);
+
+        if (!isPasswordValid)
             return false;
 
-        user.PasswordHash = request.PasswordHash;
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.PasswordHash);
         user.PasswordLastChanged = request.PasswordLastChanged;
         user.IsPasswordExpired = false;
         bool isSuccess = false;

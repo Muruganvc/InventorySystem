@@ -29,7 +29,7 @@ namespace InventorySystem_Api.EndPoints
                    var result = await mediator.Send(command);
                    return Results.Ok(new
                    {
-                       message = "Login successful",
+                       message = result == null ? "Invalid credentials" : "Login successful",
                        data = result
                    });
                }).WithMetadata(new AllowAnonymousAttribute());
