@@ -1,19 +1,21 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using InventorySystem_Domain.Common;
+using InventorySystem_Application.Common;
+
 namespace InventorySystem_Application.MenuItem.Query.GetAllMenuItem;
-internal sealed class GetAllMenuItemQueryHandler : IRequestHandler<GetAllMenuItemQuery, IReadOnlyList<GetMenuItemQueryResponse>>
+internal sealed class GetAllMenuItemQueryHandler : IRequestHandler<GetAllMenuItemQuery, IResult<IReadOnlyList<GetMenuItemQueryResponse>>>
 {
     private readonly IRepository<InventorySystem_Domain.MenuItem> _menuItemRepository;
 
     public GetAllMenuItemQueryHandler(
         IRepository<InventorySystem_Domain.MenuItem> menuItemRepository) => _menuItemRepository = menuItemRepository;
 
-    public async Task<IReadOnlyList<GetMenuItemQueryResponse>> Handle(GetAllMenuItemQuery request, CancellationToken cancellationToken)
+    public async Task<IResult<IReadOnlyList<GetMenuItemQueryResponse>>> Handle(GetAllMenuItemQuery request, CancellationToken cancellationToken)
     {
         var allMenuItems = await _menuItemRepository.Table.ToListAsync(cancellationToken);
         var response = BuildMenuTree(allMenuItems, null);
-        return response;
+        return Result<IReadOnlyList<GetMenuItemQueryResponse>>.Success(response); 
     }
     private List<GetMenuItemQueryResponse> BuildMenuTree(List<InventorySystem_Domain.MenuItem> allItems, int? parentId)
     {

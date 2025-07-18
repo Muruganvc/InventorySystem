@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Http;
 using InventorySystem_Domain.Common;
 using System.Security.Claims;
+using InventorySystem_Application.Common;
 
 namespace InventorySystem_Application.Product.Command.UpdateProductCommand;
-internal sealed class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, bool>
+internal sealed class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, IResult<bool>>
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUnitOfWork _unitOfWork;
@@ -16,11 +17,13 @@ internal sealed class UpdateProductCommandHandler : IRequestHandler<UpdateProduc
         _productRepository = productRepository;
         _httpContextAccessor = httpContextAccessor;
     }
-    public async Task<bool> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
+    public async Task<IResult<bool>> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
         int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
         var product = await _productRepository.GetByAsync(a => a.ProductId == request.ProductId);
-        if (product == null) return false;
+        if (product == null)
+            return Result<bool>.Failure("Selected product not found");
+
         product.Description = request.Description;
         product.CategoryId = request.CategoryId;
         product.ProductCategoryId = request.ProductCategoryId;
@@ -28,7 +31,7 @@ internal sealed class UpdateProductCommandHandler : IRequestHandler<UpdateProduc
         product.MRP = request.Mrp;
         product.SalesPrice = request.SalesPrice;
         product.Quantity += request.TotalQuantity;
-        product.LandingPrice= request.LandingPrice;
+        product.LandingPrice = request.LandingPrice;
         product.CompanyId = request.CompanyId;
         product.UpdatedBy = userId;
         product.UpdatedAt = DateTime.Now;
@@ -40,6 +43,6 @@ internal sealed class UpdateProductCommandHandler : IRequestHandler<UpdateProduc
         {
             isSuccess = await _unitOfWork.SaveAsync() > 0;
         }, cancellationToken);
-        return isSuccess;
+        return Result<bool>.Success(isSuccess);
     }
 }

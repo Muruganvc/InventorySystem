@@ -1,4 +1,6 @@
-﻿namespace InventorySystem_Api.Common;
+﻿using System.Net;
+
+namespace InventorySystem_Api.Common;
 
 public class ExceptionMiddleware
 {
@@ -17,23 +19,23 @@ public class ExceptionMiddleware
     {
         try
         {
-            await _next(context); // proceed to next middleware/controller
+            await _next(context); // Proceed to the next middleware or endpoint
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unhandled exception caught globally.");
+            _logger.LogError(ex, "Unhandled exception occurred.");
 
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             context.Response.ContentType = "application/json";
 
-            var response = new
+            var errorResponse = new
             {
                 StatusCode = context.Response.StatusCode,
                 Message = "An unexpected error occurred.",
                 Detail = _env.IsDevelopment() ? ex.Message : null
             };
 
-            await context.Response.WriteAsJsonAsync(response);
+            await context.Response.WriteAsJsonAsync(errorResponse);
         }
     }
 }

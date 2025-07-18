@@ -27,11 +27,7 @@ namespace InventorySystem_Api.EndPoints
                {
                    var command = new LoginCommand(loginRequest.UserName, loginRequest.Password);
                    var result = await mediator.Send(command);
-                   return Results.Ok(new
-                   {
-                       message = result == null ? "Invalid credentials" : "Login successful",
-                       data = result
-                   });
+                   return Results.Ok(result);
                }).WithMetadata(new AllowAnonymousAttribute());
 
             app.MapPost("/new-user", async (NewUserRequest user, IMediator mediator) =>
@@ -39,7 +35,7 @@ namespace InventorySystem_Api.EndPoints
                 var command = new UserCreateCommand(user.FirstName, user.LastName, user.UserName, user.EmailId, user.IsActive, DateTime.Now,
                     false, user.Role, DateTime.Now);
                 var result = await mediator.Send(command);
-                return Results.Ok(new { message = "User created successfully", data = result });
+                return Results.Ok(result);
             })
             .WithName("UserCreateCommand")
             .WithTags("NewUserCreate")
@@ -51,44 +47,44 @@ namespace InventorySystem_Api.EndPoints
             {
                 var query = new GetUsersQuery();
                 var result = await mediator.Send(query);
-                return Results.Ok(new { message = "ALl Users", data = result });
-            }) 
+                return Results.Ok(result);
+            })
            .RequireAuthorization("AdminOnly");
 
             app.MapPut("/password-change/{UserId}", async (int UserId, ChangePasswordRequest user, IMediator mediator) =>
             {
-                var command = new PasswordChangeCommand(UserId, user.UserName,user.CurrentPassword, user.PasswordHash, DateTime.Now, 1,
+                var command = new PasswordChangeCommand(UserId, user.UserName, user.CurrentPassword, user.PasswordHash, DateTime.Now, 1,
                     DateTime.Now);
                 var result = await mediator.Send(command);
-                return Results.Ok(new { message = "Password Changed successfully", data = result });
+                return Results.Ok(result);
             }).RequireAuthorization();
 
             app.MapGet("/user/{userName}", async (string userName, IMediator mediator) =>
             {
                 var query = new GetUserQuery(userName);
                 var result = await mediator.Send(query);
-                return Results.Ok(new { message = "Current User", data = result });
+                return Results.Ok(result);
             }).RequireAuthorization();
 
             app.MapGet("/menu/{UserId}", async (int UserId, IMediator mediator) =>
             {
                 var query = new GetMenuItemPermissionQuery(UserId);
                 var result = await mediator.Send(query);
-                return Results.Ok(new { message = "User Menu", data = result });
+                return Results.Ok(result);
             }).RequireAuthorization();
 
             app.MapPost("/menu/{UserId}/{MenuId}", async (int UserId, int MenuId, IMediator mediator) =>
             {
                 var query = new AddOrRemoveUserMenuItemCommand(UserId, MenuId);
                 var result = await mediator.Send(query);
-                return Results.Ok(new { message = "Add or Remove User menu List", data = result });
+                return Results.Ok(result);
             }).RequireAuthorization();
 
             app.MapPut("/update/{UserId}", async (int UserId, UpdateUserRequest user, IMediator mediator) =>
             {
                 var command = new UpdateCommand(UserId, user.FirstName, user.LastName, user.Email, user.IsActive, user.IsSuperAdmin);
-               var result = await mediator.Send(command);
-                return Results.Ok(new { message = "User Updated successfully", data = result });
+                var result = await mediator.Send(command);
+                return Results.Ok(result);
             }).RequireAuthorization();
 
             app.MapPut("/user/activate/{userId}", async (int userId,
@@ -96,45 +92,41 @@ namespace InventorySystem_Api.EndPoints
             {
                 var command = new ActiveUserCommand(userId);
                 var result = await mediator.Send(command);
-                return Results.Ok(new
-                {
-                    message = "Product Update successfully",
-                    data = result
-                });
+                return Results.Ok(result);
             }).RequireAuthorization("AdminOnly");
 
 
-            app.MapGet("/menus/{UserId}", async (int UserId,IMediator mediator) =>
+            app.MapGet("/menus/{UserId}", async (int UserId, IMediator mediator) =>
             {
                 var query = new GetMenuItemQuery(UserId);
                 var result = await mediator.Send(query);
-                return Results.Ok(new { message = "User Menu Lists", data = result });
+                return Results.Ok(result);
             }).RequireAuthorization();
 
             app.MapGet("/menus", async (IMediator mediator) =>
             {
                 var result = await mediator.Send(new GetAllMenuItemQuery());
-                return Results.Ok(new { message = "All Menu Lists", data = result });
+                return Results.Ok(result);
             }).RequireAuthorization();
 
-            app.MapGet("/customers", async(IMediator mediator) =>
+            app.MapGet("/customers", async (IMediator mediator) =>
             {
                 var result = await mediator.Send(new GetAllCustomersQuery());
-                return Results.Ok(new { message = "All customer Lists", data = result });
+                return Results.Ok(result);
             }).RequireAuthorization();
 
             app.MapPost("/database-backup", (IConfiguration config, string userName, IDatabaseScriptService DatabaseScriptService) =>
             {
                 var backUpHistory = config["appSetting:backUpHistory"];
                 var result = DatabaseScriptService.GenerateFullDatabaseScript(userName, backUpHistory);
-                return Results.Ok(new { message = "Database backup details", data = result });
+                return Results.Ok(result);
             }).RequireAuthorization();
 
             app.MapGet("/backup", (IConfiguration config, IDatabaseScriptService databaseScriptService) =>
             {
                 // Read settings
                 var backupPath = config["appSetting:backUpPath"];
-                var fileName = config["appSetting:backUpHistory"]; 
+                var fileName = config["appSetting:backUpHistory"];
 
                 if (string.IsNullOrWhiteSpace(backupPath) || string.IsNullOrWhiteSpace(fileName))
                 {
@@ -147,7 +139,7 @@ namespace InventorySystem_Api.EndPoints
                     return Results.NotFound(new { message = "Backup file not found." });
                 }
                 var data = databaseScriptService.ReadCsv(fullFileName);
-                return Results.Ok(new { message = "Customer list retrieved successfully.", data });
+                return Results.Ok(new { data });
             }).RequireAuthorization();
 
             return app;

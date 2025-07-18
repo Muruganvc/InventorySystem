@@ -1,11 +1,12 @@
-﻿using InventorySystem_Domain.Common;
+﻿using InventorySystem_Application.Common;
+using InventorySystem_Domain.Common;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
 namespace InventorySystem_Application.Company.Command.BulkCompanyCommand;
 
-internal sealed class BulkCompanyCommandHandler : IRequestHandler<BulkCompanyCommand, bool>
+internal sealed class BulkCompanyCommandHandler : IRequestHandler<BulkCompanyCommand, IResult<bool>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRepository<InventorySystem_Domain.Company> _companyRepository;
@@ -27,7 +28,7 @@ internal sealed class BulkCompanyCommandHandler : IRequestHandler<BulkCompanyCom
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<bool> Handle(BulkCompanyCommand request, CancellationToken cancellationToken)
+    public async Task<IResult<bool>> Handle(BulkCompanyCommand request, CancellationToken cancellationToken)
     {
         int userId = int.TryParse(
             _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id)
@@ -110,6 +111,6 @@ internal sealed class BulkCompanyCommandHandler : IRequestHandler<BulkCompanyCom
                 }
             }
         }, cancellationToken);
-        return isSuccess;
+        return Result<bool>.Success(isSuccess);
     }
 }

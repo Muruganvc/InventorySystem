@@ -1,5 +1,6 @@
-﻿using MediatR;
+﻿using InventorySystem_Application.Common;
+using MediatR;
 
 namespace InventorySystem_Application.Dashboard.Query.TotalProductQuery;
 
-public record TotalProductQuery():IRequest<TotalProductQueryResponse>;
+public record TotalProductQuery():IRequest<IResult<TotalProductQueryResponse>>;

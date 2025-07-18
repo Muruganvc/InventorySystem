@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using InventorySystem_Domain.Common;
 using System.Security.Claims;
+using InventorySystem_Application.Common;
 
 namespace InventorySystem_Application.Product.Query.GetProducts;
 
 internal sealed class GetProductsQueryHandler
-    : IRequestHandler<GetProductsQuery, IReadOnlyList<GetProductsQueryResponse>>
+    : IRequestHandler<GetProductsQuery, IResult<IReadOnlyList<GetProductsQueryResponse>>>
 {
     private readonly IRepository<InventorySystem_Domain.Product> _productRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -18,7 +19,7 @@ internal sealed class GetProductsQueryHandler
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<IReadOnlyList<GetProductsQueryResponse>> Handle(
+    public async Task<IResult<IReadOnlyList<GetProductsQueryResponse>>> Handle(
         GetProductsQuery request,
         CancellationToken cancellationToken)
     {
@@ -72,8 +73,9 @@ internal sealed class GetProductsQueryHandler
             pro.Quantity,
             pro.IsActive,
             pro.CreatedByUser,
-            pro.SerialNo
+            pro.SerialNo, $"{pro.CompanyName} {pro.CategoryName} {pro.ProductCategoryName}",
+            $"{pro.CompanyId}${pro.CategoryId}${pro.ProductCategoryId}"
         )).OrderBy(a => a.ProductName).ToList();
-        return mappedResult;
+        return Result<IReadOnlyList<GetProductsQueryResponse>>.Success(mappedResult);
     }
 }

@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using InventorySystem_Application.Common;
+using MediatR;
 namespace InventorySystem_Application.Product.Command.CreateProductCommand;
 public record CreateProductCommand(
     string ProductName,
@@ -12,4 +13,4 @@ public record CreateProductCommand(
     decimal LandingPrice,
     string? SerialNo,
     bool IsActive = false
-) : IRequest<int>;
+) : IRequest<IResult<int>>;

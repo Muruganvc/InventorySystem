@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using InventorySystem_Application.Common;
+using MediatR;
 namespace InventorySystem_Application.User.PasswordChangeCommand;
 public record PasswordChangeCommand(
     int UserId,
@@ -8,7 +9,7 @@ public record PasswordChangeCommand(
     DateTime PasswordLastChanged,
     int? ModifiedBy,
     DateTime? ModifiedDate
-) : IRequest<bool>
+) : IRequest<IResult<bool>>
 {
     public DateTime PasswordExpiresAt => PasswordLastChanged.AddDays(30);
 }

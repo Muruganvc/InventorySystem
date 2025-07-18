@@ -1,11 +1,11 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
+﻿using InventorySystem_Application.Common;
 using InventorySystem_Domain.Common;
+using MediatR;
+using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
-using BCrypt.Net;
+
 namespace InventorySystem_Application.User.CreateCommand;
-internal sealed class UserCreateCommandHandler : IRequestHandler<UserCreateCommand, int>
+internal sealed class UserCreateCommandHandler : IRequestHandler<UserCreateCommand, IResult<int>>
 {
     private readonly IUnitOfWork _unitOfWork; 
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -14,7 +14,7 @@ internal sealed class UserCreateCommandHandler : IRequestHandler<UserCreateComma
         _unitOfWork = unitOfWork; 
         _httpContextAccessor = httpContextAccessor;
     }
-    public async Task<int> Handle(UserCreateCommand request, CancellationToken cancellationToken)
+    public async Task<IResult<int>> Handle(UserCreateCommand request, CancellationToken cancellationToken)
     {
         int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
         var user = new InventorySystem_Domain.User
@@ -43,6 +43,6 @@ internal sealed class UserCreateCommandHandler : IRequestHandler<UserCreateComma
             });
             await _unitOfWork.SaveAsync();
         }, cancellationToken);
-        return user.UserId;
+        return Result<int>.Success(user.UserId);
     }
 }

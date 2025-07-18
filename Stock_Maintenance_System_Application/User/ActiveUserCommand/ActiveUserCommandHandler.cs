@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Http;
 using InventorySystem_Domain.Common;
 using System.Security.Claims;
+using InventorySystem_Application.Common;
 
 namespace InventorySystem_Application.User.ActiveUserCommand;
 
-internal sealed class ActiveUserCommandHandler : IRequestHandler<ActiveUserCommand, bool>
+internal sealed class ActiveUserCommandHandler : IRequestHandler<ActiveUserCommand, IResult<bool>>
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUnitOfWork _unitOfWork;
@@ -17,11 +18,11 @@ internal sealed class ActiveUserCommandHandler : IRequestHandler<ActiveUserComma
         _userRepository = userRepository;
         _httpContextAccessor = httpContextAccessor;
     }
-    public  async Task<bool> Handle(ActiveUserCommand request, CancellationToken cancellationToken)
+    public async Task<IResult<bool>> Handle(ActiveUserCommand request, CancellationToken cancellationToken)
     {
         int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
         var user = await _userRepository.GetByAsync(a => a.UserId == request.UserId);
-        if (user == null) return false;
+        if (user == null) return Result<bool>.Failure("Selected user not found");
         user.IsActive = !user.IsActive;
         user.ModifiedBy = userId;
         user.ModifiedDate = DateTime.Now;
@@ -30,6 +31,6 @@ internal sealed class ActiveUserCommandHandler : IRequestHandler<ActiveUserComma
         {
             isSuccess = await _unitOfWork.SaveAsync() > 0;
         }, cancellationToken);
-        return isSuccess;
+        return Result<bool>.Success(isSuccess);
     }
 }

@@ -1,18 +1,19 @@
 ﻿using MediatR;
 using InventorySystem_Domain.Common;
+using InventorySystem_Application.Common;
 
 namespace InventorySystem_Application.User.UpdateCommand
 {
-    internal sealed class UpdateCommandHandler : IRequestHandler<UpdateCommand, bool>
+    internal sealed class UpdateCommandHandler : IRequestHandler<UpdateCommand, IResult<bool>>
     {
         private readonly IUnitOfWork _unitOfWork; 
         public UpdateCommandHandler(IUnitOfWork unitOfWork ) => _unitOfWork = unitOfWork; 
-        public async Task<bool> Handle(UpdateCommand request, CancellationToken cancellationToken)
+        public async Task<IResult<bool>> Handle(UpdateCommand request, CancellationToken cancellationToken)
         {
             var userRepository = _unitOfWork.Repository<InventorySystem_Domain.User>();
             var user = await userRepository.GetByAsync(u => u.UserId == request.UserId);
             if (user == null)
-                return false;
+                return Result<bool>.Failure("Invalid user");
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
             user.Email = request.Email;
@@ -21,7 +22,7 @@ namespace InventorySystem_Application.User.UpdateCommand
             {
                 isSuccess = await _unitOfWork.SaveAsync() > 0;
             }, cancellationToken);
-            return isSuccess;
+            return Result<bool>.Success(isSuccess);
         }
     }
 }

@@ -1,11 +1,5 @@
 using Database_Utility;
 using FluentValidation;
-using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using InventorySystem_Api.Common;
 using InventorySystem_Api.EndPoints;
 using InventorySystem_Application.Company.Command.CreateCommand;
@@ -14,6 +8,7 @@ using InventorySystem_Application.MenuItem.AddOrRemoveUserMenuItemCommand;
 using InventorySystem_Application.Order.Command.OrderCreateCommand;
 using InventorySystem_Application.Product.Command.ActivateProductCommand;
 using InventorySystem_Application.Product.Command.CreateProductCommand;
+using InventorySystem_Application.Product.Command.QuantityUpdateCommand;
 using InventorySystem_Application.Product.Command.UpdateProductCommand;
 using InventorySystem_Application.User.CreateCommand;
 using InventorySystem_Application.User.LoginCommand;
@@ -21,10 +16,14 @@ using InventorySystem_Application.User.PasswordChangeCommand;
 using InventorySystem_Application.User.UpdateCommand;
 using InventorySystem_Domain.Common;
 using InventorySystem_Infrastructure;
-using System.IdentityModel.Tokens.Jwt;
+using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Serilog;
 using System.Security.Claims;
 using System.Text;
-using InventorySystem_Application.Product.Command.QuantityUpdateCommand;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<SmsDbContext>(options =>
@@ -55,7 +54,7 @@ var config = builder.Configuration;
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        
+
         //JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -117,6 +116,24 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+var logDirectory = config["appSetting:errorLogPath"] ?? @"C:\Logs\InventorySystem";
+var logFilePath = Path.Combine(logDirectory, "errors.txt");
+
+// Ensure log directory exists
+Directory.CreateDirectory(logDirectory); // Safe even if it already exists
+
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Error()
+    .WriteTo.File(
+        path: logFilePath,
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 365, // Retain logs for one year
+        outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"
+    )
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 var app = builder.Build();
 app.UseMiddleware<ExceptionMiddleware>();

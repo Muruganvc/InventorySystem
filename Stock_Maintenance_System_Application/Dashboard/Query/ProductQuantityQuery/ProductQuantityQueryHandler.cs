@@ -1,12 +1,12 @@
-﻿using InventorySystem_Domain.Common;
-using InventorySystem_Domain;
+﻿using InventorySystem_Application.Common;
+using InventorySystem_Domain.Common;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace InventorySystem_Application.Dashboard.Query.ProductQuantityQuery
 {
     internal sealed class ProductQuantityQueryHandler
-        : IRequestHandler<ProductQuantityQuery, IReadOnlyList<ProductQuantityQueryResponse>>
+        : IRequestHandler<ProductQuantityQuery, IResult<IReadOnlyList<ProductQuantityQueryResponse>>>
     {
         private readonly IRepository<InventorySystem_Domain.Category> _categoryRepository;
         private readonly IRepository<InventorySystem_Domain.Product> _productRepository;
@@ -25,7 +25,7 @@ namespace InventorySystem_Application.Dashboard.Query.ProductQuantityQuery
             _companyRepository = companyRepository;
         }
 
-        public async Task<IReadOnlyList<ProductQuantityQueryResponse>> Handle(
+        public async Task<IResult<IReadOnlyList<ProductQuantityQueryResponse>>> Handle(
           ProductQuantityQuery request,
           CancellationToken cancellationToken)
         {
@@ -47,9 +47,7 @@ namespace InventorySystem_Application.Dashboard.Query.ProductQuantityQuery
                           x.productCategory.ProductCategoryName,
                           product.Quantity))
                 .ToListAsync(cancellationToken);
-
-            return result;
+            return Result<IReadOnlyList<ProductQuantityQueryResponse>>.Success(result);
         }
-
     }
 }

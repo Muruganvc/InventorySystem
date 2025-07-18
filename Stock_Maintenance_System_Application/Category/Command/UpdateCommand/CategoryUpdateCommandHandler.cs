@@ -1,8 +1,9 @@
 ﻿using MediatR;
 using InventorySystem_Domain.Common;
+using InventorySystem_Application.Common;
 
 namespace InventorySystem_Application.Category.Command.UpdateCommand;
-internal sealed class CategoryUpdateCommandHandler : IRequestHandler<CategoryUpdateCommand, bool>
+internal sealed class CategoryUpdateCommandHandler : IRequestHandler<CategoryUpdateCommand, IResult<bool>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRepository<InventorySystem_Domain.Company> _companyRepository;
@@ -14,13 +15,15 @@ internal sealed class CategoryUpdateCommandHandler : IRequestHandler<CategoryUpd
         _companyRepository= companyRepository;
         _categoryRepository= categoryRepository;
     }
-    public async Task<bool> Handle(CategoryUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<IResult<bool>> Handle(CategoryUpdateCommand request, CancellationToken cancellationToken)
     {
         var category = await _categoryRepository.GetByAsync(a => a.CategoryId == request.CategoryId);
-        if (category == null) return false;
+        if (category == null)
+            return Result<bool>.Failure("Selected category not found.");
 
         var company = await _companyRepository.GetByAsync(a => a.CompanyId == request.CompanyId);
-        if (company == null) return false;
+        if (company == null) 
+            return Result<bool>.Failure("Selected company not found.");
 
         category.Description = request.Description;
         category.CompanyId = request.CompanyId;
@@ -31,6 +34,6 @@ internal sealed class CategoryUpdateCommandHandler : IRequestHandler<CategoryUpd
         {
             isSuccess = await _unitOfWork.SaveAsync() > 0;
         }, cancellationToken);
-        return isSuccess;
+        return Result<bool>.Success(isSuccess); 
     }
 }

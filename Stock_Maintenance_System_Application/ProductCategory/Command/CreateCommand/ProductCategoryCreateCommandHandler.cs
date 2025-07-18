@@ -2,15 +2,16 @@
 using Microsoft.AspNetCore.Http;
 using InventorySystem_Domain.Common;
 using System.Security.Claims;
+using InventorySystem_Application.Common;
 
 namespace InventorySystem_Application.ProductCategory.Command.CreateCommand
 {
-    internal sealed class ProductCategoryCreateCommandHandler : IRequestHandler<ProductCategoryCreateCommand, int>
+    internal sealed class ProductCategoryCreateCommandHandler : IRequestHandler<ProductCategoryCreateCommand, IResult<int>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IRepository<InventorySystem_Domain.Category> _categoryRepository;
-        public ProductCategoryCreateCommandHandler(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor, 
+        public ProductCategoryCreateCommandHandler(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor,
             IRepository<InventorySystem_Domain.Category> categoryRepository)
         {
             _unitOfWork = unitOfWork;
@@ -18,11 +19,11 @@ namespace InventorySystem_Application.ProductCategory.Command.CreateCommand
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<int> Handle(ProductCategoryCreateCommand request, CancellationToken cancellationToken)
+        public async Task<IResult<int>> Handle(ProductCategoryCreateCommand request, CancellationToken cancellationToken)
         {
             int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
             var category = await _categoryRepository.GetByAsync(a => a.CategoryId == request.CategoryId);
-            if (category == null) return 0;
+            if (category == null) return Result<int>.Failure("Selected category not found");
 
             var productCategory = new InventorySystem_Domain.ProductCategory
             {
@@ -38,7 +39,7 @@ namespace InventorySystem_Application.ProductCategory.Command.CreateCommand
                 await _unitOfWork.Repository<InventorySystem_Domain.ProductCategory>().AddAsync(productCategory);
                 await _unitOfWork.SaveAsync();
             }, cancellationToken);
-            return productCategory.ProductCategoryId;
+            return Result<int>.Success(productCategory.ProductCategoryId);
         }
     }
 }

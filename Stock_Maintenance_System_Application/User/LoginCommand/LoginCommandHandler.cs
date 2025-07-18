@@ -5,10 +5,11 @@ using InventorySystem_Domain.Common;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using InventorySystem_Application.Common;
 
 namespace InventorySystem_Application.User.LoginCommand
 {
-    internal sealed class LoginCommandHandler : IRequestHandler<LoginCommand, LoginCommandResponse>
+    internal sealed class LoginCommandHandler : IRequestHandler<LoginCommand, IResult<LoginCommandResponse>>
     {
         private readonly IRepository<InventorySystem_Domain.User> _userRepository;
         private readonly IRepository<InventorySystem_Domain.UserRole> _userRoleRepository;
@@ -24,25 +25,21 @@ namespace InventorySystem_Application.User.LoginCommand
             _userRoleRepository = userRoleRepository;
         }
 
-        public async Task<LoginCommandResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
+        public async Task<IResult<LoginCommandResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByAsync(u => u.Username == request.UserName && u.IsActive);
             if (user is null)
-                return null;
+                return Result<LoginCommandResponse>.Failure("Invalid user name");
 
             bool isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
             if (!isPasswordValid)
-                return null;
+                return Result<LoginCommandResponse>.Failure("Invalid password");
 
             var roleIds = (await _userRoleRepository.GetListByAsync(r => r.UserId == user.UserId))
                 .Select(r => r.RoleId)
                 .ToArray();
 
-            var roleMap = new Dictionary<int, string>
-    {
-        { 1, "Admin" },
-        { 2, "Manager" }
-    };
+            var roleMap = new Dictionary<int, string> { { 1, "Admin" }, { 2, "Manager" } };
 
             var roles = roleIds
                 .Where(roleMap.ContainsKey)
@@ -51,7 +48,7 @@ namespace InventorySystem_Application.User.LoginCommand
 
             var token = GenerateJwtToken(user.Username, user.Email ?? string.Empty, roles, user.UserId);
 
-            return new LoginCommandResponse(
+            var result = new LoginCommandResponse(
                 user.UserId,
                 user.FirstName,
                 user.LastName ?? string.Empty,
@@ -59,6 +56,7 @@ namespace InventorySystem_Application.User.LoginCommand
                 user.Username,
                 token
             );
+            return Result<LoginCommandResponse>.Success(result);
         }
 
         private string GenerateJwtToken(string username, string email, List<string> roleNames, int userId)

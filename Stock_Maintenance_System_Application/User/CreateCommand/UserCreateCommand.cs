@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using InventorySystem_Application.Common;
+using MediatR;
 
 namespace InventorySystem_Application.User.CreateCommand;
 public record UserCreateCommand(
@@ -11,7 +12,7 @@ public record UserCreateCommand(
     bool IsPasswordExpired,
     int RoleId,
     DateTime? LastLogin
-) : IRequest<int>
+) : IRequest<IResult<int>>
 {
     public DateTime PasswordExpiresAt => PasswordLastChanged.AddDays(30);
 }

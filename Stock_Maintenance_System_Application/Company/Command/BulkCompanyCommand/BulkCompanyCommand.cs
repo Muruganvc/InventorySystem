@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using InventorySystem_Application.Common;
+using MediatR;
 
 namespace InventorySystem_Application.Company.Command.BulkCompanyCommand;
 public record BulkCompanyEntry(
@@ -6,4 +7,4 @@ public record BulkCompanyEntry(
    string CategoryName,
    string ProductCategory
 );
-public record BulkCompanyCommand(List<BulkCompanyEntry> BulkCompanyCommands) : IRequest<bool>;
+public record BulkCompanyCommand(List<BulkCompanyEntry> BulkCompanyCommands) : IRequest<IResult<bool>>;

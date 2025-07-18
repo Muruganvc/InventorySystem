@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using InventorySystem_Application.Common;
+using MediatR;
 
 namespace InventorySystem_Application.Product.Command.UpdateProductCommand;
 public record UpdateProductCommand(
@@ -14,4 +15,4 @@ public record UpdateProductCommand(
    bool IsActive,
    decimal LandingPrice,
    string? SerialNo
-) : IRequest<bool>;
+) : IRequest<IResult<bool>>;

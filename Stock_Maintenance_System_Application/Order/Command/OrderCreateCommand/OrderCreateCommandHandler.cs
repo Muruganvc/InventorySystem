@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Http;
 using InventorySystem_Domain;
 using InventorySystem_Domain.Common;
 using System.Security.Claims;
+using InventorySystem_Application.Common;
 
 namespace InventorySystem_Application.Order.Command.OrderCreateCommand;
 
-internal sealed class OrderCreateCommandHandler : IRequestHandler<OrderCreateCommand, int>
+internal sealed class OrderCreateCommandHandler : IRequestHandler<OrderCreateCommand, IResult<int>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRepository<InventorySystem_Domain.Product> _productRepository;
@@ -19,7 +20,7 @@ internal sealed class OrderCreateCommandHandler : IRequestHandler<OrderCreateCom
         _productRepository = productRepository;
         _httpContextAccessor = httpContextAccessor;
     }
-    public async Task<int> Handle(OrderCreateCommand request, CancellationToken cancellationToken)
+    public async Task<IResult<int>> Handle(OrderCreateCommand request, CancellationToken cancellationToken)
     {
         int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
         int newOrderId = 0;
@@ -100,7 +101,6 @@ internal sealed class OrderCreateCommandHandler : IRequestHandler<OrderCreateCom
             await _unitOfWork.SaveAsync(); // Single save for all changes
             newOrderId = newOrder.OrderId;
         }, cancellationToken);
-
-        return newOrderId;
+        return Result<int>.Success(newOrderId); 
     }
 }

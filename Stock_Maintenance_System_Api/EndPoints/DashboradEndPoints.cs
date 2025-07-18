@@ -13,7 +13,7 @@ namespace InventorySystem_Api.EndPoints
             {
                 var query = new CompanyWiseIncomeQuery();
                 var result = await mediator.Send(query);
-                return Results.Ok(new { message = "Company Wise Income", data = result });
+                return Results.Ok(result);
             })
            .RequireAuthorization();
 
@@ -21,7 +21,7 @@ namespace InventorySystem_Api.EndPoints
             {
                 var query = new TotalProductQuery();
                 var result = await mediator.Send(query);
-                return Results.Ok(new { message = "Total Product", data = result });
+                return Results.Ok(result);
             })
            .RequireAuthorization();
 
@@ -29,7 +29,7 @@ namespace InventorySystem_Api.EndPoints
             {
                 var query = new ProductQuantityQuery();
                 var result = await mediator.Send(query);
-                return Results.Ok(new { message = "Total Product", data = result });
+                return Results.Ok(result);
             })
             .RequireAuthorization();
 

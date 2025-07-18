@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using InventorySystem_Application.Common;
+using MediatR;
 
 namespace InventorySystem_Application.User.UpdateCommand;
 public record UpdateCommand(
@@ -8,4 +9,4 @@ public record UpdateCommand(
     string? Email,
     bool IsActive,
     bool IsSuperAdmin
-) : IRequest<bool>;
+) : IRequest<IResult<bool>>;

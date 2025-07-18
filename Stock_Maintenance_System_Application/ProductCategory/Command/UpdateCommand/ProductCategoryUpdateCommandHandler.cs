@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using InventorySystem_Domain.Common;
+using InventorySystem_Application.Common;
 
 namespace InventorySystem_Application.ProductCategory.Command.UpdateCommand
 {
-    internal sealed class ProductCategoryUpdateCommandHandler : IRequestHandler<ProductCategoryUpdateCommand, bool>
+    internal sealed class ProductCategoryUpdateCommandHandler : IRequestHandler<ProductCategoryUpdateCommand, IResult<bool>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IRepository<InventorySystem_Domain.ProductCategory> _productCategoryRepository;
@@ -15,14 +16,15 @@ namespace InventorySystem_Application.ProductCategory.Command.UpdateCommand
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<bool> Handle(ProductCategoryUpdateCommand request, CancellationToken cancellationToken)
+        public async Task<IResult<bool>> Handle(ProductCategoryUpdateCommand request, CancellationToken cancellationToken)
         {
             var productCategory = await _productCategoryRepository.GetByAsync(a => a.ProductCategoryId == request.ProductCategoryId);
-            if (productCategory == null) return false;
+            if (productCategory == null)
+                return Result<bool>.Failure("Selected product category not found"); 
 
             var category = await _categoryRepository.GetByAsync(a => a.CategoryId == request.CategoryId);
-            if (category == null) return false;
-            
+            if (category == null) return Result<bool>.Failure("Selected category not found");
+
             productCategory.Description = request.Description;
             productCategory.CategoryId = request.CategoryId;
             productCategory.ProductCategoryName = request.ProductCategoryName;
@@ -32,7 +34,8 @@ namespace InventorySystem_Application.ProductCategory.Command.UpdateCommand
             {
                 isSuccess = await _unitOfWork.SaveAsync() > 0;
             }, cancellationToken);
-            return isSuccess;
+
+            return Result<bool>.Success(isSuccess);
         }
     }
 }

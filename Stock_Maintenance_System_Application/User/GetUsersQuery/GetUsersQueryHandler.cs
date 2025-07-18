@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Http;
 using InventorySystem_Domain.Common;
 using System.Security.Claims;
+using InventorySystem_Application.Common;
 
 namespace InventorySystem_Application.User.GetUsersQuery;
-internal sealed class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IReadOnlyList<GetUsersQueryResponse>>
+internal sealed class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IResult<IReadOnlyList<GetUsersQueryResponse>>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -15,11 +16,11 @@ internal sealed class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IRea
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<IReadOnlyList<GetUsersQueryResponse>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
+    public async Task<IResult<IReadOnlyList<GetUsersQueryResponse>>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
     {
         int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
         var users = await _unitOfWork.Repository<InventorySystem_Domain.User>().GetListByAsync(a => a.UserId != userId);
-        return users.Select(user => new GetUsersQueryResponse
+        var result = users.Select(user => new GetUsersQueryResponse
         {
             UserId = user.UserId,
             FirstName = user.FirstName,
@@ -30,5 +31,7 @@ internal sealed class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IRea
             LastLogin = user.LastLogin ?? default,
             SuperAdmin = false // Consider mapping this from domain if available
         }).OrderBy(a => a.UserName).ToList();
+
+        return Result<IReadOnlyList<GetUsersQueryResponse>>.Success(result);
     }
 }

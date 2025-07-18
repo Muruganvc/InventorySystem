@@ -1,5 +1,6 @@
-﻿using MediatR;
+﻿using InventorySystem_Application.Common;
+using MediatR;
 
 namespace InventorySystem_Application.Category.Query.GetCategoryQuery;
 public record GetCategoryQuery(int CompanyId)
-    : IRequest<IReadOnlyList<KeyValuePair<string, int>>>;
+    : IRequest<IResult<IReadOnlyList<KeyValuePair<string, int>>>>;

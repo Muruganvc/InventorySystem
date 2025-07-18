@@ -1,10 +1,11 @@
-﻿using InventorySystem_Domain;
+﻿using InventorySystem_Application.Common;
+using InventorySystem_Domain;
 using InventorySystem_Domain.Common;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace InventorySystem_Application.Dashboard.Query.CompanyWiseIncomeQuery;
-internal class CompanyWiseIncomeQueryHandler : IRequestHandler<CompanyWiseIncomeQuery, IReadOnlyList<CompanyWiseIncomeQueryResponse>>
+internal class CompanyWiseIncomeQueryHandler : IRequestHandler<CompanyWiseIncomeQuery, IResult<IReadOnlyList<CompanyWiseIncomeQueryResponse>>>
 {
     private readonly IRepository<InventorySystem_Domain.Category> _categoryRepository;
     private readonly IRepository<InventorySystem_Domain.Product> _productRepository;
@@ -21,7 +22,7 @@ internal class CompanyWiseIncomeQueryHandler : IRequestHandler<CompanyWiseIncome
         _companyRepository = companyRepository;
     }
 
-    public async Task<IReadOnlyList<CompanyWiseIncomeQueryResponse>> Handle(CompanyWiseIncomeQuery request, CancellationToken cancellationToken)
+    public async Task<IResult<IReadOnlyList<CompanyWiseIncomeQueryResponse>>> Handle(CompanyWiseIncomeQuery request, CancellationToken cancellationToken)
     {
         var result = await _orderItemRepository.Table
                 .Where(ord =>
@@ -66,7 +67,6 @@ internal class CompanyWiseIncomeQueryHandler : IRequestHandler<CompanyWiseIncome
         .ThenBy(x => x.CategoryName)
         .ThenBy(x => x.ProductCategoryName)
         .ToListAsync();
-
-        return result;
+        return Result<IReadOnlyList<CompanyWiseIncomeQueryResponse>>.Success(result); 
     }
 }

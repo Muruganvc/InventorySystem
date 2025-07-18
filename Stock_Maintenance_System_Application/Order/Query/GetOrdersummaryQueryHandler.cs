@@ -1,11 +1,12 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using InventorySystem_Domain.Common;
+using InventorySystem_Application.Common;
 
 namespace InventorySystem_Application.Order.Query;
 
 internal class GetOrdersummaryQueryHandler
-    : IRequestHandler<GetOrdersummaryQuery, IReadOnlyList<GetOrderSummaryResponse>>
+    : IRequestHandler<GetOrdersummaryQuery, IResult<IReadOnlyList<GetOrderSummaryResponse>>>
 {
     private readonly IRepository<InventorySystem_Domain.Category> _categoryRepository;
     private readonly IRepository<InventorySystem_Domain.Product> _productRepository;
@@ -31,7 +32,7 @@ internal class GetOrdersummaryQueryHandler
         _customerRepository = customerRepository;
     }
 
-    public async Task<IReadOnlyList<GetOrderSummaryResponse>> Handle(
+    public async Task<IResult<IReadOnlyList<GetOrderSummaryResponse>>> Handle(
         GetOrdersummaryQuery request,
         CancellationToken cancellationToken)
     {
@@ -77,6 +78,6 @@ internal class GetOrdersummaryQueryHandler
             IsGst = temp.odr.IsGst
         })
     .ToListAsync(cancellationToken);
-        return resultList.OrderBy(a => a.FullProductName).ToList();
+        return Result<IReadOnlyList<GetOrderSummaryResponse>>.Success(resultList.OrderBy(a => a.FullProductName).ToList());
     }
 }

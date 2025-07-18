@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using InventorySystem_Domain.Common;
+using InventorySystem_Application.Common;
 
 namespace InventorySystem_Application.Category.Query.GetCategoriesQuery;
-internal sealed class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQuery, IReadOnlyList<GetCategoryQueryResponse>>
+internal sealed class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQuery, IResult<IReadOnlyList<GetCategoryQueryResponse>>>
 {
     private readonly IRepository<InventorySystem_Domain.Company> _companyRepository;
     private readonly IRepository<InventorySystem_Domain.Category> _categoryRepository;
@@ -16,28 +17,44 @@ internal sealed class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQ
         _categoryRepository = categoryRepository;
         _userRepository = userRepository;
     }
-    public async Task<IReadOnlyList<GetCategoryQueryResponse>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
+    public async Task<IResult<IReadOnlyList<GetCategoryQueryResponse>>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
     {
-        var result = await _companyRepository.Table
-    .Join(_categoryRepository.Table,
-        company => company.CompanyId,
-        category => category.CompanyId,
-        (company, category) => new { company, category })
-    .Where(a => a.category.IsActive && a.company.IsActive)
-    .Join(_userRepository.Table,
-        combined => combined.category.CreatedBy,
-        user => user.UserId,
-        (combined, user) => new GetCategoryQueryResponse(
-            combined.company.CompanyId,
-            combined.company.CompanyName,
-            combined.category.CategoryId,
-            combined.category.CategoryName,
-            combined.category.Description ?? string.Empty,
-            combined.category.IsActive,
-            combined.category.CreatedAt,
-            user.Username
-        ))
-    .ToListAsync(cancellationToken);
-        return result.OrderBy(a => a.CategoryName).ToList();
+        var query = _companyRepository.Table
+            .Where(c => c.IsActive)
+            .Join(
+                _categoryRepository.Table,
+                company => company.CompanyId,
+                category => category.CompanyId,
+                (company, category) => new { company, category }
+            )
+            .Where(x => request.isAllActive || x.category.IsActive)
+            .Join(
+                _userRepository.Table,
+                combined => combined.category.CreatedBy,
+                user => user.UserId,
+                (combined, user) => new
+                {
+                    combined.company,
+                    combined.category,
+                    user.Username
+                }
+            )
+            .OrderBy(x => x.category.CategoryName);
+
+        var result = await query
+            .Select(x => new GetCategoryQueryResponse(
+                x.company.CompanyId,
+                x.company.CompanyName,
+                x.category.CategoryId,
+                x.category.CategoryName,
+                x.category.Description ?? string.Empty,
+                x.category.IsActive,
+                x.category.CreatedAt,
+                x.Username
+            ))
+            .ToListAsync(cancellationToken);
+
+        return Result<IReadOnlyList<GetCategoryQueryResponse>>.Success(result);
     }
+
 }

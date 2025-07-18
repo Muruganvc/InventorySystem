@@ -7,12 +7,10 @@ using InventorySystem_Application.Company.Command.BulkCompanyCommand;
 using InventorySystem_Application.Company.Command.CreateCommand;
 using InventorySystem_Application.Company.Command.UpdateCommand;
 using InventorySystem_Application.Company.Query;
-using InventorySystem_Application.Product.Command.QuantityUpdateCommand;
 using InventorySystem_Application.ProductCategory.Command.CreateCommand;
 using InventorySystem_Application.ProductCategory.Command.UpdateCommand;
 using InventorySystem_Application.ProductCategory.Query.GetProductCategoriesQuery;
 using InventorySystem_Application.ProductCategory.Query.GetProductCategoryQuery;
-using InventorySystem_Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,7 +26,7 @@ public static class CompanyEndPoints
         {
             var command = new CompanyCreateCommand(company.CompanyName, company.Description, company.IsActive);
             var result = await mediator.Send(command);
-            return Results.Ok(new { message = "Company Created.", data = result });
+            return Results.Ok(result);
         })
         .WithName("CreateCompany")
         .WithTags("Company")
@@ -40,7 +38,7 @@ public static class CompanyEndPoints
         {
             var command = new CompanyUpdateCommand(companyId, company.CompanyName, company.Description, company.IsActive);
             var result = await mediator.Send(command);
-            return Results.Ok(new { message = "Company Updated.", data = result });
+            return Results.Ok(result);
         })
         .WithName("UpdateCompany")
         .WithTags("Company")
@@ -48,11 +46,11 @@ public static class CompanyEndPoints
         .Produces(StatusCodes.Status400BadRequest)
         .RequireAuthorization();
 
-        app.MapGet("/company", async ([FromQuery] string? companyName, IMediator mediator) =>
+        app.MapGet("/company", async ([FromQuery] bool isAllActiveCompany, [FromQuery] string? companyName, IMediator mediator) =>
         {
-            var query = new GetCompanyQuery(companyName);
+            var query = new GetCompanyQuery(isAllActiveCompany, companyName);
             var result = await mediator.Send(query);
-            return Results.Ok(new { message = "Company Product data", data = result });
+            return Results.Ok(result);
         })
         .WithName("GetCompanyList")
         .WithTags("Company")
@@ -68,7 +66,7 @@ public static class CompanyEndPoints
         {
             var command = new CategoryCreateCommand(category.CompanyId, category.CategoryName, category.Description, category.IsActive);
             var result = await mediator.Send(command);
-            return Results.Ok(new { message = "Category Created.", data = result });
+            return Results.Ok(result);
         })
         .WithName("CreateCategory")
         .WithTags("Category")
@@ -80,7 +78,7 @@ public static class CompanyEndPoints
         {
             var command = new CategoryUpdateCommand(categoryId, category.CompanyId, category.CategoryName, category.Description, category.IsActive);
             var result = await mediator.Send(command);
-            return Results.Ok(new { message = "Category Updated.", data = result });
+            return Results.Ok(result);
         })
         .WithName("UpdateCategory")
         .WithTags("Category")
@@ -92,7 +90,7 @@ public static class CompanyEndPoints
         {
             var query = new GetCategoryQuery(companyId);
             var result = await mediator.Send(query);
-            return Results.Ok(new { message = "Category Product data", data = result });
+            return Results.Ok(result);
         })
         .WithName("GetCategoriesByCompany")
         .WithTags("Category")
@@ -100,11 +98,11 @@ public static class CompanyEndPoints
         .Produces(StatusCodes.Status400BadRequest)
         .RequireAuthorization();
 
-        app.MapGet("/categories", async (IMediator mediator) =>
+        app.MapGet("/categories", async ([FromQuery] bool isAllActive, IMediator mediator) =>
         {
-            var query = new GetCategoriesQuery();
+            var query = new GetCategoriesQuery(isAllActive);
             var result = await mediator.Send(query);
-            return Results.Ok(new { message = "All Categories", data = result });
+            return Results.Ok(result);
         })
         .WithName("GetAllCategories")
         .WithTags("Category")
@@ -124,7 +122,7 @@ public static class CompanyEndPoints
                 productCategory.Description,
                 productCategory.IsActive);
             var result = await mediator.Send(command);
-            return Results.Ok(new { message = "Product Category Created.", data = result });
+            return Results.Ok(result);
         })
         .WithName("CreateProductCategory")
         .WithTags("ProductCategory")
@@ -141,7 +139,7 @@ public static class CompanyEndPoints
                 productCategory.Description,
                 productCategory.IsActive);
             var result = await mediator.Send(command);
-            return Results.Ok(new { message = "Product Category Updated.", data = result });
+            return Results.Ok(result);
         })
         .WithName("UpdateProductCategory")
         .WithTags("ProductCategory")
@@ -153,7 +151,7 @@ public static class CompanyEndPoints
         {
             var query = new GetProductCategoryQuery(categoryId);
             var result = await mediator.Send(query);
-            return Results.Ok(new { message = "Product Category data", data = result });
+            return Results.Ok(result);
         })
         .WithName("GetProductCategoriesByCategory")
         .WithTags("ProductCategory")
@@ -161,11 +159,11 @@ public static class CompanyEndPoints
         .Produces(StatusCodes.Status400BadRequest)
         .RequireAuthorization();
 
-        app.MapGet("/product-categories", async (IMediator mediator) =>
+        app.MapGet("/product-categories", async ([FromQuery] bool isAllActive, IMediator mediator) =>
         {
-            var query = new GetProductCategoriesQuery();
+            var query = new GetProductCategoriesQuery(isAllActive);
             var result = await mediator.Send(query);
-            return Results.Ok(new { message = "Product Categories data", data = result });
+            return Results.Ok(result);
         })
         .WithName("GetProductCategoriesQuery")
         .WithTags("ProductCategory")
@@ -191,20 +189,13 @@ public static class CompanyEndPoints
                     var command = new BulkCompanyCommand(bulkCompanyEntries);
                     var result = await mediator.Send(command);
 
-                    return Results.Ok(new
-                    {
-                        message = "Product updated successfully",
-                        data = result
-                    });
+                    return Results.Ok(result);
                 })
         .WithName("BulkCompanyCommand")
         .WithTags("Products")
         .Produces(StatusCodes.Status200OK, typeof(object))
         .Produces(StatusCodes.Status400BadRequest)
         .RequireAuthorization();
-
-
-
 
         return app;
     }

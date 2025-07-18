@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Http;
 using InventorySystem_Domain.Common;
 using System.Security.Claims;
+using InventorySystem_Application.Common;
 
 namespace InventorySystem_Application.Product.Command.CreateProductCommand;
-internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, int>
+internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, IResult<int>>
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUnitOfWork _unitOfWork;
@@ -17,14 +18,15 @@ internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProduc
         _productRepository = productRepository;
         _httpContextAccessor = httpContextAccessor;
     }
-    public async Task<int> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+    public async Task<IResult<int>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
         int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
         // Determine product category ID (create new if needed)
         int? productCategoryId = request.ProductCategoryId;
 
         var isExistProduct = await _productRepository.GetByAsync(a => a.ProductCategoryId == request.ProductCategoryId && a.CategoryId == request.CategoryId && a.CompanyId == request.CompanyId);
-        if (isExistProduct is not null) return 0;
+        if (isExistProduct is not null)
+            return Result<int>.Failure("Selected product already exists.");
 
         if (productCategoryId is null or 0)
         {
@@ -68,7 +70,6 @@ internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProduc
             await _unitOfWork.Repository<InventorySystem_Domain.Product>().AddAsync(product);
             await _unitOfWork.SaveAsync();
         }, cancellationToken);
-
-        return product.ProductId;
+        return Result<int>.Success(product.ProductId);
     }
 }

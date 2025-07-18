@@ -1,15 +1,16 @@
 ﻿using MediatR;
 using InventorySystem_Domain;
 using InventorySystem_Domain.Common;
+using InventorySystem_Application.Common;
 
 namespace InventorySystem_Application.MenuItem.AddOrRemoveUserMenuItemCommand;
 internal sealed class AddOrRemoveUserMenuItemCommandHandler
-    : IRequestHandler<AddOrRemoveUserMenuItemCommand, bool>
+    : IRequestHandler<AddOrRemoveUserMenuItemCommand, IResult<bool>>
 {
     private readonly IUnitOfWork _unitOfWork;
 
     public AddOrRemoveUserMenuItemCommandHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
-    public async Task<bool> Handle(AddOrRemoveUserMenuItemCommand request, CancellationToken cancellationToken)
+    public async Task<IResult<bool>> Handle(AddOrRemoveUserMenuItemCommand request, CancellationToken cancellationToken)
     {
         var userMenuRepo = _unitOfWork.Repository<UserMenuPermission>();
         var existingPermission = await userMenuRepo.GetByAsync(
@@ -39,7 +40,6 @@ internal sealed class AddOrRemoveUserMenuItemCommandHandler
                 }
                 await _unitOfWork.SaveAsync();
             }, cancellationToken);
-
-        return true;
+        return Result<bool>.Success(true); 
     }
 }

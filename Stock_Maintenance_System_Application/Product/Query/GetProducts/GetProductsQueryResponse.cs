@@ -15,5 +15,7 @@ public record GetProductsQueryResponse(
     int Quantity,
     bool IsActive,
     string? UserName,
-    string? SerialNo
+    string? SerialNo,
+    string CompanyCategoryProductName,
+    string CompanyCategoryProductNameId
 );

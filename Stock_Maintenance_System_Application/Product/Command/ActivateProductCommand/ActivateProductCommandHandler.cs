@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Http;
 using InventorySystem_Domain.Common;
 using System.Security.Claims;
+using InventorySystem_Application.Common;
 
 namespace InventorySystem_Application.Product.Command.ActivateProductCommand;
 
-internal sealed class ActivateProductCommandHandler : IRequestHandler<ActivateProductCommand, bool>
+internal sealed class ActivateProductCommandHandler : IRequestHandler<ActivateProductCommand, IResult<bool>>
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUnitOfWork _unitOfWork;
@@ -17,12 +18,13 @@ internal sealed class ActivateProductCommandHandler : IRequestHandler<ActivatePr
         _productRepository = productRepository;
         _httpContextAccessor = httpContextAccessor;
     }
-    public async Task<bool> Handle(ActivateProductCommand request, CancellationToken cancellationToken)
+    public async Task<IResult<bool>> Handle(ActivateProductCommand request, CancellationToken cancellationToken)
     {
         int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
         var product = await _productRepository.GetByAsync(a => a.ProductId == request.ProductId);
-        if (product == null) return false;
-        product.IsActive= !product.IsActive;
+        if (product == null)
+            return Result<bool>.Failure("Selected product not found.");
+        product.IsActive = !product.IsActive;
         product.UpdatedBy = userId;
         product.UpdatedAt = DateTime.Now;
         bool isSuccess = false;
@@ -30,6 +32,6 @@ internal sealed class ActivateProductCommandHandler : IRequestHandler<ActivatePr
         {
             isSuccess = await _unitOfWork.SaveAsync() > 0;
         }, cancellationToken);
-        return isSuccess;
+        return Result<bool>.Success(isSuccess);
     }
 }

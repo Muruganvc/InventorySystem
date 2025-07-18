@@ -1,6 +1,7 @@
-﻿using MediatR;
+﻿using InventorySystem_Application.Common;
+using MediatR;
 
 namespace InventorySystem_Application.Order.Query.GetCustomerOrderSummary;
 public record GetCustomerOrderSummaryQuery
-    : IRequest<IReadOnlyList<GetCustomerOrderSummaryResponse>>;
+    : IRequest<IResult<IReadOnlyList<GetCustomerOrderSummaryResponse>>>;
  

@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using InventorySystem_Application.Common;
+using MediatR;
 
 namespace InventorySystem_Application.Order.Command.OrderCreateCommand;
 
@@ -18,6 +19,6 @@ public record OrderItemCommand(
 );
 
 public record OrderCreateCommand(CustomerCommand Customer, List<OrderItemCommand> OrderItemRequests,decimal GivenAmount,
-    bool IsGst, string GstNumber) : IRequest<int>;
+    bool IsGst, string GstNumber) : IRequest<IResult<int>>;
 
 

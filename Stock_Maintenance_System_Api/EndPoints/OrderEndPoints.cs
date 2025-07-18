@@ -15,10 +15,10 @@ public static class OrderEndPoints
             [FromBody] OrderCreateRequest order,
             IMediator mediator) =>
         {
-            if (order?.Customer == null || order.OrderItemRequests == null || !order.OrderItemRequests.Any())
-            {
-                return Results.BadRequest(new { message = "Invalid order request."});
-            }
+            //if (order?.Customer == null || order.OrderItemRequests == null || !order.OrderItemRequests.Any())
+            //{
+            //    return Results.BadRequest(new { message = "Invalid order request."});
+            //}
 
             var customerCommand = new CustomerCommand(
                 order.Customer.CustomerId,
@@ -35,14 +35,9 @@ public static class OrderEndPoints
                 item.Remarks
             )).ToList();
 
-            var command = new OrderCreateCommand(customerCommand, orderItemCommands,order.GivenAmount, order.IsGst, order.GstNumber);
+            var command = new OrderCreateCommand(customerCommand, orderItemCommands, order.GivenAmount, order.IsGst, order.GstNumber);
             var result = await mediator.Send(command);
-
-            return Results.Ok(new
-            {
-                message = "Order created.",
-                data = result
-            });
+            return Results.Ok(result);
         })
         .WithName("CreateOrder")
         .WithTags("Order")
@@ -55,11 +50,7 @@ public static class OrderEndPoints
         {
             var query = new GetOrdersummaryQuery(OrderId);
             var result = await mediator.Send(query);
-            return Results.Ok(new
-            {
-                message = "Order Lists.",
-                data = result
-            });
+            return Results.Ok(result);
         })
         .WithName("GetOrdersummaryQuery")
         .WithTags("OrderList")
@@ -72,11 +63,7 @@ public static class OrderEndPoints
         {
             var query = new GetCustomerOrderSummaryQuery();
             var result = await mediator.Send(query);
-            return Results.Ok(new
-            {
-                message = "Order Lists.",
-                data = result
-            });
+            return Results.Ok(result);
         })
         .WithName("GetCustomerOrderSummaryQuery")
         .WithTags("OrderList")
