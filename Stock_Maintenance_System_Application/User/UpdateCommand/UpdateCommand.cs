@@ -5,7 +5,8 @@ namespace InventorySystem_Application.User.UpdateCommand;
 public record UpdateCommand(
     int UserId,
     string FirstName,
-    string? LastName, 
-    string? Email, 
-    byte[]? ImageData
+    string LastName, 
+    string Email, 
+    byte[]? ImageData,
+    string MobileNo
 ) : IRequest<IResult<bool>>;

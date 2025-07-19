@@ -1,4 +1,5 @@
-﻿using InventorySystem_Application.Dashboard.Query.CompanyWiseIncomeQuery;
+﻿using InventorySystem_Application.Dashboard.Query.AuditQuery;
+using InventorySystem_Application.Dashboard.Query.CompanyWiseIncomeQuery;
 using InventorySystem_Application.Dashboard.Query.ProductQuantityQuery;
 using InventorySystem_Application.Dashboard.Query.TotalProductQuery;
 using MediatR;
@@ -32,6 +33,15 @@ namespace InventorySystem_Api.EndPoints
                 return Results.Ok(result);
             })
             .RequireAuthorization();
+
+            app.MapGet("/audit-log", async (IMediator mediator) =>
+            {
+                var query = new AuditQuery();
+                var result = await mediator.Send(query);
+                return Results.Ok(result);
+            })
+        .RequireAuthorization();
+            
 
             return app;
         }

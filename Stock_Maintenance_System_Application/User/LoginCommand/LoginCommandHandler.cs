@@ -39,7 +39,7 @@ namespace InventorySystem_Application.User.LoginCommand
                 .Select(r => r.RoleId)
                 .ToArray();
 
-            var roleMap = new Dictionary<int, string> { { 1, "Admin" }, { 2, "Manager" } };
+            var roleMap = new Dictionary<int, string> { { 1, "Admin" }, { 2, "User" } };
 
             var roles = roleIds
                 .Where(roleMap.ContainsKey)

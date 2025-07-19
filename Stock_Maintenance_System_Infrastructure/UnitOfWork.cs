@@ -5,9 +5,11 @@ namespace InventorySystem_Infrastructure;
 public class UnitOfWork : IUnitOfWork, IDisposable
 {
     private readonly SmsDbContext _context;
-    public UnitOfWork(SmsDbContext context)
+    private readonly IUserInfo _userInfo;
+    public UnitOfWork(SmsDbContext context, IUserInfo userInfo)
     {
         _context = context;
+        _userInfo = userInfo;
     }
     public IRepository<T> Repository<T>() where T : class
       => new Repository<T>(_context);

@@ -2,6 +2,7 @@ using Database_Utility;
 using FluentValidation;
 using InventorySystem_Api.Common;
 using InventorySystem_Api.EndPoints;
+using InventorySystem_Application.Common;
 using InventorySystem_Application.Company.Command.CreateCommand;
 using InventorySystem_Application.Company.Command.UpdateCommand;
 using InventorySystem_Application.MenuItem.AddOrRemoveUserMenuItemCommand;
@@ -50,6 +51,7 @@ builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBeh
 builder.Services.AddScoped<IDatabaseScriptService, DatabaseScriptService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthorization();
+builder.Services.AddScoped<IUserInfo, UserInfo>();
 var config = builder.Configuration;
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

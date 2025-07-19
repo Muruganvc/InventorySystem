@@ -19,6 +19,7 @@ namespace InventorySystem_Application.User.UpdateCommand
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
             user.Email = request.Email;
+            user.MobileNo= request.MobileNo;
              
             if (request.ImageData != null && request.ImageData.Length > 0)
             {

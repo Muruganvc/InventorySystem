@@ -15,7 +15,7 @@ using InventorySystem_Application.User.PasswordChangeCommand;
 using InventorySystem_Application.User.UpdateCommand;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace InventorySystem_Api.EndPoints
 {
@@ -96,7 +96,8 @@ namespace InventorySystem_Api.EndPoints
 
                 var firstName = form["FirstName"];
                 var lastName = form["LastName"];
-                var email = form["Email"]; 
+                var email = form["Email"];
+                var mobileNo = form["mobileNo"];
                 IFormFile? imageFile = form.Files["Image"];
 
                 byte[]? imageData = null;
@@ -107,7 +108,7 @@ namespace InventorySystem_Api.EndPoints
                     imageData = ms.ToArray();
                 }
 
-                var command = new UpdateCommand(UserId, firstName!, lastName!, email!, imageData);
+                var command = new UpdateCommand(UserId, firstName!, lastName!, email!, imageData, mobileNo);
                 var result = await mediator.Send(command);
                 return Results.Ok(result);
             }).RequireAuthorization();
@@ -146,7 +147,12 @@ namespace InventorySystem_Api.EndPoints
             {
                 var backUpHistory = config["appSetting:backUpHistory"];
                 var result = DatabaseScriptService.GenerateFullDatabaseScript(userName, backUpHistory);
-                return Results.Ok(result);
+                return Results.Ok(new
+                {
+                    Value = result,
+                    IsSuccess = true,
+                    Error = string.Empty
+                });
             }).RequireAuthorization();
 
             app.MapGet("/backup", (IConfiguration config, IDatabaseScriptService databaseScriptService) =>
@@ -160,13 +166,19 @@ namespace InventorySystem_Api.EndPoints
                     return Results.BadRequest(new { message = "Backup path or filename is not configured properly." });
                 }
                 var fullFileName = Path.Combine(backupPath, fileName);
-                // Ensure file exists before proceeding
                 if (!File.Exists(fullFileName))
                 {
                     return Results.NotFound(new { message = "Backup file not found." });
                 }
                 var data = databaseScriptService.ReadCsv(fullFileName);
-                return Results.Ok(new { data });
+
+                var result = new
+                {
+                    Value = data,
+                    IsSuccess = true,
+                    Error = string.Empty
+                };
+                return Results.Ok(result);
             }).RequireAuthorization();
 
 

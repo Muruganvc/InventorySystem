@@ -29,7 +29,8 @@ internal sealed class GetUserQueryHandler : IRequestHandler<GetUserQuery, IResul
             LastName: user.LastName ?? string.Empty,
             UserName: user.Username,
             Email: user.Email ?? string.Empty,
-            ProfileImageBase64: base64Image
+            ProfileImageBase64: base64Image,
+           MobileNo: user.MobileNo
         ));
     }
 }

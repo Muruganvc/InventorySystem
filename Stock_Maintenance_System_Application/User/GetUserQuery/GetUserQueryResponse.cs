@@ -4,6 +4,7 @@ public record GetUserQueryResponse(
     string LastName,
     string UserName,
     string Email,
-    string? ProfileImageBase64
+    string? ProfileImageBase64,
+    string MobileNo
 );
 
