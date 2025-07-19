@@ -29,7 +29,8 @@ internal sealed class UserCreateCommandHandler : IRequestHandler<UserCreateComma
             IsPasswordExpired = request.IsPasswordExpired,
             LastLogin = request.LastLogin,
             CreatedBy = userId,
-            CreatedDate = DateTime.Now
+            CreatedDate = DateTime.Now,
+            MobileNo = request.MobileNo,
         };
 
         await _unitOfWork.ExecuteInTransactionAsync(async () =>

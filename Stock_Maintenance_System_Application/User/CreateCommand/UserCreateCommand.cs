@@ -11,7 +11,8 @@ public record UserCreateCommand(
     DateTime PasswordLastChanged,
     bool IsPasswordExpired,
     int RoleId,
-    DateTime? LastLogin
+    DateTime? LastLogin,
+    string MobileNo
 ) : IRequest<IResult<int>>
 {
     public DateTime PasswordExpiresAt => PasswordLastChanged.AddDays(30);

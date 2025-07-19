@@ -6,6 +6,7 @@ using InventorySystem_Application.MenuItem.Query;
 using InventorySystem_Application.MenuItem.Query.GetAllMenuItem;
 using InventorySystem_Application.User.ActiveUserCommand;
 using InventorySystem_Application.User.CreateCommand;
+using InventorySystem_Application.User.ForgetPasswordCommand;
 using InventorySystem_Application.User.GetMenuItemPermissionQuery;
 using InventorySystem_Application.User.GetUserQuery;
 using InventorySystem_Application.User.GetUsersQuery;
@@ -14,6 +15,7 @@ using InventorySystem_Application.User.PasswordChangeCommand;
 using InventorySystem_Application.User.UpdateCommand;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace InventorySystem_Api.EndPoints
 {
@@ -33,7 +35,7 @@ namespace InventorySystem_Api.EndPoints
             app.MapPost("/new-user", async (NewUserRequest user, IMediator mediator) =>
             {
                 var command = new UserCreateCommand(user.FirstName, user.LastName, user.UserName, user.EmailId, user.IsActive, DateTime.Now,
-                    false, user.Role, DateTime.Now);
+                    false, user.Role, DateTime.Now,user.MobileNo);
                 var result = await mediator.Send(command);
                 return Results.Ok(result);
             })
@@ -80,12 +82,37 @@ namespace InventorySystem_Api.EndPoints
                 return Results.Ok(result);
             }).RequireAuthorization();
 
-            app.MapPut("/update/{UserId}", async (int UserId, UpdateUserRequest user, IMediator mediator) =>
+            //app.MapPut("/update/{UserId}", async (int UserId, UpdateUserRequest user, IMediator mediator) =>
+            //{
+            //    var command = new UpdateCommand(UserId, user.FirstName, user.LastName, user.Email, user.IsActive, user.IsSuperAdmin,null);
+            //    var result = await mediator.Send(command);
+            //    return Results.Ok(result);
+            //}).RequireAuthorization();
+
+
+            app.MapPut("/update/{UserId}", async (HttpRequest request, int UserId, IMediator mediator) =>
             {
-                var command = new UpdateCommand(UserId, user.FirstName, user.LastName, user.Email, user.IsActive, user.IsSuperAdmin);
+                var form = await request.ReadFormAsync();
+
+                var firstName = form["FirstName"];
+                var lastName = form["LastName"];
+                var email = form["Email"]; 
+                IFormFile? imageFile = form.Files["Image"];
+
+                byte[]? imageData = null;
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    using var ms = new MemoryStream();
+                    await imageFile.CopyToAsync(ms);
+                    imageData = ms.ToArray();
+                }
+
+                var command = new UpdateCommand(UserId, firstName!, lastName!, email!, imageData);
                 var result = await mediator.Send(command);
                 return Results.Ok(result);
             }).RequireAuthorization();
+
+
 
             app.MapPut("/user/activate/{userId}", async (int userId,
           IMediator mediator) =>
@@ -141,6 +168,22 @@ namespace InventorySystem_Api.EndPoints
                 var data = databaseScriptService.ReadCsv(fullFileName);
                 return Results.Ok(new { data });
             }).RequireAuthorization();
+
+
+            app.MapPut("/forget-password", async (
+                        string userName,
+                        string mobileNo,
+                        IConfiguration config,
+                        IMediator mediator) =>
+            {
+                var defaultPassword = config["appSetting:defaultPwd"]
+                    ?? $"Wel{DateTime.Now:yyyy-MM-dd}Come2627";
+
+                var command = new ForgetPasswordCommand(userName, mobileNo, defaultPassword);
+                var result = await mediator.Send(command);
+
+                return Results.Ok(result);
+            }).WithMetadata(new AllowAnonymousAttribute());
 
             return app;
         }

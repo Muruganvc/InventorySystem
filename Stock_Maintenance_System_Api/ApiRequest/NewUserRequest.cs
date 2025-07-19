@@ -5,5 +5,6 @@
     string EmailId,
     string Password,
     int Role,
-    bool IsActive
+    bool IsActive,
+    string MobileNo
 );

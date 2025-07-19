@@ -18,13 +18,18 @@ internal sealed class GetUserQueryHandler : IRequestHandler<GetUserQuery, IResul
             .GetByAsync(u => u.Username == request.userName);
 
         if (user == null)
-            return Result<GetUserQueryResponse>.Failure("User not found"); 
+            return Result<GetUserQueryResponse>.Failure("User not found");
+
+        string? base64Image = user.ProfileImage != null
+            ? $"data:image/jpeg;base64,{Convert.ToBase64String(user.ProfileImage)}"
+            : null;
 
         return Result<GetUserQueryResponse>.Success(new GetUserQueryResponse(
             FirstName: user.FirstName,
             LastName: user.LastName ?? string.Empty,
             UserName: user.Username,
-            Email: user.Email ?? string.Empty
+            Email: user.Email ?? string.Empty,
+            ProfileImageBase64: base64Image
         ));
     }
 }

@@ -6,7 +6,6 @@ public record UpdateCommand(
     int UserId,
     string FirstName,
     string? LastName, 
-    string? Email,
-    bool IsActive,
-    bool IsSuperAdmin
+    string? Email, 
+    byte[]? ImageData
 ) : IRequest<IResult<bool>>;

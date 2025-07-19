@@ -22,4 +22,7 @@ public class User
     public ICollection<Product> CreatedProduct { get; set; } = new List<Product>();
     public ICollection<Product> UpdatedProduct { get; set; } = new List<Product>();
     public virtual ICollection<ProductCategory> CreatedProductCategories { get; set; } = new List<ProductCategory>();
+    public string MobileNo { get; set; } =string.Empty;
+
+    public byte[]? ProfileImage { get; set; }
 }
