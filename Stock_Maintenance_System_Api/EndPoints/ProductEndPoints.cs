@@ -1,13 +1,12 @@
-﻿using MediatR;
-using InventorySystem_Api.ApiRequest;
+﻿using InventorySystem_Api.ApiRequest;
+using InventorySystem_Application.Common;
 using InventorySystem_Application.Product.Command.ActivateProductCommand;
 using InventorySystem_Application.Product.Command.CreateProductCommand;
+using InventorySystem_Application.Product.Command.QuantityUpdateCommand;
 using InventorySystem_Application.Product.Command.UpdateProductCommand;
 using InventorySystem_Application.Product.Query.GetProducts;
-using InventorySystem_Application.Product.Command.QuantityUpdateCommand;
-using InventorySystem_Application.Company.Command.BulkCompanyCommand;
 using InventorySystem_Application.ProductCategory.Query.GetCompanyCategoryProduct;
-using InventorySystem_Application.Common;
+using MediatR;
 
 namespace InventorySystem_Api.EndPoints;
 public static class ProductEndpoints
@@ -29,7 +28,7 @@ public static class ProductEndpoints
         .WithTags("CreateProduct")
         .Produces<int>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-       .RequireAuthorization();
+       .RequireAuthorization("AllRoles");
 
 
         app.MapGet("/products/{type}", async (string type, IMediator mediator) =>
@@ -42,7 +41,7 @@ public static class ProductEndpoints
         .WithTags("Products")
         .Produces<IReadOnlyList<GetProductsQueryResponse>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-       .RequireAuthorization();
+      .RequireAuthorization("AllRoles");
 
         app.MapPut("/product/{productId}", async (int productId,
             UpdateProductRequest product,
@@ -58,7 +57,7 @@ public static class ProductEndpoints
         .WithTags("UpdateProduct")
         .Produces<int>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization();
+        .RequireAuthorization("AllRoles");
 
         app.MapPut("/product/activate/{productId}", async (int productId,
             IMediator mediator) =>
@@ -71,7 +70,7 @@ public static class ProductEndpoints
         .WithTags("UpdateProduct")
         .Produces<int>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization();
+        .RequireAuthorization("AdminOnly");
 
         app.MapPut("/product/{productId:int}/{quantity:int}", async (
         int productId,
@@ -86,7 +85,7 @@ public static class ProductEndpoints
         .WithTags("Products")
         .Produces(StatusCodes.Status200OK, typeof(object))
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization();
+         .RequireAuthorization("AllRoles");
 
         app.MapGet("/company-category-product", async ( IMediator mediator) =>
         {
@@ -98,7 +97,7 @@ public static class ProductEndpoints
         .WithTags("CompanyCategoryProducts")
         .Produces(StatusCodes.Status200OK, typeof(IResult<IReadOnlyList<KeyValuePair<string, string>>>))
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization();
+       .RequireAuthorization("AllRoles");
         return app;
     }
 }

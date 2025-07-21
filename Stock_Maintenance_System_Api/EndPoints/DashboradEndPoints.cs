@@ -16,7 +16,7 @@ namespace InventorySystem_Api.EndPoints
                 var result = await mediator.Send(query);
                 return Results.Ok(result);
             })
-           .RequireAuthorization();
+          .RequireAuthorization("AllRoles");
 
             app.MapGet("/product-sold", async (IMediator mediator) =>
             {
@@ -24,7 +24,7 @@ namespace InventorySystem_Api.EndPoints
                 var result = await mediator.Send(query);
                 return Results.Ok(result);
             })
-           .RequireAuthorization();
+          .RequireAuthorization("AllRoles");
 
             app.MapGet("/product-quantity", async (IMediator mediator) =>
             {
@@ -32,7 +32,7 @@ namespace InventorySystem_Api.EndPoints
                 var result = await mediator.Send(query);
                 return Results.Ok(result);
             })
-            .RequireAuthorization();
+           .RequireAuthorization("AllRoles");
 
             app.MapGet("/audit-log", async (IMediator mediator) =>
             {
@@ -40,8 +40,8 @@ namespace InventorySystem_Api.EndPoints
                 var result = await mediator.Send(query);
                 return Results.Ok(result);
             })
-        .RequireAuthorization();
-            
+       .RequireAuthorization("AllRoles");
+
 
             return app;
         }

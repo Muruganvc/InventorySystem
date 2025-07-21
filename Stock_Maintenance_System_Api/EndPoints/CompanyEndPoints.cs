@@ -32,7 +32,7 @@ public static class CompanyEndPoints
         .WithTags("Company")
         .Produces<int>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization();
+        .RequireAuthorization("AllRoles");
 
         app.MapPut("/company/{companyId:int}", async (int companyId, [FromBody] CompanyUpdateRequest company, IMediator mediator) =>
         {
@@ -44,7 +44,7 @@ public static class CompanyEndPoints
         .WithTags("Company")
         .Produces<bool>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization();
+        .RequireAuthorization("AllRoles");
 
         app.MapGet("/company", async ([FromQuery] bool isAllActiveCompany, [FromQuery] string? companyName, IMediator mediator) =>
         {
@@ -56,7 +56,7 @@ public static class CompanyEndPoints
         .WithTags("Company")
         .Produces<IReadOnlyList<KeyValuePair<string, int>>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization();
+        .RequireAuthorization("AllRoles");
 
         #endregion
 
@@ -72,7 +72,7 @@ public static class CompanyEndPoints
         .WithTags("Category")
         .Produces<int>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization();
+        .RequireAuthorization("AllRoles");
 
         app.MapPut("/category/{categoryId:int}", async (int categoryId, [FromBody] CategoryUpdateRequest category, IMediator mediator) =>
         {
@@ -84,7 +84,7 @@ public static class CompanyEndPoints
         .WithTags("Category")
         .Produces<bool>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization();
+        .RequireAuthorization("AllRoles");
 
         app.MapGet("/category/{companyId:int}", async (int companyId, IMediator mediator) =>
         {
@@ -96,7 +96,7 @@ public static class CompanyEndPoints
         .WithTags("Category")
         .Produces<IReadOnlyList<KeyValuePair<string, int>>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization();
+       .RequireAuthorization("AllRoles");
 
         app.MapGet("/categories", async ([FromQuery] bool isAllActive, IMediator mediator) =>
         {
@@ -108,7 +108,7 @@ public static class CompanyEndPoints
         .WithTags("Category")
         .Produces<IReadOnlyList<GetCategoryQueryResponse>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization();
+        .RequireAuthorization("AllRoles");
 
         #endregion
 
@@ -128,7 +128,7 @@ public static class CompanyEndPoints
         .WithTags("ProductCategory")
         .Produces<int>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization();
+        .RequireAuthorization("AllRoles");
 
         app.MapPut("/product-category/{productCategoryId:int}", async (int productCategoryId, [FromBody] ProductCategoryUpdateRequest productCategory, IMediator mediator) =>
         {
@@ -145,7 +145,7 @@ public static class CompanyEndPoints
         .WithTags("ProductCategory")
         .Produces<bool>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization();
+       .RequireAuthorization("AllRoles");
 
         app.MapGet("/product-category/{categoryId:int}", async (int categoryId, IMediator mediator) =>
         {
@@ -157,7 +157,7 @@ public static class CompanyEndPoints
         .WithTags("ProductCategory")
         .Produces<IReadOnlyList<KeyValuePair<string, int>>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization();
+       .RequireAuthorization("AllRoles");
 
         app.MapGet("/product-categories", async ([FromQuery] bool isAllActive, IMediator mediator) =>
         {
@@ -169,7 +169,7 @@ public static class CompanyEndPoints
         .WithTags("ProductCategory")
         .Produces<IReadOnlyList<GetProductCategoryQueryResponse>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization();
+        .RequireAuthorization("AllRoles");
 
         #endregion
 
@@ -195,7 +195,7 @@ public static class CompanyEndPoints
         .WithTags("Products")
         .Produces(StatusCodes.Status200OK, typeof(object))
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization();
+        .RequireAuthorization("AllRoles");
 
         return app;
     }

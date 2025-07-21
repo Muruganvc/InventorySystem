@@ -45,7 +45,7 @@ namespace InventorySystem_Api.EndPoints
             .WithTags("NewUserCreate")
             .Produces<int>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
-            .RequireAuthorization();
+            .RequireAuthorization("SuperAdminOnly");
 
             app.MapGet("/users", async (IMediator mediator) =>
             {
@@ -53,7 +53,7 @@ namespace InventorySystem_Api.EndPoints
                 var result = await mediator.Send(query);
                 return Results.Ok(result);
             })
-           .RequireAuthorization("AdminOnly");
+           .RequireAuthorization("AllRoles");
 
             app.MapPut("/password-change/{UserId}", async (int UserId, ChangePasswordRequest user, IMediator mediator) =>
             {
@@ -61,28 +61,28 @@ namespace InventorySystem_Api.EndPoints
                     DateTime.Now);
                 var result = await mediator.Send(command);
                 return Results.Ok(result);
-            }).RequireAuthorization();
+            }).RequireAuthorization("AllRoles");
 
             app.MapGet("/user/{userName}", async (string userName, IMediator mediator) =>
             {
                 var query = new GetUserQuery(userName);
                 var result = await mediator.Send(query);
                 return Results.Ok(result);
-            }).RequireAuthorization();
+            }).RequireAuthorization("AllRoles");
 
             app.MapGet("/menu/{UserId}", async (int UserId, IMediator mediator) =>
             {
                 var query = new GetMenuItemPermissionQuery(UserId);
                 var result = await mediator.Send(query);
                 return Results.Ok(result);
-            }).RequireAuthorization();
+            }).RequireAuthorization("AllRoles");
 
             app.MapPost("/menu/{UserId}/{MenuId}", async (int UserId, int MenuId, IMediator mediator) =>
             {
                 var query = new AddOrRemoveUserMenuItemCommand(UserId, MenuId);
                 var result = await mediator.Send(query);
                 return Results.Ok(result);
-            }).RequireAuthorization();
+            }).RequireAuthorization("AllRoles");
 
             //app.MapPut("/update/{UserId}", async (int UserId, UpdateUserRequest user, IMediator mediator) =>
             //{
@@ -113,7 +113,7 @@ namespace InventorySystem_Api.EndPoints
                 var command = new UpdateCommand(UserId, firstName!, lastName!, email!, imageData, mobileNo);
                 var result = await mediator.Send(command);
                 return Results.Ok(result);
-            }).RequireAuthorization();
+            }).RequireAuthorization("AllRoles");
 
 
 
@@ -131,19 +131,19 @@ namespace InventorySystem_Api.EndPoints
                 var query = new GetMenuItemQuery(UserId);
                 var result = await mediator.Send(query);
                 return Results.Ok(result);
-            }).RequireAuthorization();
+            }).RequireAuthorization("AllRoles");
 
             app.MapGet("/menus", async (IMediator mediator) =>
             {
                 var result = await mediator.Send(new GetAllMenuItemQuery());
                 return Results.Ok(result);
-            }).RequireAuthorization();
+            }).RequireAuthorization("AllRoles");
 
             app.MapGet("/customers", async (IMediator mediator) =>
             {
                 var result = await mediator.Send(new GetAllCustomersQuery());
                 return Results.Ok(result);
-            }).RequireAuthorization();
+            }).RequireAuthorization("AllRoles");
 
             app.MapPost("/database-backup", (IConfiguration config, string userName, IDatabaseScriptService DatabaseScriptService) =>
             {
@@ -155,7 +155,7 @@ namespace InventorySystem_Api.EndPoints
                     IsSuccess = true,
                     Error = string.Empty
                 });
-            }).RequireAuthorization();
+            }).RequireAuthorization("AllRoles");
 
             app.MapGet("/backup", (IConfiguration config, IDatabaseScriptService databaseScriptService) =>
             {
@@ -181,7 +181,7 @@ namespace InventorySystem_Api.EndPoints
                     Error = string.Empty
                 };
                 return Results.Ok(result);
-            }).RequireAuthorization();
+            }).RequireAuthorization("AllRoles");
 
 
             app.MapPut("/forget-password", async (
@@ -232,14 +232,14 @@ namespace InventorySystem_Api.EndPoints
                 );
                 var result = await mediator.Send(command);
                 return Results.Ok(result);
-            }).RequireAuthorization();
+            }).RequireAuthorization("SuperAdminOnly");
 
             app.MapGet("/inventory-company-info", async (IMediator mediator) =>
             {
                 var query = new GetInventoryCompanyInfoQuery();
                 var result = await mediator.Send(query);
                 return Results.Ok(result);
-            }).RequireAuthorization();
+            }).RequireAuthorization("AllRoles");
 
             app.MapPost("/inventory-company-info/{invCompanyInfoId}", async (
                 HttpRequest request,
@@ -279,10 +279,7 @@ namespace InventorySystem_Api.EndPoints
                 var result = await mediator.Send(command);
                 return Results.Ok(result);
             })
-            .RequireAuthorization();
-
-
-
+            .RequireAuthorization("SuperAdminOnly");
             return app;
         }
     }

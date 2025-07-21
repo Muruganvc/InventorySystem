@@ -15,11 +15,6 @@ public static class OrderEndPoints
             [FromBody] OrderCreateRequest order,
             IMediator mediator) =>
         {
-            //if (order?.Customer == null || order.OrderItemRequests == null || !order.OrderItemRequests.Any())
-            //{
-            //    return Results.BadRequest(new { message = "Invalid order request."});
-            //}
-
             var customerCommand = new CustomerCommand(
                 order.Customer.CustomerId,
                 order.Customer.CustomerName,
@@ -43,7 +38,7 @@ public static class OrderEndPoints
         .WithTags("Order")
         .Produces<int>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization();
+        .RequireAuthorization("AllRoles");
 
         app.MapGet("/order-summary", async ([FromQuery] int OrderId,
             IMediator mediator) =>
@@ -56,7 +51,7 @@ public static class OrderEndPoints
         .WithTags("OrderList")
         .Produces<IReadOnlyList<GetOrderSummaryResponse>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization();
+        .RequireAuthorization("AllRoles");
 
         app.MapGet("/customer-orders", async (
             IMediator mediator) =>
@@ -69,7 +64,7 @@ public static class OrderEndPoints
         .WithTags("OrderList")
         .Produces<IReadOnlyList<GetCustomerOrderSummaryResponse>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
-        .RequireAuthorization();
+        .RequireAuthorization("AllRoles");
 
         return app;
     }

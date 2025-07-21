@@ -74,9 +74,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization(options =>
 {
+    options.AddPolicy("AllRoles", policy =>
+        policy.RequireRole("Admin", "SuperAdmin", "User"));
+
     options.AddPolicy("AdminOnly", policy =>
-        policy.RequireRole("Admin"));
+        policy.RequireRole("Admin", "SuperAdmin"));
+
+    options.AddPolicy("UserOnly", policy =>
+        policy.RequireRole("User"));
+
+    options.AddPolicy("SuperAdminOnly", policy =>
+        policy.RequireRole("SuperAdmin"));
 });
+
 
 builder.Services.AddCors(options =>
 {
