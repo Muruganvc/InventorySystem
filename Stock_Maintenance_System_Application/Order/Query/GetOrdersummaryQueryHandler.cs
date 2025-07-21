@@ -73,8 +73,7 @@ internal class GetOrdersummaryQueryHandler
             CustomerName = cus.CustomerName,
             Address = cus.Address,
             Phone = cus.Phone,
-            User = temp.pro.CreatedByUser.Username,
-            SerialNo = temp.pro.SerialNo,
+            User = temp.odIm.CreatedByUser.Username,
             IsGst = temp.odr.IsGst
         })
     .ToListAsync(cancellationToken);

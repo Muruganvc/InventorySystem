@@ -25,8 +25,7 @@ public class Product
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public int CreatedBy { get; set; }
     public DateTime? UpdatedAt { get; set; }
-    public int? UpdatedBy { get; set; }
-    public string? SerialNo { get; set; } 
+    public int? UpdatedBy { get; set; } 
 
     // Navigation Properties
     public Category Category { get; set; } = null!;

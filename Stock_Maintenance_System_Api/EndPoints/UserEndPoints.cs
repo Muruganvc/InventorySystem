@@ -1,6 +1,9 @@
 ﻿using Database_Utility;
 using InventorySystem_Api.ApiRequest;
 using InventorySystem_Application.Customer.Query.GetAllCustomers;
+using InventorySystem_Application.InventoryCompanyInfo.CreateInventoryCompanyInfoCommand;
+using InventorySystem_Application.InventoryCompanyInfo.GetInventoryCompanyInfoQuery;
+using InventorySystem_Application.InventoryCompanyInfo.UpdateInventoryCompanyInfoCommand;
 using InventorySystem_Application.MenuItem.AddOrRemoveUserMenuItemCommand;
 using InventorySystem_Application.MenuItem.Query;
 using InventorySystem_Application.MenuItem.Query.GetAllMenuItem;
@@ -15,7 +18,6 @@ using InventorySystem_Application.User.PasswordChangeCommand;
 using InventorySystem_Application.User.UpdateCommand;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace InventorySystem_Api.EndPoints
 {
@@ -196,6 +198,90 @@ namespace InventorySystem_Api.EndPoints
 
                 return Results.Ok(result);
             }).WithMetadata(new AllowAnonymousAttribute());
+
+            app.MapPost("/inventory-company-info", async (HttpRequest request, IMediator mediator) =>
+            {
+                var form = await request.ReadFormAsync();
+
+                var inventoryCompanyInfoName = form["inventoryCompanyInfoName"];
+                string? description = form["description"];
+                var address = form["address"];
+                var email = form["email"];
+                var mobileNo = form["mobileNo"];
+                var gstNumber = form["gstNumber"];
+                var apiVersion = form["apiVersion"];
+                var uiVersion = form["uiVersion"];
+                var bankName = form["bankName"];
+                var bankBranchName = form["bankBranchName"];
+                var bankAccountNo = form["bankAccountNo"];
+                var bankBranchIFSC = form["bankBranchIFSC"];
+
+                IFormFile? qcCodeFile = form.Files["QcCode"];
+                byte[]? qcCodeData = null;
+
+                if (qcCodeFile is { Length: > 0 })
+                {
+                    using var ms = new MemoryStream();
+                    await qcCodeFile.CopyToAsync(ms);
+                    qcCodeData = ms.ToArray();
+                }
+
+                var command = new CreateInventoryCompanyInfoCommand(
+                    inventoryCompanyInfoName!,description!, address!, mobileNo!, gstNumber!, apiVersion!, uiVersion!, qcCodeData!,
+                    email!,bankName!,bankBranchName!,bankAccountNo!,bankBranchIFSC!
+                );
+                var result = await mediator.Send(command);
+                return Results.Ok(result);
+            }).RequireAuthorization();
+
+            app.MapGet("/inventory-company-info", async (IMediator mediator) =>
+            {
+                var query = new GetInventoryCompanyInfoQuery();
+                var result = await mediator.Send(query);
+                return Results.Ok(result);
+            }).RequireAuthorization();
+
+            app.MapPost("/inventory-company-info/{invCompanyInfoId}", async (
+                HttpRequest request,
+                int invCompanyInfoId,
+                IMediator mediator) =>
+            {
+                var form = await request.ReadFormAsync();
+
+                string? inventoryCompanyInfoName = form["inventoryCompanyInfoName"];
+                string? description = form["description"];
+                string? address = form["address"];
+                string? email = form["email"];
+                string? mobileNo = form["mobileNo"];
+                string? gstNumber = form["gstNumber"];
+                string? apiVersion = form["apiVersion"];
+                string? uiVersion = form["uiVersion"];
+                string? bankName = form["bankName"];
+                string? bankBranchName = form["bankBranchName"];
+                string? bankAccountNo = form["bankAccountNo"];
+                string? bankBranchIFSC = form["bankBranchIFSC"];
+
+                // Handle file upload (QRCode)
+                byte[]? qcCodeData = null;
+                var qcCodeFile = form.Files["QcCode"];
+                if (qcCodeFile is { Length: > 0 })
+                {
+                    using var ms = new MemoryStream();
+                    await qcCodeFile.CopyToAsync(ms);
+                    qcCodeData = ms.ToArray();
+                }
+
+                // Construct command
+                var command = new UpdateInventoryCompanyInfoCommand(invCompanyInfoId, inventoryCompanyInfoName!, description!, address!,
+                    mobileNo!, gstNumber!, apiVersion!, uiVersion!, qcCodeData!, email!, bankName!, 
+                    bankBranchName!, bankAccountNo!, bankBranchIFSC!);
+
+                var result = await mediator.Send(command);
+                return Results.Ok(result);
+            })
+            .RequireAuthorization();
+
+
 
             return app;
         }

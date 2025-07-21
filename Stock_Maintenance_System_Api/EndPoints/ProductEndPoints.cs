@@ -21,7 +21,7 @@ public static class ProductEndpoints
             var command = new CreateProductCommand(product.ProductName,
                 product.CompanyId,
                 product.CategoryId, product.ProductCategoryId, product.Description,
-                product.Mrp, product.SalesPrice, product.TotalQuantity, product.LandingPrice, product.SerialNo, product.IsActive);
+                product.Mrp, product.SalesPrice, product.TotalQuantity, product.LandingPrice, product.IsActive);
             var result = await mediator.Send(command);
             return Results.Ok(result);
         })
@@ -50,7 +50,7 @@ public static class ProductEndpoints
         {
             var command = new UpdateProductCommand(productId, product.ProductName, product.CompanyId,
                 product.CategoryId, product.ProductCategoryId, product.Description, product.Mrp,
-                product.SalesPrice, product.TotalQuantity, product.IsActive, product.LandingPrice, product.SerialNo);
+                product.SalesPrice, product.TotalQuantity, product.IsActive, product.LandingPrice);
             var result = await mediator.Send(command);
             return Results.Ok(result);
         })

@@ -36,8 +36,7 @@ internal sealed class UpdateProductCommandHandler : IRequestHandler<UpdateProduc
         product.UpdatedBy = userId;
         product.UpdatedAt = DateTime.Now;
         product.Description = request.Description;
-        product.IsActive = request.IsActive;
-        product.SerialNo = request.SerialNo;
+        product.IsActive = request.IsActive; 
         bool isSuccess = false;
         await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {

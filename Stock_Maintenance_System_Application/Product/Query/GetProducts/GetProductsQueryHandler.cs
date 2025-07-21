@@ -51,8 +51,7 @@ internal sealed class GetProductsQueryHandler
             pro.LandingPrice,
             pro.Quantity,
             pro.IsActive,
-            CreatedByUser = pro.CreatedByUser != null ? pro.CreatedByUser.Username : null,
-            pro.SerialNo
+            CreatedByUser = pro.CreatedByUser != null ? pro.CreatedByUser.Username : null 
         })
             .ToListAsync(cancellationToken);
 
@@ -72,8 +71,8 @@ internal sealed class GetProductsQueryHandler
             pro.LandingPrice,
             pro.Quantity,
             pro.IsActive,
-            pro.CreatedByUser,
-            pro.SerialNo, $"{pro.CompanyName} {pro.CategoryName} {pro.ProductCategoryName}",
+            pro.CreatedByUser, 
+            $"{pro.CompanyName} {pro.CategoryName} {pro.ProductCategoryName}",
             $"{pro.CompanyId}${pro.CategoryId}${pro.ProductCategoryId}"
         )).OrderBy(a => a.ProductName).ToList();
         return Result<IReadOnlyList<GetProductsQueryResponse>>.Success(mappedResult);

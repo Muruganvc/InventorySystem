@@ -60,8 +60,7 @@ internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProduc
             Quantity = request.TotalQuantity,
             IsActive = request.IsActive,
             CreatedAt = DateTime.Now,
-            CreatedBy = userId,
-            SerialNo = request.SerialNo,
+            CreatedBy = userId
         };
 
         // Save the product

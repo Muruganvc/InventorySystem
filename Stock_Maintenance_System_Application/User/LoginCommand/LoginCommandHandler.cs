@@ -6,6 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using InventorySystem_Application.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventorySystem_Application.User.LoginCommand
 {
@@ -14,15 +15,17 @@ namespace InventorySystem_Application.User.LoginCommand
         private readonly IRepository<InventorySystem_Domain.User> _userRepository;
         private readonly IRepository<InventorySystem_Domain.UserRole> _userRoleRepository;
         private readonly IConfiguration _configuration;
-
+        private readonly IUnitOfWork _unitOfWork;
         public LoginCommandHandler(
             IRepository<InventorySystem_Domain.User> userRepository,
             IRepository<InventorySystem_Domain.UserRole> userRoleRepository,
-            IConfiguration configuration)
+            IConfiguration configuration, IUnitOfWork unitOfWork
+            )
         {
             _userRepository = userRepository;
             _configuration = configuration;
             _userRoleRepository = userRoleRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IResult<LoginCommandResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -31,8 +34,7 @@ namespace InventorySystem_Application.User.LoginCommand
             if (user is null)
                 return Result<LoginCommandResponse>.Failure("Invalid user name");
 
-            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
-            if (!isPasswordValid)
+            if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
                 return Result<LoginCommandResponse>.Failure("Invalid password");
 
             var roleIds = (await _userRoleRepository.GetListByAsync(r => r.UserId == user.UserId))
@@ -46,19 +48,56 @@ namespace InventorySystem_Application.User.LoginCommand
                 .Select(id => roleMap[id])
                 .ToList();
 
-            var token = GenerateJwtToken(user.Username, user.Email ?? string.Empty, roles, user.UserId);
-
-            var result = new LoginCommandResponse(
-                user.UserId,
-                user.FirstName,
-                user.LastName ?? string.Empty,
-                user.Email ?? string.Empty,
+            var token = GenerateJwtToken(
                 user.Username,
-                token
+                user.Email ?? string.Empty,
+                roles,
+                user.UserId
             );
-            return Result<LoginCommandResponse>.Success(result);
-        }
 
+            var companyInfo = await _unitOfWork
+                .Repository<InventorySystem_Domain.InventoryCompanyInfo>()
+                .Table
+                .FirstOrDefaultAsync(cancellationToken);
+
+            GetInventoryCompanyInfoQueryResponse? companyResponse = null;
+
+            if (companyInfo is not null)
+            {
+                var base64Image = companyInfo.QcCode != null
+                    ? $"data:image/jpeg;base64,{Convert.ToBase64String(companyInfo.QcCode)}"
+                    : string.Empty;
+
+                companyResponse = new GetInventoryCompanyInfoQueryResponse(
+                    InventoryCompanyInfoId: companyInfo.InventoryCompanyInfoId,
+                    InventoryCompanyInfoName: companyInfo.InventoryCompanyInfoName,
+                    Description: companyInfo.Description,
+                    Address: companyInfo.Address,
+                    MobileNo: companyInfo.MobileNo,
+                    GstNumber: companyInfo.GstNumber,
+                    ApiVersion: companyInfo.ApiVersion,
+                    UiVersion: companyInfo.UiVersion,
+                    QrCodeBase64: base64Image,
+                    Email: companyInfo.Email ?? string.Empty,
+                    BankName: companyInfo.BankName,
+                    BankBranchName: companyInfo.BankBranchName,
+                    BankAccountNo: companyInfo.BankAccountNo,
+                    BankBranchIFSC: companyInfo.BankBranchIFSC
+                );
+            }
+
+            var response = new LoginCommandResponse(
+                UserId: user.UserId,
+                FirstName: user.FirstName,
+                LastName: user.LastName ?? string.Empty,
+                Email: user.Email ?? string.Empty,
+                user.Username,
+                Token: token,
+                InvCompanyInfo: companyResponse
+            );
+
+            return Result<LoginCommandResponse>.Success(response);
+        }
         private string GenerateJwtToken(string username, string email, List<string> roleNames, int userId)
         {
             var claims = new List<Claim>

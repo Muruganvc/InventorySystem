@@ -14,8 +14,7 @@ public record GetProductsQueryResponse(
     decimal LandingPrice,
     int Quantity,
     bool IsActive,
-    string? UserName,
-    string? SerialNo,
+    string? UserName ,
     string CompanyCategoryProductName,
     string CompanyCategoryProductNameId
 );

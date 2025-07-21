@@ -64,10 +64,10 @@ internal sealed class OrderCreateCommandHandler : IRequestHandler<OrderCreateCom
                 ProductId = item.ProductId,
                 Quantity = item.Quantity,
                 UnitPrice = item.UnitPrice,
-                DiscountPercent = item.DiscountPercent,
-                Remarks = item.Remarks,
+                DiscountPercent = item.DiscountPercent, 
                 CreatedAt = DateTime.UtcNow,
-                CreatedBy = userId  
+                CreatedBy = userId ,
+                SerialNo = item.SerialNo
             }).ToList();
 
             await _unitOfWork.Repository<OrderItem>().AddRangeAsync(orderItems);

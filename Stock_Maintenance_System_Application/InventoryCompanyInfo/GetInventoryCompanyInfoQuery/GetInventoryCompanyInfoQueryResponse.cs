@@ -1,4 +1,4 @@
-﻿namespace InventorySystem_Application.User.LoginCommand;
+﻿namespace InventorySystem_Application.InventoryCompanyInfo.GetInventoryCompanyInfoQuery;
 public record GetInventoryCompanyInfoQueryResponse(
     int InventoryCompanyInfoId,
     string InventoryCompanyInfoName,
@@ -15,6 +15,3 @@ public record GetInventoryCompanyInfoQueryResponse(
     string BankAccountNo,
     string BankBranchIFSC
 );
-
-public record LoginCommandResponse(int UserId, string FirstName, string LastName, string Email, string UserName, string Token,
-    GetInventoryCompanyInfoQueryResponse? InvCompanyInfo);

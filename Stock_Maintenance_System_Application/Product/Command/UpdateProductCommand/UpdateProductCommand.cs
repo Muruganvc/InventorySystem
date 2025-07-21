@@ -13,6 +13,5 @@ public record UpdateProductCommand(
    decimal SalesPrice,
    int TotalQuantity,
    bool IsActive,
-   decimal LandingPrice,
-   string? SerialNo
+   decimal LandingPrice
 ) : IRequest<IResult<bool>>;

@@ -12,8 +12,8 @@ public class OrderItemRequest
     public int ProductId { get; set; }
     public int Quantity { get; set; }
     public decimal UnitPrice { get; set; }
-    public decimal DiscountPercent { get; set; }
-    public string? Remarks { get; set; }
+    public decimal DiscountPercent { get; set; } 
+    public string? SerialNo { get; set; }
 }
 
 public record OrderCreateRequest(CustomerRequest Customer, List<OrderItemRequest> OrderItemRequests, decimal GivenAmount,bool IsGst,string GstNumber);

@@ -9,6 +9,5 @@ public record ProductRequest(
     decimal SalesPrice,
     decimal LandingPrice,
     int TotalQuantity,
-     string? SerialNo,
     bool IsActive = false
 );

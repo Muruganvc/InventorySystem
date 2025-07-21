@@ -24,6 +24,8 @@ public class SmsDbContext : DbContext
     public DbSet<Order> Order => Set<Order>();
     public DbSet<OrderItem> OrderItem => Set<OrderItem>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+    public DbSet<InventoryCompanyInfo> InventoryCompanyInfo => Set<InventoryCompanyInfo>();
+    
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
@@ -116,6 +118,7 @@ public class SmsDbContext : DbContext
         modelBuilder.Entity<OrderItem>().ToTable("OrderItems");
         modelBuilder.Entity<UserRole>().ToTable("UserRole");
         modelBuilder.Entity<AuditLog>().ToTable("AuditLogs");
+        modelBuilder.Entity<InventoryCompanyInfo>().ToTable("InventoryCompanyInfo");
 
         modelBuilder.Entity<MenuItem>()
             .HasOne(m => m.Parent)
@@ -199,12 +202,6 @@ public class SmsDbContext : DbContext
             .HasOne(oi => oi.CreatedByUser)
             .WithMany()
             .HasForeignKey(oi => oi.CreatedBy)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<OrderItem>()
-            .HasOne(oi => oi.UpdatedByUser)
-            .WithMany()
-            .HasForeignKey(oi => oi.UpdatedBy)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Order>()

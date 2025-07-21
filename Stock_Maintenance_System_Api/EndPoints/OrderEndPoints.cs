@@ -32,7 +32,7 @@ public static class OrderEndPoints
                 item.Quantity,
                 item.UnitPrice,
                 item.DiscountPercent,
-                item.Remarks
+                item.SerialNo
             )).ToList();
 
             var command = new OrderCreateCommand(customerCommand, orderItemCommands, order.GivenAmount, order.IsGst, order.GstNumber);
