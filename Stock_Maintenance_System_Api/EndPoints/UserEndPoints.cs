@@ -183,7 +183,6 @@ namespace InventorySystem_Api.EndPoints
                 return Results.Ok(result);
             }).RequireAuthorization("AllRoles");
 
-
             app.MapPut("/forget-password", async (
                         string userName,
                         string mobileNo,

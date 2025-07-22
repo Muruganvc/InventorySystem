@@ -74,7 +74,8 @@ internal class GetOrdersummaryQueryHandler
             Address = cus.Address,
             Phone = cus.Phone,
             User = temp.odIm.CreatedByUser.Username,
-            IsGst = temp.odr.IsGst
+            IsGst = temp.odr.IsGst,
+            SerialNo = temp.odIm.SerialNo
         })
     .ToListAsync(cancellationToken);
         return Result<IReadOnlyList<GetOrderSummaryResponse>>.Success(resultList.OrderBy(a => a.FullProductName).ToList());
