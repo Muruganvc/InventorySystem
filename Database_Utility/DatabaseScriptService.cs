@@ -2,11 +2,9 @@
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using System.Data.SqlClient;
-using System;
 using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
-using System.Xml.Linq;
 
 namespace Database_Utility;
 
@@ -44,12 +42,10 @@ public class DatabaseScriptService : IDatabaseScriptService
         string fileName = Path.Combine(outputDirectory, $"Backup_{dbName}_{timestamp}.sql");
         try
         {
-
             if (!Directory.Exists(outputDirectory))
             {
                 Directory.CreateDirectory(outputDirectory);
             }
-
             var server = new Server(new ServerConnection(new SqlConnection(connectionString)));
             var database = server.Databases[dbName];
             var schemaName = "dbo";
@@ -64,6 +60,7 @@ public class DatabaseScriptService : IDatabaseScriptService
             var collection = new UrnCollection();
             foreach (var table in tableList)
             {
+                if (table.Name == "AuditLogs") continue;
                 collection.Add(table.Urn);
             }
 

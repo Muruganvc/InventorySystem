@@ -1,5 +1,7 @@
 ﻿using Database_Utility;
 using InventorySystem_Api.ApiRequest;
+using InventorySystem_Application.BackSkip.FileDownLoadCommand;
+using InventorySystem_Application.BackSkip.FileUpLoadCommand;
 using InventorySystem_Application.Customer.Query.GetAllCustomers;
 using InventorySystem_Application.InventoryCompanyInfo.CreateInventoryCompanyInfoCommand;
 using InventorySystem_Application.InventoryCompanyInfo.GetInventoryCompanyInfoQuery;
@@ -18,6 +20,7 @@ using InventorySystem_Application.User.PasswordChangeCommand;
 using InventorySystem_Application.User.UpdateCommand;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace InventorySystem_Api.EndPoints
 {
@@ -145,10 +148,20 @@ namespace InventorySystem_Api.EndPoints
                 return Results.Ok(result);
             }).RequireAuthorization("AllRoles");
 
-            app.MapPost("/database-backup", (IConfiguration config, string userName, IDatabaseScriptService DatabaseScriptService) =>
+            app.MapPost("/database-backup", async (IConfiguration config, string userName, IDatabaseScriptService DatabaseScriptService,
+                IMediator mediator) =>
             {
                 var backUpHistory = config["appSetting:backUpHistory"];
-                var result = DatabaseScriptService.GenerateFullDatabaseScript(userName, backUpHistory);
+                var backupPath = Path.Combine(config["appSetting:backUpPath"]!, "file");
+                if (Directory.Exists(backupPath))
+                {
+                    Directory.Delete(backupPath, recursive: true);
+                }
+                Directory.CreateDirectory(backupPath);
+                await mediator.Send(new FileDownLoadCommand(backupPath));
+                var result = DatabaseScriptService.GenerateFullDatabaseScript(userName, backUpHistory!);
+                await mediator.Send(new FileUpLoadCommand(backupPath));
+                Directory.Delete(backupPath, recursive: true);
                 return Results.Ok(new
                 {
                     Value = result,

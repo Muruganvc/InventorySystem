@@ -70,12 +70,16 @@ public class SmsDbContext : DbContext
 
             if (entry.State == EntityState.Modified)
             {
+                var excludedProperties = new[] { "ProfileImage", "QcCode" };
+
                 var modifiedProperties = entry.Properties
-                    .Where(p => p.IsModified && p.OriginalValue?.ToString() != p.CurrentValue?.ToString())
+                    .Where(p => p.IsModified &&
+                                !excludedProperties.Contains(p.Metadata.Name) &&
+                                p.OriginalValue?.ToString() != p.CurrentValue?.ToString())
                     .ToList();
 
                 if (modifiedProperties.Count == 0)
-                    continue; // Skip if no actual value changed
+                    continue;
 
                 var oldValues = modifiedProperties.ToDictionary(p => p.Metadata.Name, p => p.OriginalValue);
                 var newValues = modifiedProperties.ToDictionary(p => p.Metadata.Name, p => p.CurrentValue);
@@ -83,6 +87,7 @@ public class SmsDbContext : DbContext
                 auditLog.OldValues = JsonSerializer.Serialize(oldValues);
                 auditLog.NewValues = JsonSerializer.Serialize(newValues);
             }
+
             else if (entry.State == EntityState.Added)
             {
                 var newValues = entry.CurrentValues.Properties
