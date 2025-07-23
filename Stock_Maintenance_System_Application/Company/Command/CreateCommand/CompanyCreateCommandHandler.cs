@@ -1,26 +1,23 @@
 ﻿using InventorySystem_Application.Common;
 using InventorySystem_Domain.Common;
 using MediatR;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
 
 namespace InventorySystem_Application.Company.Command.CreateCommand
 {
     internal sealed class CompanyCreateCommandHandler : IRequestHandler<CompanyCreateCommand, IResult<int>>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserInfo _userInfo;
         private readonly IRepository<InventorySystem_Domain.Company> _companyRepository;
-        public CompanyCreateCommandHandler(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor, IRepository<InventorySystem_Domain.Company> companyRepository)
+        public CompanyCreateCommandHandler(IUnitOfWork unitOfWork, 
+            IRepository<InventorySystem_Domain.Company> companyRepository, IUserInfo userInfo)
         {
-            _httpContextAccessor = httpContextAccessor;
             _unitOfWork = unitOfWork;
             _companyRepository = companyRepository;
+            _userInfo = userInfo;
         }
         public async Task<IResult<int>> Handle(CompanyCreateCommand request, CancellationToken cancellationToken)
         {
-            int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
-
             var IsExistCompany = await _companyRepository.GetByAsync(a => a.CompanyName == request.CompanyName);
             if (IsExistCompany != null)
                 return Result<int>.Failure("Entered company already exists");
@@ -30,7 +27,7 @@ namespace InventorySystem_Application.Company.Command.CreateCommand
                 CompanyName = request.CompanyName,
                 Description = request.Description,
                 IsActive = request.IsActive,
-                CreatedBy= userId,
+                CreatedBy= _userInfo.UserId,
                 CreatedAt = DateTime.Now
             };
             await _unitOfWork.ExecuteInTransactionAsync(async () =>

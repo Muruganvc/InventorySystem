@@ -1,8 +1,6 @@
 ﻿using InventorySystem_Application.Common;
 using InventorySystem_Domain.Common;
 using MediatR;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
 
 namespace InventorySystem_Application.Company.Command.BulkCompanyCommand;
 
@@ -12,27 +10,25 @@ internal sealed class BulkCompanyCommandHandler : IRequestHandler<BulkCompanyCom
     private readonly IRepository<InventorySystem_Domain.Company> _companyRepository;
     private readonly IRepository<InventorySystem_Domain.Category> _categoryRepository;
     private readonly IRepository<InventorySystem_Domain.ProductCategory> _productCategoryRepository;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IUserInfo _userInfo;
 
     public BulkCompanyCommandHandler(
         IUnitOfWork unitOfWork,
         IRepository<InventorySystem_Domain.Company> companyRepository,
         IRepository<InventorySystem_Domain.Category> categoryRepository,
         IRepository<InventorySystem_Domain.ProductCategory> productCategoryRepository,
-        IHttpContextAccessor httpContextAccessor)
+        IUserInfo userInfo)
     {
         _unitOfWork = unitOfWork;
         _companyRepository = companyRepository;
         _categoryRepository = categoryRepository;
-        _productCategoryRepository = productCategoryRepository;
-        _httpContextAccessor = httpContextAccessor;
+        _productCategoryRepository = productCategoryRepository; 
+        _userInfo = userInfo;
     }
 
     public async Task<IResult<bool>> Handle(BulkCompanyCommand request, CancellationToken cancellationToken)
     {
-        int userId = int.TryParse(
-            _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id)
-            ? id : 0;
+        
 
         bool isSuccess = false;
 
@@ -51,7 +47,7 @@ internal sealed class BulkCompanyCommandHandler : IRequestHandler<BulkCompanyCom
                         CompanyName = item.CompanyName,
                         Description = null,
                         IsActive = false,
-                        CreatedBy = userId,
+                        CreatedBy = _userInfo.UserId,
                         CreatedAt = DateTime.UtcNow
                     };
 
@@ -77,7 +73,7 @@ internal sealed class BulkCompanyCommandHandler : IRequestHandler<BulkCompanyCom
                         CompanyId = companyId,
                         Description = null,
                         IsActive = false,
-                        CreatedBy = userId,
+                        CreatedBy = _userInfo.UserId,
                         CreatedAt = DateTime.UtcNow
                     };
 
@@ -102,7 +98,7 @@ internal sealed class BulkCompanyCommandHandler : IRequestHandler<BulkCompanyCom
                         CategoryId = categoryId,
                         Description = null,
                         IsActive = false,
-                        CreatedBy = userId,
+                        CreatedBy = _userInfo.UserId,
                         CreatedAt = DateTime.UtcNow
                     };
 

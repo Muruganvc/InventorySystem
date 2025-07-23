@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <Folder Include="Dashboard\NewFolder\" />
-    <Folder Include="User\AddOrRemovePermission\" />
   </ItemGroup>
 
   <ItemGroup>

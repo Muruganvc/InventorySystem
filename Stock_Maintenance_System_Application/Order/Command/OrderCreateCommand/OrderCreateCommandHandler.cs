@@ -1,9 +1,7 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Http;
+﻿using InventorySystem_Application.Common;
 using InventorySystem_Domain;
 using InventorySystem_Domain.Common;
-using System.Security.Claims;
-using InventorySystem_Application.Common;
+using MediatR;
 
 namespace InventorySystem_Application.Order.Command.OrderCreateCommand;
 
@@ -11,18 +9,17 @@ internal sealed class OrderCreateCommandHandler : IRequestHandler<OrderCreateCom
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRepository<InventorySystem_Domain.Product> _productRepository;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IUserInfo _userInfo;
     public OrderCreateCommandHandler(IUnitOfWork unitOfWork,
         IRepository<InventorySystem_Domain.Product> productRepository,
-        IHttpContextAccessor httpContextAccessor)
+        IUserInfo userInfo)
     {
         _unitOfWork = unitOfWork;
         _productRepository = productRepository;
-        _httpContextAccessor = httpContextAccessor;
+        _userInfo = userInfo;
     }
     public async Task<IResult<int>> Handle(OrderCreateCommand request, CancellationToken cancellationToken)
     {
-        int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
         int newOrderId = 0;
         await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
@@ -66,7 +63,7 @@ internal sealed class OrderCreateCommandHandler : IRequestHandler<OrderCreateCom
                 UnitPrice = item.UnitPrice,
                 DiscountPercent = item.DiscountPercent, 
                 CreatedAt = DateTime.UtcNow,
-                CreatedBy = userId ,
+                CreatedBy = _userInfo.UserId ,
                 SerialNo = item.SerialNo
             }).ToList();
 
@@ -79,7 +76,7 @@ internal sealed class OrderCreateCommandHandler : IRequestHandler<OrderCreateCom
                 if (product.Quantity >= item.Quantity)
                 {
                     product.Quantity -= item.Quantity;
-                    product.UpdatedBy = userId;
+                    product.UpdatedBy = _userInfo.UserId;
                 }
                 else
                 {

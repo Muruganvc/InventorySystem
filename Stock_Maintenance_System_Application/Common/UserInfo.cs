@@ -9,7 +9,12 @@ public sealed class UserInfo : IUserInfo
     public UserInfo(IHttpContextAccessor httpContextAccessor) =>
         _httpContextAccessor = httpContextAccessor;
     private ClaimsPrincipal? User => _httpContextAccessor.HttpContext?.User;
-    public string UserId => User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0";
-    public string Email => User?.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty;
-    public string UserName => User?.Identity?.Name ?? "System";
+    public int UserId =>
+        int.TryParse(User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
+
+    public string Email =>
+        User?.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty;
+
+    public string UserName =>
+        User?.Identity?.Name ?? "System";
 }

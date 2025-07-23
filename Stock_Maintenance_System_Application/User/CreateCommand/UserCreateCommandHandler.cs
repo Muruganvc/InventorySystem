@@ -1,22 +1,19 @@
 ﻿using InventorySystem_Application.Common;
 using InventorySystem_Domain.Common;
 using MediatR;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
 
 namespace InventorySystem_Application.User.CreateCommand;
 internal sealed class UserCreateCommandHandler : IRequestHandler<UserCreateCommand, IResult<int>>
 {
     private readonly IUnitOfWork _unitOfWork; 
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    public UserCreateCommandHandler(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
+    private readonly IUserInfo _userInfo;
+    public UserCreateCommandHandler(IUnitOfWork unitOfWork, IUserInfo userInfo)
     {
         _unitOfWork = unitOfWork; 
-        _httpContextAccessor = httpContextAccessor;
+        _userInfo = userInfo;
     }
     public async Task<IResult<int>> Handle(UserCreateCommand request, CancellationToken cancellationToken)
     {
-        int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
         var user = new InventorySystem_Domain.User
         {
             FirstName = request.FirstName,
@@ -28,7 +25,7 @@ internal sealed class UserCreateCommandHandler : IRequestHandler<UserCreateComma
             PasswordLastChanged = request.PasswordLastChanged,
             IsPasswordExpired = request.IsPasswordExpired,
             LastLogin = request.LastLogin,
-            CreatedBy = userId,
+            CreatedBy = _userInfo.UserId,
             CreatedDate = DateTime.Now,
             MobileNo = request.MobileNo,
         };

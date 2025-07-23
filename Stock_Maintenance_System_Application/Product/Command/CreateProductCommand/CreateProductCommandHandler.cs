@@ -1,26 +1,23 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Http;
+﻿using InventorySystem_Application.Common;
 using InventorySystem_Domain.Common;
-using System.Security.Claims;
-using InventorySystem_Application.Common;
+using MediatR;
 
 namespace InventorySystem_Application.Product.Command.CreateProductCommand;
 internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, IResult<int>>
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRepository<InventorySystem_Domain.Product> _productRepository;
+    private readonly IUserInfo _userInfo;
     public CreateProductCommandHandler(IUnitOfWork unitOfWork,
         IRepository<InventorySystem_Domain.Product> productRepository,
-        IHttpContextAccessor httpContextAccessor)
+        IUserInfo userInfo)
     {
         _unitOfWork = unitOfWork;
         _productRepository = productRepository;
-        _httpContextAccessor = httpContextAccessor;
+        _userInfo = userInfo;
     }
     public async Task<IResult<int>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
-        int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
         // Determine product category ID (create new if needed)
         int? productCategoryId = request.ProductCategoryId;
 
@@ -36,7 +33,7 @@ internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProduc
                 {
                     CategoryId = request.CategoryId,
                     ProductCategoryName = request.ProductName,
-                    CreatedBy = userId
+                    CreatedBy = _userInfo.UserId
                 };
 
                 await _unitOfWork.Repository<InventorySystem_Domain.ProductCategory>().AddAsync(newProductCategory);
@@ -60,7 +57,7 @@ internal sealed class CreateProductCommandHandler : IRequestHandler<CreateProduc
             Quantity = request.TotalQuantity,
             IsActive = request.IsActive,
             CreatedAt = DateTime.Now,
-            CreatedBy = userId
+            CreatedBy = _userInfo.UserId
         };
 
         // Save the product

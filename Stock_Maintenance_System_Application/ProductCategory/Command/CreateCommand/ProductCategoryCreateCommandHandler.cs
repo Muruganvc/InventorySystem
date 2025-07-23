@@ -9,19 +9,18 @@ namespace InventorySystem_Application.ProductCategory.Command.CreateCommand
     internal sealed class ProductCategoryCreateCommandHandler : IRequestHandler<ProductCategoryCreateCommand, IResult<int>>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IRepository<InventorySystem_Domain.Category> _categoryRepository;
-        public ProductCategoryCreateCommandHandler(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor,
-            IRepository<InventorySystem_Domain.Category> categoryRepository)
+        private readonly IUserInfo _userInfo;
+        public ProductCategoryCreateCommandHandler(IUnitOfWork unitOfWork, 
+            IRepository<InventorySystem_Domain.Category> categoryRepository, IUserInfo userInfo)
         {
             _unitOfWork = unitOfWork;
-            _httpContextAccessor = httpContextAccessor;
             _categoryRepository = categoryRepository;
+            _userInfo = userInfo;
         }
 
         public async Task<IResult<int>> Handle(ProductCategoryCreateCommand request, CancellationToken cancellationToken)
         {
-            int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
             var category = await _categoryRepository.GetByAsync(a => a.CategoryId == request.CategoryId);
             if (category == null) return Result<int>.Failure("Selected category not found");
 
@@ -31,7 +30,7 @@ namespace InventorySystem_Application.ProductCategory.Command.CreateCommand
                 Description = request.Description,
                 ProductCategoryName = request.CategoryProductName,
                 IsActive = request.IsActive,
-                CreatedBy = userId,
+                CreatedBy = _userInfo.UserId,
                 CreatedAt = DateTime.Now
             };
             await _unitOfWork.ExecuteInTransactionAsync(async () =>

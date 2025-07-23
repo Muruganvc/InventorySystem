@@ -8,6 +8,7 @@ internal sealed class CategoryUpdateCommandHandler : IRequestHandler<CategoryUpd
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRepository<InventorySystem_Domain.Company> _companyRepository;
     private readonly IRepository<InventorySystem_Domain.Category> _categoryRepository;
+
     public CategoryUpdateCommandHandler(IUnitOfWork unitOfWork, IRepository<InventorySystem_Domain.Company> companyRepository,
         IRepository<InventorySystem_Domain.Category> categoryRepository)
     {

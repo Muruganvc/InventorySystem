@@ -18,9 +18,9 @@ internal class AuditQueryHandler : IRequestHandler<AuditQuery, IResult<IReadOnly
         var response = auditLogs.Select(a => new AuditQueryResponse
         {
             Id = a.Id,
-            TableName = a.TableName,
-            Action = a.Action,
-            ChangedBy = a.ChangedBy,
+            TableName = a.TableName!,
+            Action = a.Action!,
+            ChangedBy = a.ChangedBy!,
             ChangedAt = a.ChangedAt,
             KeyValues = DeserializeJson(a.KeyValues),
             OldValues = DeserializeJson(a.OldValues),

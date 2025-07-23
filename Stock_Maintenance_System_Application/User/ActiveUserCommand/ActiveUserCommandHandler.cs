@@ -1,30 +1,27 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Http;
+﻿using InventorySystem_Application.Common;
 using InventorySystem_Domain.Common;
-using System.Security.Claims;
-using InventorySystem_Application.Common;
+using MediatR;
 
 namespace InventorySystem_Application.User.ActiveUserCommand;
 
 internal sealed class ActiveUserCommandHandler : IRequestHandler<ActiveUserCommand, IResult<bool>>
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRepository<InventorySystem_Domain.User> _userRepository;
+    private readonly IUserInfo _userInfo;
     public ActiveUserCommandHandler(IUnitOfWork unitOfWork,
-        IRepository<InventorySystem_Domain.User> userRepository, IHttpContextAccessor httpContextAccessor)
+        IRepository<InventorySystem_Domain.User> userRepository,  IUserInfo userInfo)
     {
         _unitOfWork = unitOfWork;
         _userRepository = userRepository;
-        _httpContextAccessor = httpContextAccessor;
+        _userInfo = userInfo;
     }
     public async Task<IResult<bool>> Handle(ActiveUserCommand request, CancellationToken cancellationToken)
     {
-        int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
         var user = await _userRepository.GetByAsync(a => a.UserId == request.UserId);
         if (user == null) return Result<bool>.Failure("Selected user not found");
         user.IsActive = !user.IsActive;
-        user.ModifiedBy = userId;
+        user.ModifiedBy = _userInfo.UserId;
         user.ModifiedDate = DateTime.Now;
         bool isSuccess = false;
         await _unitOfWork.ExecuteInTransactionAsync(async () =>

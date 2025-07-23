@@ -14,18 +14,20 @@ namespace InventorySystem_Application.User.LoginCommand
     {
         private readonly IRepository<InventorySystem_Domain.User> _userRepository;
         private readonly IRepository<InventorySystem_Domain.UserRole> _userRoleRepository;
+        private readonly IRepository<InventorySystem_Domain.Role> _roleRepository;
         private readonly IConfiguration _configuration;
         private readonly IUnitOfWork _unitOfWork;
         public LoginCommandHandler(
             IRepository<InventorySystem_Domain.User> userRepository,
             IRepository<InventorySystem_Domain.UserRole> userRoleRepository,
-            IConfiguration configuration, IUnitOfWork unitOfWork
+            IConfiguration configuration, IUnitOfWork unitOfWork, IRepository<InventorySystem_Domain.Role> roleRepository
             )
         {
             _userRepository = userRepository;
             _configuration = configuration;
             _userRoleRepository = userRoleRepository;
             _unitOfWork = unitOfWork;
+            _roleRepository = roleRepository;
         }
 
         public async Task<IResult<LoginCommandResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -37,21 +39,16 @@ namespace InventorySystem_Application.User.LoginCommand
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
                 return Result<LoginCommandResponse>.Failure("Invalid password");
 
-            var roleIds = (await _userRoleRepository.GetListByAsync(r => r.UserId == user.UserId))
-                .Select(r => r.RoleId)
-                .ToArray();
+            var userRoles = await _userRoleRepository.GetListByAsync(ur => ur.UserId == user.UserId);
+            var roleIds = userRoles.Select(ur => ur.RoleId).ToList();
 
-            var roleMap = new Dictionary<int, string> { { 1, "Admin" }, { 2, "User" }, { 100, "SuperAdmin" } };
-
-            var roles = roleIds
-                .Where(roleMap.ContainsKey)
-                .Select(id => roleMap[id])
-                .ToList();
+            var roles = await _roleRepository.GetListByAsync(r => roleIds.Contains(r.RoleId));
+            var roleNames = roles.Select(r => r.Name).ToList();
 
             var token = GenerateJwtToken(
                 user.Username,
                 user.Email ?? string.Empty,
-                roles,
+                roleNames,
                 user.UserId
             );
 
@@ -95,7 +92,6 @@ namespace InventorySystem_Application.User.LoginCommand
                 Token: token,
                 InvCompanyInfo: companyResponse
             );
-
             return Result<LoginCommandResponse>.Success(response);
         }
         private string GenerateJwtToken(string username, string email, List<string> roleNames, int userId)

@@ -1,25 +1,22 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Http;
+﻿using InventorySystem_Application.Common;
 using InventorySystem_Domain.Common;
-using System.Security.Claims;
-using InventorySystem_Application.Common;
+using MediatR;
 
 namespace InventorySystem_Application.Product.Command.UpdateProductCommand;
 internal sealed class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, IResult<bool>>
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRepository<InventorySystem_Domain.Product> _productRepository;
+    private readonly IUserInfo _userInfo;
     public UpdateProductCommandHandler(IUnitOfWork unitOfWork,
-        IRepository<InventorySystem_Domain.Product> productRepository, IHttpContextAccessor httpContextAccessor)
+        IRepository<InventorySystem_Domain.Product> productRepository,  IUserInfo userInfo)
     {
         _unitOfWork = unitOfWork;
         _productRepository = productRepository;
-        _httpContextAccessor = httpContextAccessor;
+        _userInfo = userInfo;
     }
     public async Task<IResult<bool>> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
-        int userId = int.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
         var product = await _productRepository.GetByAsync(a => a.ProductId == request.ProductId);
         if (product == null)
             return Result<bool>.Failure("Selected product not found");
@@ -33,7 +30,7 @@ internal sealed class UpdateProductCommandHandler : IRequestHandler<UpdateProduc
         product.Quantity = request.TotalQuantity;
         product.LandingPrice = request.LandingPrice;
         product.CompanyId = request.CompanyId;
-        product.UpdatedBy = userId;
+        product.UpdatedBy = _userInfo.UserId;
         product.UpdatedAt = DateTime.Now;
         product.Description = request.Description;
         product.IsActive = request.IsActive; 

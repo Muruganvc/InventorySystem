@@ -1,7 +1,7 @@
 ﻿using Database_Utility;
 using InventorySystem_Api.ApiRequest;
-using InventorySystem_Application.BackSkip.FileDownLoadCommand;
-using InventorySystem_Application.BackSkip.FileUpLoadCommand;
+using InventorySystem_Application.BackSkip.BackupFileDataBatchCommand;
+using InventorySystem_Application.BackSkip.RestoreFileDataCommand;
 using InventorySystem_Application.Customer.Query.GetAllCustomers;
 using InventorySystem_Application.InventoryCompanyInfo.CreateInventoryCompanyInfoCommand;
 using InventorySystem_Application.InventoryCompanyInfo.GetInventoryCompanyInfoQuery;
@@ -10,17 +10,19 @@ using InventorySystem_Application.MenuItem.AddOrRemoveUserMenuItemCommand;
 using InventorySystem_Application.MenuItem.Query;
 using InventorySystem_Application.MenuItem.Query.GetAllMenuItem;
 using InventorySystem_Application.User.ActiveUserCommand;
+using InventorySystem_Application.User.AddOrRemoveRoleCommand;
 using InventorySystem_Application.User.CreateCommand;
 using InventorySystem_Application.User.ForgetPasswordCommand;
 using InventorySystem_Application.User.GetMenuItemPermissionQuery;
+using InventorySystem_Application.User.GetRolesQuery;
 using InventorySystem_Application.User.GetUserQuery;
+using InventorySystem_Application.User.GetUserRoleQuery;
 using InventorySystem_Application.User.GetUsersQuery;
 using InventorySystem_Application.User.LoginCommand;
 using InventorySystem_Application.User.PasswordChangeCommand;
 using InventorySystem_Application.User.UpdateCommand;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace InventorySystem_Api.EndPoints
 {
@@ -40,7 +42,7 @@ namespace InventorySystem_Api.EndPoints
             app.MapPost("/new-user", async (NewUserRequest user, IMediator mediator) =>
             {
                 var command = new UserCreateCommand(user.FirstName, user.LastName, user.UserName, user.EmailId, user.IsActive, DateTime.Now,
-                    false, user.Role, DateTime.Now,user.MobileNo);
+                    false, user.Role, DateTime.Now, user.MobileNo);
                 var result = await mediator.Send(command);
                 return Results.Ok(result);
             })
@@ -152,16 +154,9 @@ namespace InventorySystem_Api.EndPoints
                 IMediator mediator) =>
             {
                 var backUpHistory = config["appSetting:backUpHistory"];
-                var backupPath = Path.Combine(config["appSetting:backUpPath"]!, "file");
-                if (Directory.Exists(backupPath))
-                {
-                    Directory.Delete(backupPath, recursive: true);
-                }
-                Directory.CreateDirectory(backupPath);
-                await mediator.Send(new FileDownLoadCommand(backupPath));
+                await mediator.Send(new BackupFileDataBatchCommand());
                 var result = DatabaseScriptService.GenerateFullDatabaseScript(userName, backUpHistory!);
-                await mediator.Send(new FileUpLoadCommand(backupPath));
-                Directory.Delete(backupPath, recursive: true);
+                await mediator.Send(new RestoreFileDataCommand());
                 return Results.Ok(new
                 {
                     Value = result,
@@ -239,8 +234,8 @@ namespace InventorySystem_Api.EndPoints
                 }
 
                 var command = new CreateInventoryCompanyInfoCommand(
-                    inventoryCompanyInfoName!,description!, address!, mobileNo!, gstNumber!, apiVersion!, uiVersion!, qcCodeData!,
-                    email!,bankName!,bankBranchName!,bankAccountNo!,bankBranchIFSC!
+                    inventoryCompanyInfoName!, description!, address!, mobileNo!, gstNumber!, apiVersion!, uiVersion!, qcCodeData!,
+                    email!, bankName!, bankBranchName!, bankAccountNo!, bankBranchIFSC!
                 );
                 var result = await mediator.Send(command);
                 return Results.Ok(result);
@@ -285,13 +280,39 @@ namespace InventorySystem_Api.EndPoints
 
                 // Construct command
                 var command = new UpdateInventoryCompanyInfoCommand(invCompanyInfoId, inventoryCompanyInfoName!, description!, address!,
-                    mobileNo!, gstNumber!, apiVersion!, uiVersion!, qcCodeData!, email!, bankName!, 
+                    mobileNo!, gstNumber!, apiVersion!, uiVersion!, qcCodeData!, email!, bankName!,
                     bankBranchName!, bankAccountNo!, bankBranchIFSC!);
 
                 var result = await mediator.Send(command);
                 return Results.Ok(result);
             })
             .RequireAuthorization("SuperAdminOnly");
+
+            app.MapGet("/all-roles", async (IMediator mediator) =>
+            {
+                var query = new GetRolesQuery();
+                var result = await mediator.Send(query);
+                return Results.Ok(result);
+            }).RequireAuthorization("SuperAdminOnly");
+
+            app.MapGet("/user-roles", async (IMediator mediator) =>
+            {
+                var query = new GetUserRoleQuery();
+                var result = await mediator.Send(query);
+                return Results.Ok(result);
+            }).RequireAuthorization("SuperAdminOnly");
+
+            app.MapPost("/add-or-remove-role/user/{userId}/role/{roleId}", async (
+                int userId,
+                int roleId,
+                IMediator mediator) =>
+            {
+                var command = new AddOrRemoveRoleCommand(userId, roleId);
+                var result = await mediator.Send(command);
+                return Results.Ok(result);
+            })
+            .RequireAuthorization("AdminOnly");
+
             return app;
         }
     }

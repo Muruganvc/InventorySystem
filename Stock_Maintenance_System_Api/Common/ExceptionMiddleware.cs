@@ -19,7 +19,7 @@ public class ExceptionMiddleware
     {
         try
         {
-            await _next(context); // Proceed to the next middleware or endpoint
+            await _next(context);
         }
         catch (Exception ex)
         {

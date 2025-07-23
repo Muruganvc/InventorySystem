@@ -25,7 +25,9 @@ public class SmsDbContext : DbContext
     public DbSet<OrderItem> OrderItem => Set<OrderItem>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<InventoryCompanyInfo> InventoryCompanyInfo => Set<InventoryCompanyInfo>();
+    public DbSet<Role> Roles=> Set<Role>();
     
+    public DbSet<FileDataBackup> FileDataBackups=> Set<FileDataBackup>();
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
@@ -53,6 +55,8 @@ public class SmsDbContext : DbContext
         {
             if (entry.Entity is AuditLog || entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
                 continue;
+
+            if (entry.Entity.GetType().Name == "FileDataBackup") continue;
 
             var auditLog = new AuditLog
             {
@@ -124,6 +128,8 @@ public class SmsDbContext : DbContext
         modelBuilder.Entity<UserRole>().ToTable("UserRole");
         modelBuilder.Entity<AuditLog>().ToTable("AuditLogs");
         modelBuilder.Entity<InventoryCompanyInfo>().ToTable("InventoryCompanyInfo");
+        modelBuilder.Entity<FileDataBackup>().ToTable("FileDataBackup");
+        modelBuilder.Entity<Role>().ToTable("Role");
 
         modelBuilder.Entity<MenuItem>()
             .HasOne(m => m.Parent)

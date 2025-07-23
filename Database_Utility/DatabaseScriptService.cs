@@ -58,11 +58,9 @@ public class DatabaseScriptService : IDatabaseScriptService
             // Dependency walker to sort tables based on FK dependencies
             var dependencyWalker = new DependencyWalker(server);
             var collection = new UrnCollection();
-            foreach (var table in tableList)
-            {
-                if (table.Name == "AuditLogs") continue;
-                collection.Add(table.Urn);
-            }
+            collection.AddRange(
+                        tableList.Where(table => table.Name is not 
+                        ("AuditLogs" or "FileDataBackup")) .Select(table => table.Urn));
 
             var tree = dependencyWalker.DiscoverDependencies(collection, DependencyType.Parents);
             var sortedList = dependencyWalker.WalkDependencies(tree);
