@@ -10,11 +10,11 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["Stock_Maintenance_System_Api/InventorySystem_Api.csproj", "Stock_Maintenance_System_Api/"]
+COPY ["InventorySystem_Api/InventorySystem_Api.csproj", "InventorySystem_Api/"]
 COPY ["Database_Utility/Database_Utility.csproj", "Database_Utility/"]
-COPY ["Stock_Maintenance_System_Application/InventorySystem_Application.csproj", "Stock_Maintenance_System_Application/"]
-COPY ["Stock_Maintenance_System_Domain/InventorySystem_Domain.csproj", "Stock_Maintenance_System_Domain/"]
-COPY ["Stock_Maintenance_System_Infrastructure/InventorySystem_Infrastructure.csproj", "Stock_Maintenance_System_Infrastructure/"]
+COPY ["InventorySystem_Application/InventorySystem_Application.csproj", "InventorySystem_Application/"]
+COPY ["InventorySystem_Domain/InventorySystem_Domain.csproj", "InventorySystem_Domain/"]
+COPY ["InventorySystem_Infrastructure/InventorySystem_Infrastructure.csproj", "InventorySystem_Infrastructure/"]
 RUN dotnet restore "Stock_Maintenance_System_Api/InventorySystem_Api.csproj"
 COPY . .
 WORKDIR "/src/Stock_Maintenance_System_Api"
